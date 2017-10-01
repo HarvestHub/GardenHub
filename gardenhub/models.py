@@ -28,3 +28,6 @@ class Plot(models.Model):
 class Harvest(models.Model):
     plot = models.ForeignKey('Plot')
     crops = models.ManyToManyField('Crop')
+
+    def __str__(self):
+        return self.id

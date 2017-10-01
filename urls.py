@@ -20,6 +20,11 @@ from django.contrib import admin
 
 
 router = routers.DefaultRouter()
+router.register(r'crops', views.CropViewSet)
+router.register(r'gardens', views.GardenViewSet)
+router.register(r'plots', views.PlotViewSet)
+router.register(r'harvests', views.HarvestViewSet)
+router.register(r'users', views.UserViewSet)
 
 
 urlpatterns = [
