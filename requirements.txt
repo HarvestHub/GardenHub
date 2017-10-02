@@ -3,3 +3,4 @@ djangorestframework==3.6.3
 django-filter==1.0.4
 django-cors-headers==2.1.0
 gunicorn==19.7.1
+Pillow==4.2.1
