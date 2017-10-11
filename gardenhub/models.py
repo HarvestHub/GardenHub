@@ -30,7 +30,7 @@ class Plot(models.Model):
         return self.title
 
 
-class Order(models.Models):
+class Order(models.Model):
 
     plot = models.ForeignKey('Plot')
     crops = models.ManyToManyField('Crop')
@@ -40,8 +40,8 @@ class Order(models.Models):
     canceled_date = models.DateField(null=True, blank=True)
     requester = models.ForeignKey(User)
 
-        def __str__(self):
-            return self.id
+    def __str__(self):
+        return self.id
 
 
 class Harvest(models.Model):

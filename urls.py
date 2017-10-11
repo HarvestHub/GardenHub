@@ -14,21 +14,22 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf.urls import url, include
-from rest_framework import routers
 from gardenhub import views
 from django.contrib import admin
 
 
-router = routers.DefaultRouter()
-router.register(r'crops', views.CropViewSet)
-router.register(r'gardens', views.GardenViewSet)
-router.register(r'plots', views.PlotViewSet)
-router.register(r'harvests', views.HarvestViewSet)
-router.register(r'users', views.UserViewSet)
-
-
 urlpatterns = [
-    url(r'^', include(router.urls)),
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'^$', views.login),
     url(r'^admin/', admin.site.urls),
+    url(r'^home/', views.home),
+    url(r'^employee_views/ep_garden_assignments/', views.ep_garden_assignments),
+    url(r'^employee_views/ep_garden_map/', views.ep_garden_map),
+    url(r'^employee_views/ep_garden_assignments/', views.ep_garden_assignments),
+    url(r'^gardener_views/edit_plot/', views.edit_plot),
+    url(r'^gardener_views/my_gardens/', views.my_gardens),
+    url(r'^gardener_views/schedule/', views.schedule),
+    url(r'^manager_views/manage_garden/', views.manage_garden),
+    url(r'^manager_views/manage_gardens_select/', views.manage_gardens_select),
+    url(r'^manager_views/my_gardens/', views.my_gardens),
+    url(r'^manager_views/view_gardens/', views.view_gardeners),
 ]

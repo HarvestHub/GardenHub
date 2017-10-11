@@ -1,0 +1,53 @@
+body {
+  width: 375px;
+  min-height: 600px;
+  margin: 20px auto;
+  border-style: solid;
+  border-color: black;
+  border-width: 3px;
+}
+
+nav {
+  display: flex;
+  justify-content: space-around;
+}
+
+.logo {
+
+}
+
+.buttons {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  height: 450px;
+  width: 90%;
+  margin: 50px auto;
+}
+
+a.button {
+  display: block;
+  text-decoration: none;
+}
+
+.button {
+  width: 75%;
+  height: 115px;
+  margin: 0 auto;
+  text-align: center;
+  border-style: solid;
+  border-color: black;
+  border-width: 1px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.buttons h1 {
+  margin: 20px;
+  text-transform: uppercase;
+}
+
+h2 {
+  text-transform: uppercase;
+}

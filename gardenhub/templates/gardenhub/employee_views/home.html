@@ -1,0 +1,45 @@
+{% extends "gardenhub/employee_views/_employee_base.html" %}
+
+{% block content %}
+
+<div class="edit_plot">
+  <div class="Title">
+    <h2>My Assignments</h2>
+  </div>
+
+  <div class="ep_assignments">
+    <h4 class="table_header">Garden</h4>
+    <h4 class="table_header">Requests</h4>
+
+    <div class="ep_requests_list">
+      <ul>
+        <li class="ep_garden_request" class="open">
+          <p class="ep_requests_item">Spring Garden</p>
+          <p class="ep_garden_subtotal">17</p>
+        </li>
+        <li class="ep_garden_request" class="open">
+          <p class="ep_requests_item">Spring Garden</p>
+          <p class="ep_garden_subtotal">17</p>
+        </li>
+        <li class="ep_garden_request" class="closed">
+          <p class="ep_requests_item">Spring Garden</p>
+          <p class="ep_garden_subtotal">17</p>
+        </li>
+        <li class="ep_garden_request" class="closed">
+          <p class="ep_requests_item">Spring Garden</p>
+          <p class="ep_garden_subtotal">17</p>
+        </li>
+        <li class="ep_garden_request" class="closed">
+          <p class="ep_requests_item">Spring Garden</p>
+          <p class="ep_garden_subtotal">17</p>
+        </li>
+      </ul>
+
+      <a href="" class="ep_view_all" class="button">
+        <h4>View all upcoming harvests<h4>
+        </a>
+
+      </div>
+
+    </div>
+    {% endblock %}
