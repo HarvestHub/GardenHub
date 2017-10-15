@@ -23,18 +23,28 @@ def home(request):
     elif user_group == 'manager':
         return render(request, 'gardenhub/homescreen_templates/manager_home.html')
 
-def account(request):
+def my_account(request):
     return render(request, 'gardenhub/account_settings_templates/my_account.html', {
         'foo': 'bar',
     })
 
-def plot(request):
+def account_settings(request):
+    return render(request, 'gardenhub/account_settings_templates/edit_settings.html', {
+        'foo': 'bar',
+    })
+
+def delete_account(request):
+    return render(request, 'gardenhub/account_settings_templates/delete_account.html', {
+        'foo': 'bar',
+    })
+
+def edit_plot(request):
     return render(request, 'gardenhub/edit_plot_templates/edit_plot.html', {
         'foo': 'bar',
     })
 
-def plot(request):
-    return render(request, 'gardenhub/manage_gardens_templates/my_gardens.html', {
+def my_plots(request):
+    return render(request, 'gardenhub/edit_plot_templates/my_plots.html', {
         'foo': 'bar',
     })
 
@@ -44,9 +54,22 @@ def harvest(request):
     if user_group == 'employee':
         return render(request, 'gardenhub/harvest_templates/harvest_assignments_templates/_templates/ep_garden_assignments.html')
     elif user_group == 'gardener':
-        return render(request, 'gardenhub/harvest_templates/schedule_harvest_templates/schedule.html')
+        return render(request, 'gardenhub/harvest_templates/upcoming_harvest_templates/upcoming_harvests.html')
     elif user_group == 'manager':
         return render(request, 'gardenhub/harvest_templates/upcoming_harvest_templates/upcoming_harvests.html')
+
+def schedule_harvest(request):
+    return render(request, 'gardenhub/harvest_templates/schedule_harvest_templates/schedule.html')
+
+def upcoming_harvests(request):
+    return render(request, 'gardenhub/harvest_templates/upcoming_harvest_templates/upcoming_harvests.html')
+
+def harvest_assignments(request):
+    return render(request, 'gardenhub/harvest_templates/harvest_assignments_templates/ep_garden_assignments.html')
+
+def record_harvest(request):
+    return render(request, 'gardenhub/harvest_templates/harvest_assignments_templates/record_harvest.html')
+
 
 def manage(request):
     user_group = 'manager'
@@ -56,4 +79,20 @@ def manage(request):
     elif user_group == 'gardener':
         return render(request, 'gardenhub/homescreen_templates/gardener_home.html')
     elif user_group == 'manager':
-        return render(request, 'gardenhub/manage_gardens_templates/my_gardens.html')
+        return render(request, 'gardenhub/manage_gardens_templates/manage_gardens_select.html')
+
+
+def manage_garden(request):
+    return render(request, 'gardenhub/manage_gardens_templates/manage_garden.html')
+
+def manage_garden_gardeners(request):
+    return render(request, 'gardenhub/manage_gardens_templates/view_gardeners.html')
+
+def manage_garden_gardeners_edit(request):
+    return render(request, 'gardenhub/manage_gardens_templates/edit_gardeners.html')
+
+def manage_garden_harvests(request):
+    return render(request, 'gardenhub/manage_gardens_templates/garden_harvests')
+
+def manage_garden_settings(request):
+    return render(request, 'gardenhub/manage_gardens_templates/garden_settings.html')
