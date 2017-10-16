@@ -62,7 +62,7 @@ def schedule_harvest(request):
     return render(request, 'gardenhub/harvest_templates/schedule_harvest_templates/schedule.html')
 
 def upcoming_harvests(request):
-    return render(request, 'gardenhub/harvest_templates/upcoming_harvest_templates/upcoming_harvests.html')
+    return render(request, 'gardenhub/harvest_templates/upcoming_harvests_templates/upcoming_harvests.html')
 
 def harvest_assignments(request):
     return render(request, 'gardenhub/harvest_templates/harvest_assignments_templates/ep_garden_assignments.html')
