@@ -82,17 +82,17 @@ def manage(request):
         return render(request, 'gardenhub/manage_gardens_templates/manage_gardens_select.html')
 
 
-def manage_garden(request):
+def manage_garden(request, gardenId):
     return render(request, 'gardenhub/manage_gardens_templates/manage_garden.html')
 
-def manage_garden_gardeners(request):
+def manage_garden_gardeners(request, gardenId):
     return render(request, 'gardenhub/manage_gardens_templates/view_gardeners.html')
 
-def manage_garden_gardeners_edit(request):
+def manage_garden_gardeners_edit(request, gardenId):
     return render(request, 'gardenhub/manage_gardens_templates/edit_gardeners.html')
 
-def manage_garden_harvests(request):
+def manage_garden_harvests(request, gardenId):
     return render(request, 'gardenhub/manage_gardens_templates/garden_harvests')
 
-def manage_garden_settings(request):
+def manage_garden_settings(request, gardenId):
     return render(request, 'gardenhub/manage_gardens_templates/garden_settings.html')
