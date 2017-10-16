@@ -14,7 +14,7 @@ def login(request):
     })
 
 def home(request):
-    user_group = 'gardener'
+    user_group = request.GET["user_group"]
 
     if user_group == 'employee':
         return render(request, 'gardenhub/homescreen_templates/employee_home.html')
