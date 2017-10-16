@@ -3,6 +3,11 @@ from django.contrib.auth.models import User
 
 
 class Crop(models.Model):
+    """
+    A crop represents an item that may be harvested, such as a zuchini or an
+    orange. Crops are stored in a master list, managed by the site admin, and
+    may be listed on Orders or Harvests.
+    """
     title = models.CharField(max_length=255)
     image = models.ImageField()
 
@@ -11,6 +16,9 @@ class Crop(models.Model):
 
 
 class Garden(models.Model):
+    """
+    A whole landscape, divided into many plots. Managed by Garden Managers.
+    """
     title = models.CharField(max_length=255)
     managers = models.ManyToManyField(User, related_name='+')
     address = models.CharField(max_length=255)
@@ -21,6 +29,9 @@ class Garden(models.Model):
 
 
 class Plot(models.Model):
+    """
+    Subdivision of a Garden, allocated to a Gardener for growing food.
+    """
     title = models.CharField(max_length=255)
     garden = models.ForeignKey('Garden')
     gardener = models.ManyToManyField(User)
@@ -31,7 +42,10 @@ class Plot(models.Model):
 
 
 class Order(models.Model):
-
+    """
+    A request from a Gardener or Garden Manager to enlist a particular Plot for
+    Harvest over a specified number of days.
+    """
     plot = models.ForeignKey('Plot')
     crops = models.ManyToManyField('Crop')
     start_date = models.DateField()
@@ -45,7 +59,10 @@ class Order(models.Model):
 
 
 class Harvest(models.Model):
-
+    """
+    A submission by an Employee signifying that Crops have been picked from a
+    particular Plot on a particular day.
+    """
     harvest_date = models.DateField()
     status = models.CharField(
         max_length=255,
