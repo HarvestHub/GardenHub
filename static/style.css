@@ -184,3 +184,15 @@ h2 {
   text-transform: uppercase;
   font-family: 'Chelsea Market', cursive;
 }
+
+.gm_manage_garden {
+  margin: 15px;
+  padding: 10px;
+  min-height: 100vw;
+  border-radius: 3px;
+  background-color: #F9F8F6;
+}
+
+.gm_manage_info {
+  height: auto;
+}
