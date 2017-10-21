@@ -1,18 +1,49 @@
 body {
+  font-family: 'Questrial', sans-serif;
+}
+
+.background {
+  position: fixed;
+  left: 0;
+  right: 0;
+  z-index: 1;
   width: 375px;
   min-height: 600px;
-  margin: 20px auto;
   border-style: solid;
   border-color: black;
   border-width: 3px;
+  width: 375px;
+  min-height: 600px;
+  margin: 20px auto;
+  background-image: url("/static/images/garden2.jpg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-clip: border-box;
+  background-size: cover;
+  filter: sepia(.3);
 }
+
+.all {
+  position: fixed;
+  left: 0;
+  right: 0;
+  z-index: 9999;  border-style: solid;
+  border-color: black;
+  border-width: 3px;
+  width: 375px;
+  min-height: 600px;
+  margin: 20px auto;
+}
+
 
 nav {
   display: flex;
   justify-content: space-around;
 }
 
-
+nav a {
+  color: #F9F8F6;
+}
 
 .buttons {
   display: flex;
@@ -33,9 +64,10 @@ a.button {
   height: 115px;
   margin: 0 auto;
   text-align: center;
-  border-style: solid;
-  border-color: black;
-  border-width: 1px;
+  border-radius: 3px;
+  color: #F9F8F6;
+  background-color: rgba(85,107,47, .9);
+  background-color:
   display: flex;
   align-items: center;
   justify-content: space-around;
@@ -44,6 +76,11 @@ a.button {
 .buttons h1 {
   margin: 20px;
   text-transform: uppercase;
+  /*font-family: 'Poppins', sans-serif;*/
+  /*font-family: 'Barrio', cursive;*/
+  /*font-family: 'Cabin Sketch', cursive;*/
+  /*font-family: 'Cabin', sans-serif;*/
+  font-family: 'Chelsea Market', cursive;
 }
 
 h2 {
@@ -78,7 +115,7 @@ h2 {
 
 .submit {
   width: 80%;
-  background-color: black;
+  background-color: rgba(85,107,47, .9);
   text-transform: uppercase;
   display: flex;
   justify-content: space-around;
