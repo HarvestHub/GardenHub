@@ -1,18 +1,51 @@
 body {
-  width: 375px;
+  font-family: 'Questrial', sans-serif;
+  width: 100%;
+}
+
+.background {
+  position: fixed;
+  left: 0;
+  right: 0;
+  z-index: 1;
   min-height: 600px;
+  width: 100%;
+  max-width: 400px;
   margin: 20px auto;
+  background-image: url("/static/images/garden2.jpg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-clip: border-box;
+  background-size: cover;
+  filter: sepia(.5);
   border-style: solid;
   border-color: black;
   border-width: 3px;
 }
+
+.all {
+  position: fixed;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+  border-style: solid;
+  border-color: black;
+  border-width: 3px;
+  width: 100%;
+  max-width: 400px;
+  min-height: 600px;
+  margin: 20px auto;
+}
+
 
 nav {
   display: flex;
   justify-content: space-around;
 }
 
-
+nav a {
+  color: #F9F8F6;
+}
 
 .buttons {
   display: flex;
@@ -33,9 +66,10 @@ a.button {
   height: 115px;
   margin: 0 auto;
   text-align: center;
-  border-style: solid;
-  border-color: black;
-  border-width: 1px;
+  border-radius: 3px;
+  color: #F9F8F6;
+  background-color: rgba(85,107,47, .9);
+  background-color:
   display: flex;
   align-items: center;
   justify-content: space-around;
@@ -44,6 +78,7 @@ a.button {
 .buttons h1 {
   margin: 20px;
   text-transform: uppercase;
+  font-family: 'Chelsea Market', cursive;
 }
 
 h2 {
@@ -53,7 +88,12 @@ h2 {
 /* SCHEDULE HARVEST STYLES */
 
 .schedule_harvest {
-  margin: 20px;
+  margin: 15px;
+  padding: 10px;
+  background-color: rgb(85,107,47);
+  color: #F9F8F6;
+  min-height: 100vw;
+  border-radius: 3px;
 }
 
 .title {
@@ -78,7 +118,8 @@ h2 {
 
 .submit {
   width: 80%;
-  background-color: black;
+  background-color: #F9F8F6;
+  color: rgb(85,107,47);
   text-transform: uppercase;
   display: flex;
   justify-content: space-around;
@@ -86,13 +127,17 @@ h2 {
 }
 
 .submit h3 {
-  color: white;
+  color: rgb(85,107,47);
 }
 
 /* MY GARDENS STYLES */
 
-.manage_gardens {
-  margin: 10px;
+.my_plots {
+  margin: 15px;
+  padding: 10px;
+  min-height: 100vw;
+  border-radius: 3px;
+  background-color: #F9F8F6;
 }
 
 .plot_subtitle {
@@ -109,12 +154,45 @@ h2 {
 .upcoming_date {
   display: flex;
   justify-content: space-between;
-  color: green;
+  color: rgb(85,107,47);
 }
 
 
 /* EDIT PLOT STYLES */
 
 .edit_plot {
-  margin: 10px;
+  margin: 15px;
+  padding: 10px;
+  min-height: 100vw;
+  border-radius: 3px;
+  background-color: #F9F8F6;
+}
+
+/*GM MANAGE GARDENS STYLES*/
+
+.page_title {
+  font-family: 'Chelsea Market', cursive;
+  color: #F9F8F6;
+}
+
+.gm_select_garden {
+  height: auto;
+}
+
+.gm_select_garden h2 {
+  margin: 20px;
+  text-transform: uppercase;
+  font-family: 'Chelsea Market', cursive;
+}
+
+.gm_manage_garden {
+  margin: 15px;
+  padding: 10px;
+  min-height: 100vw;
+  border-radius: 3px;
+  background-color: #F9F8F6;
+}
+
+.gm_manage_info {
+  height: auto;
 }
