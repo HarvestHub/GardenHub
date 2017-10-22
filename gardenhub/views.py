@@ -9,7 +9,7 @@ from .models import Crop, Garden, Plot, Harvest
 
 
 def login(request):
-    return render(request, 'gardenhub/login_templates/login.html', {
+    return render(request, 'gardenhub/login_templates/new_login.html', {
         'foo': 'bar',
     })
 

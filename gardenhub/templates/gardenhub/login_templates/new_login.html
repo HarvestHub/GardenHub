@@ -1,0 +1,29 @@
+{% extends "gardenhub/_base.html" %}
+
+{% block content %}
+
+<div class="login_page">
+  <div class="logo">
+    <h1>GardenHub</h1>
+  </div>
+  <div class="directions">
+    <p>Please enter your email address to sign in</p>
+  </div>
+  <div class="email field show">
+    <form>
+      <div>
+        <input type="text" name="email" placeholder="Email Address"><br>
+      </div>
+    </form>
+  </div>
+  <div class="password field hide">
+    <form>
+      <input type="text" name="password" placeholder="Password"><br>
+    </form>
+  </div>
+  <div class="next">
+    <h2>Next</h2>
+  </div>
+</div>
+
+{% endblock %}

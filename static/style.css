@@ -1,198 +1,92 @@
 body {
-  font-family: 'Questrial', sans-serif;
-  width: 100%;
-}
-
-.background {
+  font-family: 'Open Sans', sans-serif;
   position: fixed;
   left: 0;
   right: 0;
-  z-index: 1;
+  width: 100%;
+  max-width: 400px;
+  min-height: 600px;
+}
+
+
+.background {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: -999;
   min-height: 600px;
   width: 100%;
   max-width: 400px;
-  margin: 20px auto;
-  background-image: url("/static/images/garden2.jpg");
+  background-image: url("/static/images/login-screen.jpg");
   background-position: center;
   background-repeat: no-repeat;
   background-clip: border-box;
   background-size: cover;
-  filter: sepia(.5);
-  border-style: solid;
-  border-color: black;
-  border-width: 3px;
 }
 
-.all {
-  position: fixed;
-  left: 0;
-  right: 0;
-  z-index: 9999;
-  border-style: solid;
-  border-color: black;
-  border-width: 3px;
+.content {
+  z-index: 999;
+  margin: 20px;
+}
+
+/*LOGIN PAGE STYLES*/
+
+.login_page .logo h1 {
+  font-family: 'Saira Extra Condensed', sans-serif;
+  color: #F9F8F6;
+  font-size: 68px;
+  text-align: center;
+}
+
+.login_page .directions p {
+  color: #F9F8F6;
+  font-size: 12px;
+}
+
+.login_page .next h2 {
+  color: #F9F8F6;
+}
+
+.login_page .field {
   width: 100%;
-  max-width: 400px;
-  min-height: 600px;
-  margin: 20px auto;
+  padding: 10px;
+  margin: 10px 0px;
+  height: 50px;
 }
 
-
-nav {
-  display: flex;
-  justify-content: space-around;
+.field div {
+  width: 100%;
+  position: absolute;
+  left: 0px;
+  height: 50px;
+  background-color: rgba(249, 248, 246, .5);
+  z-index: 0;
 }
 
-nav a {
-  color: #F9F8F6;
-}
-
-.buttons {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  height: 450px;
+.field input {
+  background-color: rgba(249, 248, 246, 0);
+  z-index: 1;
   width: 90%;
-  margin: 50px auto;
+  padding: 0px 20px;
+  height: 50px;
+  border: none;
+  color: #F9F8F6;
+  font-size: 24px;
 }
 
-a.button {
+.field.show {
   display: block;
-  text-decoration: none;
 }
 
-.button {
-  width: 75%;
-  height: 115px;
-  margin: 0 auto;
-  text-align: center;
-  border-radius: 3px;
-  color: #F9F8F6;
-  background-color: rgba(85,107,47, .9);
-  background-color:
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
+.field.hide {
+  display: none;
 }
 
-.buttons h1 {
-  margin: 20px;
-  text-transform: uppercase;
-  font-family: 'Chelsea Market', cursive;
+.login_page .next {
+  text-align: right;
+  cursor: pointer;
 }
 
-h2 {
-  text-transform: uppercase;
-}
-
-/* SCHEDULE HARVEST STYLES */
-
-.schedule_harvest {
-  margin: 15px;
-  padding: 10px;
-  background-color: rgb(85,107,47);
-  color: #F9F8F6;
-  min-height: 100vw;
-  border-radius: 3px;
-}
-
-.title {
-  text-align: center;
-}
-
-.plot_title {
-  display: flex;
-  justify-content: space-between;
-}
-
-.crop_list {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
-}
-
-.crop_list li {
-  width: 100px;
-  padding: 5px;
-}
-
-.submit {
-  width: 80%;
-  background-color: #F9F8F6;
-  color: rgb(85,107,47);
-  text-transform: uppercase;
-  display: flex;
-  justify-content: space-around;
-  margin: 0 auto;
-}
-
-.submit h3 {
-  color: rgb(85,107,47);
-}
-
-/* MY GARDENS STYLES */
-
-.my_plots {
-  margin: 15px;
-  padding: 10px;
-  min-height: 100vw;
-  border-radius: 3px;
-  background-color: #F9F8F6;
-}
-
-.plot_subtitle {
-  display: flex;
-  justify-content: space-between;
-  font-style: italic;
-}
-
-.plot_subtitle h4 {
-  margin-top: -10px;
-  margin-left: 30px;
-}
-
-.upcoming_date {
-  display: flex;
-  justify-content: space-between;
-  color: rgb(85,107,47);
-}
-
-
-/* EDIT PLOT STYLES */
-
-.edit_plot {
-  margin: 15px;
-  padding: 10px;
-  min-height: 100vw;
-  border-radius: 3px;
-  background-color: #F9F8F6;
-}
-
-/*GM MANAGE GARDENS STYLES*/
-
-.page_title {
-  font-family: 'Chelsea Market', cursive;
-  color: #F9F8F6;
-}
-
-.gm_select_garden {
-  height: auto;
-}
-
-.gm_select_garden h2 {
-  margin: 20px;
-  text-transform: uppercase;
-  font-family: 'Chelsea Market', cursive;
-}
-
-.gm_manage_garden {
-  margin: 15px;
-  padding: 10px;
-  min-height: 100vw;
-  border-radius: 3px;
-  background-color: #F9F8F6;
-}
-
-.gm_manage_info {
-  height: auto;
+.login_page .next h2 {
+  font-size: 20px;
 }

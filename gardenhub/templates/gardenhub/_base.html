@@ -15,7 +15,7 @@
 
   <!-- Stylesheets -->
   <link rel="stylesheet" href="/static/style.css">
-  <link href="https://fonts.googleapis.com/css?family=Barrio|Cabin|Cabin+Sketch|Chelsea+Market|Poppins|Questrial" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans|Saira+Extra+Condensed" rel="stylesheet">
 
 
   {% block extra_styles %}{% endblock %}
@@ -23,26 +23,14 @@
   <!-- Favicons -->
 
 </head>
-
 <body>
   <div class="background"></div>
-  <div class="all">
-    <nav>
-      <a href="/home?user_group=gardener" class="logo">
-        GardenHub
-      </a>
-
-      <a href="/" class="logo">
-        logout
-      </a>
-    </nav>
-
-    <div class="content">
-        {% block content %}{% endblock %}
-    </div>
+  <div class="content">
+    {% block content %}{% endblock %}
+  </div>
 
     <!-- Scripts -->
     <script src="/static/main.js"></script>
-  </div>
+
 </body>
 </html>
