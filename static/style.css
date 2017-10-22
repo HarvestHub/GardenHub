@@ -41,6 +41,7 @@ body {
 .login_page .directions p {
   color: #F9F8F6;
   font-size: 12px;
+  margin-bottom: -15px;
 }
 
 .login_page .next h2 {
@@ -59,7 +60,7 @@ body {
   position: absolute;
   left: 0px;
   height: 50px;
-  background-color: rgba(249, 248, 246, .5);
+  background-color: rgba(249, 248, 246, .6);
   z-index: 0;
 }
 
@@ -73,6 +74,33 @@ body {
   color: #F9F8F6;
   font-size: 24px;
 }
+
+/*All this nonsense is just to get the placeholder text to be white*/
+
+.field input::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+    color: #F9F8F6;
+}
+
+.field input:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+   color: #F9F8F6;
+   opacity:  1;
+}
+
+.field input::-moz-placeholder { /* Mozilla Firefox 19+ */
+   color: #F9F8F6;
+   opacity:  1;
+}
+
+.field input:-ms-input-placeholder { /* Internet Explorer 10-11 */
+   color: #F9F8F6;
+}
+
+.field input::-ms-input-placeholder { /* Microsoft Edge */
+   color: #F9F8F6;
+}
+
+/*end nonsense*/
+
 
 .field.show {
   display: block;
