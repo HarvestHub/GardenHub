@@ -17,7 +17,7 @@ body {
   min-height: 600px;
   width: 100%;
   max-width: 400px;
-  background-image: url("/static/images/login-screen.jpg");
+  background: #7b2c87 url("/static/images/login-screen.png");
   background-position: center;
   background-repeat: no-repeat;
   background-clip: border-box;
