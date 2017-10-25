@@ -1,16 +1,77 @@
-{% extends "gardenhub/_gardener_base.html" %}
+{% extends "gardenhub/_base.html" %}
 
 {% block content %}
 
-  <div class="buttons">
-    <a href="/harvest/schedule" class="button">
-      <h1>Schedule A Harvest</h1>
-    </a>
+<div class="nav">
+  <nav>
+    <ul>
+      <li class="manage_drop">Manage</li>
+      <li class="name_drop">Jane</li>
+    </ul>
+  </nav>
 
-    <a href="/my_plots" class="button">
-      <h1>Manage My Plots</h1>
-    </a>
+  <div class="my_harvests">
+    <div class="title_bar">
+      <h1 class="header">My Harvests</h1>
+      <h1 class="status_indicator">OK</h1>
+    </div>
 
-  </div>
+    <div class="upcoming_harvest">
+      <div class="upcoming_harvest_details">
+        <div class="date_and_plot_bar">
+          <h3>Today</h3>
+          <h3>Plot #13</h3>
+        </div>
+        <div class="garden_name">
+          <h2>Spring Garden</h2>
+        </div>
+        <div class="harvester_info">
+          <h4>Enrique is harvesting your crops</h4>
+        </div>
+      </div>
+      <div class="view_order">
+        <h4 class="view_order">View Order</h4>
+      </div>
+    </div>
+
+    <div class="upcoming_harvest">
+      <div class="upcoming_harvest_details">
+        <div class="date_and_plot_bar">
+          <h3>Tomorrow</h3>
+          <h3>Plot #11</h3>
+        </div>
+        <div class="garden_name">
+          <h2>Corinthian Gardens</h2>
+        </div>
+        <div class="harvester_info">
+          <h4>Marcus is harvesting your crops</h4>
+        </div>
+      </div>
+      <div class="view_order">
+        <h4 class="view_order">View Order</h4>
+      </div>
+    </div>
+
+    <div class="upcoming_harvest">
+      <div class="upcoming_harvest_details">
+        <div class="date_and_plot_bar">
+          <h3>11/27/17</h3>
+          <h3>Plot #9</h3>
+        </div>
+        <div class="garden_name">
+          <h2>Spring Garden</h2>
+        </div>
+        <div class="harvester_info">
+          <h4>Enrique is harvesting your crops</h4>
+        </div>
+      </div>
+      <div class="view_order">
+        <h4 class="view_order">View Order</h4>
+      </div>
+    </div>
+
+    <div class="submit_new_harvest button">
+      <h1>Submit New Order</h1>
+    </div>
 
 {% endblock %}
