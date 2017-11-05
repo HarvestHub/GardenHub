@@ -7,22 +7,25 @@
     <h1>GardenHub</h1>
   </div>
   <div class="directions">
-    <p>Please enter your email address to sign in</p>
+    <p id="directions">Please enter your email address to sign in</p>
   </div>
-  <div class="email field show">
+  <div class="field" id="email_field">
     <form>
       <div>
         <input type="text" name="email" placeholder="Email Address"><br>
       </div>
     </form>
   </div>
-  <div class="password field hide">
+  <div class="field hide" id="password_field">
     <form>
-      <input type="text" name="password" placeholder="Password"><br>
+      <div>
+        <input type="text" name="password" placeholder="Password"><br>
+      </div>
     </form>
   </div>
   <div class="next">
-    <h2>Next</h2>
+    <h2 id="next" onclick="nextLogin()">Next</h2>
+    <a href="/home?user_group=gardener"<h2 id="login" class="hide">Login</h2></a>
   </div>
 </div>
 

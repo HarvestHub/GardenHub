@@ -1,3 +1,7 @@
+* {
+  transition: .3s;
+}
+
 body {
   font-family: 'Open Sans', sans-serif;
   position: fixed;
@@ -56,10 +60,6 @@ body {
   margin-left: 20px;
 }
 
-.login_page .next h2 {
-  color: #F9F8F6;
-}
-
 .login_page .field {
   width: 100%;
   padding: 10px;
@@ -114,11 +114,7 @@ body {
 /*end nonsense*/
 
 
-.field.show {
-  display: block;
-}
-
-.field.hide {
+.hide {
   display: none;
 }
 
@@ -130,7 +126,20 @@ body {
 .login_page .next h2 {
   font-size: 20px;
   margin-right: 20px;
+  color: #F9F8F6;
 }
+
+.login_page .next a {
+  text-align: right;
+  cursor: pointer;
+  font-size: 20px;
+  margin: 16px 20px 16px;
+  color: #F9F8F6;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+
 
 /*Home page styles*/
 
