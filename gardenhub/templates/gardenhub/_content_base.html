@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>GardenHub</title>
+  <!-- Meta -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="description" content="GardenHub application">
+  <!-- Open Graph protocol -->
+  <meta property="og:title" content="GardenHub">
+  <meta property="og:type" content="application">
+  <meta property="og:url" content="">
+  <meta property="og:image" content="">
+  <meta property="og:description" content="GardenHub app.">
+  <meta property="og:locale" content="en_US">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="/static/style.css">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans|Saira+Extra+Condensed" rel="stylesheet">
+
+
+  {% block extra_styles %}{% endblock %}
+
+  <!-- Favicons -->
+
+</head>
+<body>
+  <div class="content_background"></div>
+  <div class="content">
+    {% block content %}{% endblock %}
+  </div>
+
+    <!-- Scripts -->
+    <script src="/static/main.js"></script>
+
+</body>
+</html>

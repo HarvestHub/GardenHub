@@ -24,6 +24,17 @@ body {
   background-size: cover;
 }
 
+.content_background {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: -999;
+  min-height: 600px;
+  width: 100%;
+  max-width: 400px;
+  background: #F9F8F6;
+}}
+
 .content {
   z-index: 999;
   margin: 20px;
@@ -117,4 +128,31 @@ body {
 
 .login_page .next h2 {
   font-size: 20px;
+}
+
+/*Home page styles*/
+
+.nav ul {
+  display: flex;
+  justify-content: space-around;
+  text-align: right;
+}
+
+.nav .drop {
+  list-style-type: none;
+}
+
+.upcoming_harvest {
+  display: flex;
+  justify-content: space-around;
+}
+
+.title_bar {
+  display: flex;
+  justify-content: space-around;
+}
+
+.date_and_plot_bar {
+  display: flex;
+  justify-content: space-around;
 }
