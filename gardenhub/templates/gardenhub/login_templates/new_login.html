@@ -9,24 +9,16 @@
   <div class="directions">
     <p id="directions">Please enter your email address to sign in</p>
   </div>
-  <div class="field" id="email_field">
-    <form>
-      <div>
-        <input type="text" name="email" placeholder="Email Address"><br>
-      </div>
-    </form>
-  </div>
-  <div class="field hide" id="password_field">
-    <form>
-      <div>
-        <input type="text" name="password" placeholder="Password"><br>
-      </div>
-    </form>
-  </div>
-  <div class="next">
-    <h2 id="next" onclick="nextLogin()">Next</h2>
-    <a href="/home?user_group=gardener"<h2 id="login" class="hide">Login</h2></a>
-  </div>
+  <form>
+    <div class="field" id="email_field">
+      <input type="text" name="email" placeholder="Email Address">
+      <h2 class="next" id="next" onclick="nextLogin()">Next</h2>
+    </div>
+    <div class="field" id="password_field">
+      <input type="text" name="password" placeholder="Password">
+      <h2 class="next" id="login"><a href="/home?user_group=gardener">Login</a></h2>
+    </div>
+  </form>
 </div>
 
 {% endblock %}

@@ -2,30 +2,23 @@
   transition: .3s;
 }
 
-body {
-  font-family: 'Open Sans', sans-serif;
-  position: fixed;
-  left: 0;
-  right: 0;
-  width: 100%;
-  max-width: 400px;
-  min-height: 600px;
+html {
+  background: white;
 }
 
-
-.background {
-  position: absolute;
-  left: 0;
-  right: 0;
-  z-index: -999;
-  min-height: 600px;
-  width: 100%;
+body {
+  font-family: 'Open Sans', sans-serif;
   max-width: 400px;
+  min-height: 600px;
   background: #7b2c87 url("/static/images/login-screen.png");
   background-position: center;
-  background-repeat: no-repeat;
-  background-clip: border-box;
   background-size: cover;
+}
+
+/* Create new block formatting context around body */
+body::before {
+  content: "";
+  display: table;
 }
 
 .content_background {
@@ -37,10 +30,9 @@ body {
   width: 100%;
   max-width: 400px;
   background: #F9F8F6;
-}}
+}
 
 .content {
-  z-index: 999;
   margin: 20px;
 }
 
@@ -61,23 +53,25 @@ body {
 }
 
 .login_page .field {
-  width: 100%;
-  padding: 10px;
-  margin: 10px 0px;
-  height: 50px;
+  margin: 20px 0px;
 }
 
-.field div {
+.login_page form {
+  width: 200%;
+  display: flex;
+}
+
+.login_page form.password {
+  margin-left: -100%;
+}
+
+.field {
   width: 100%;
-  position: absolute;
-  left: 0px;
-  height: 50px;
-  background-color: rgba(249, 248, 246, .6);
   z-index: 0;
 }
 
 .field input {
-  background-color: rgba(249, 248, 246, 0);
+  background-color: rgba(249, 248, 246, .6);
   z-index: 1;
   width: 90%;
   padding: 0px 20px;
@@ -121,25 +115,15 @@ body {
 .login_page .next {
   text-align: right;
   cursor: pointer;
-}
-
-.login_page .next h2 {
   font-size: 20px;
   margin-right: 20px;
   color: #F9F8F6;
 }
 
 .login_page .next a {
-  text-align: right;
-  cursor: pointer;
-  font-size: 20px;
-  margin: 16px 20px 16px;
   color: #F9F8F6;
   text-decoration: none;
-  font-weight: bold;
 }
-
-
 
 /*Home page styles*/
 
