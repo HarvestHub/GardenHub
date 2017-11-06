@@ -6,7 +6,7 @@
   <nav>
     <ul>
       <li class="manage drop">Manage</li>
-      <li class="name drop">{{ request.user.username }}</li>
+      <li class="name drop">{{ request.user.first_name }}</li>
       <li><a href="/logout/">log-out</a></li>
     </ul>
     {% if request.user.is_superuser %}
@@ -47,41 +47,6 @@
       </div>
     </div>
 
-    <div class="upcoming_harvest">
-      <div class="upcoming_harvest_details">
-        <div class="date_and_plot_bar">
-          <h3>Tomorrow</h3>
-          <h3>Plot #11</h3>
-        </div>
-        <div class="garden_name">
-          <h2>Corinthian Gardens</h2>
-        </div>
-        <div class="harvester_info">
-          <h4>Marcus is harvesting your crops</h4>
-        </div>
-      </div>
-      <div class="view_order">
-        <h4 class="view_order">View Order</h4>
-      </div>
-    </div>
-
-    <div class="upcoming_harvest">
-      <div class="upcoming_harvest_details">
-        <div class="date_and_plot_bar">
-          <h3>11/27/17</h3>
-          <h3>Plot #9</h3>
-        </div>
-        <div class="garden_name">
-          <h2>Spring Garden</h2>
-        </div>
-        <div class="harvester_info">
-          <h4>Enrique is harvesting your crops</h4>
-        </div>
-      </div>
-      <div class="view_order">
-        <h4 class="view_order">View Order</h4>
-      </div>
-    </div>
 
     <div class="submit_new_harvest button">
       <h1>Submit New Order</h1>
