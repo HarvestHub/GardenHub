@@ -41,12 +41,14 @@ manage_patterns = [
 ]
 
 urlpatterns = [
-    url(r'^$', views.login),
+    url(r'^$', views.home),
+    url(r'^login/$', views.login_user),
     url(r'^admin/', admin.site.urls),
-    url(r'^home/', views.home),
     url(r'^account/', include(settings_patterns)),
     url(r'^edit_plot/', views.edit_plot),
     url(r'^my_plots/', views.my_plots),
     url(r'^harvest/', include(harvest_patterns)),
     url(r'^manage/', include(manage_patterns)),
+    # Default auth views https://docs.djangoproject.com/en/1.11/topics/auth/default/#using-the-views
+    url('^', include('django.contrib.auth.urls')),
 ]

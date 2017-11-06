@@ -1,5 +1,6 @@
 * {
   transition: .3s;
+  box-sizing: border-box;
 }
 
 html {
@@ -10,9 +11,9 @@ body {
   font-family: 'Open Sans', sans-serif;
   max-width: 400px;
   min-height: 600px;
-  background: #7b2c87 url("/static/images/login-screen.png");
   background-position: center;
   background-size: cover;
+  overflow-x: hidden;
 }
 
 /* Create new block formatting context around body */
@@ -36,44 +37,15 @@ body::before {
   margin: 20px;
 }
 
-/*LOGIN PAGE STYLES*/
-
-.login_page .logo h1 {
-  font-family: 'Saira Extra Condensed', sans-serif;
-  color: #F9F8F6;
-  font-size: 68px;
-  text-align: center;
-}
-
-.login_page .directions p {
-  color: #F9F8F6;
-  font-size: 12px;
-  margin-bottom: -15px;
-  margin-left: 20px;
-}
-
-.login_page .field {
-  margin: 20px 0px;
-}
-
-.login_page form {
-  width: 200%;
-  display: flex;
-}
-
-.login_page form.password {
-  margin-left: -100%;
-}
-
 .field {
   width: 100%;
   z-index: 0;
 }
 
-.field input {
+.field input.bar {
   background-color: rgba(249, 248, 246, .6);
   z-index: 1;
-  width: 90%;
+  width: 100%;
   padding: 0px 20px;
   height: 50px;
   border: none;
@@ -81,48 +53,8 @@ body::before {
   font-size: 24px;
 }
 
-/*All this nonsense is just to get the placeholder text to be white*/
-
-.field input::-webkit-input-placeholder { /* WebKit, Blink, Edge */
-    color: #F9F8F6;
-}
-
-.field input:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
-   color: #F9F8F6;
-   opacity:  1;
-}
-
-.field input::-moz-placeholder { /* Mozilla Firefox 19+ */
-   color: #F9F8F6;
-   opacity:  1;
-}
-
-.field input:-ms-input-placeholder { /* Internet Explorer 10-11 */
-   color: #F9F8F6;
-}
-
-.field input::-ms-input-placeholder { /* Microsoft Edge */
-   color: #F9F8F6;
-}
-
-/*end nonsense*/
-
-
 .hide {
   display: none;
-}
-
-.login_page .next {
-  text-align: right;
-  cursor: pointer;
-  font-size: 20px;
-  margin-right: 20px;
-  color: #F9F8F6;
-}
-
-.login_page .next a {
-  color: #F9F8F6;
-  text-decoration: none;
 }
 
 /*Home page styles*/

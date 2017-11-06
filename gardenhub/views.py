@@ -2,18 +2,47 @@ import math
 import time
 from datetime import datetime, timedelta
 
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from .models import Crop, Garden, Plot, Harvest
+from .helpers import is_gardener, is_garden_manager
 
 
-def login(request):
-    return render(request, 'gardenhub/login_templates/new_login.html', {
-        'foo': 'bar',
+def login_user(request):
+    context = {}
+
+    if request.POST:
+        username = request.POST['username']
+        password = request.POST['password']
+
+        user = authenticate(username=username, password=password)
+        if user is not None and user.is_active:
+            login(request, user)
+            return HttpResponseRedirect('/')
+        else:
+            context['login_failed'] = True
+
+    return render(request, 'gardenhub/login_templates/new_login.html', context)
+
+@login_required()
+def home(request):
+    # Nothing gets returned after this. I left it for progeny.
+    return render(request, 'gardenhub/index.html', {
+        "user_is_gardener": is_gardener(request.user),
+        "user_is_garden_manager": is_garden_manager(request.user),
     })
 
-def home(request):
+    """
+    FIXME:
+    The "user group" concept should be done away with. Instead, the user will
+    belong to a group in Django. That group will have a set of permissions. The
+    user will have the ability to see certain parts of the site based on those
+    permissions. The only exception is an employee, but we'll deal with that
+    later.
+    """
     user_group = request.GET["user_group"]
 
     if user_group == 'employee':

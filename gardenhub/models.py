@@ -22,7 +22,6 @@ class Garden(models.Model):
     title = models.CharField(max_length=255)
     managers = models.ManyToManyField(User, related_name='+')
     address = models.CharField(max_length=255)
-    gardeners = models.ManyToManyField(User, related_name='+')
 
     def __str__(self):
         return self.title
@@ -92,5 +91,5 @@ There are several conceptual types of users that we should be aware of.
 4. Employee -- A hired employee responsible for fulfilling Orders. It is safe to
    say that anyone with an Order assigned to them is an Employee, but TBD:
    figure out how to determine them programatically when there's no active
-   order.   
+   order.
 """

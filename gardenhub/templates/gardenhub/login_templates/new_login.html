@@ -6,19 +6,26 @@
   <div class="logo">
     <h1>GardenHub</h1>
   </div>
-  <div class="directions">
-    <p id="directions">Please enter your email address to sign in</p>
-  </div>
-  <form>
-    <div class="field" id="email_field">
-      <input type="text" name="email" placeholder="Email Address">
-      <h2 class="next" id="next" onclick="nextLogin()">Next</h2>
-    </div>
-    <div class="field" id="password_field">
-      <input type="text" name="password" placeholder="Password">
-      <h2 class="next" id="login"><a href="/home?user_group=gardener">Login</a></h2>
+  <form id="login" action="" method="post">
+    {% csrf_token %}
+    {% if login_failed %}<p class="directions error">Login failed! Invalid email address or password.</p>{% endif %}
+    <div class="fields">
+      <div class="field" id="email_field">
+        <p class="directions">Please enter your email address to sign in</p>
+        <input class="bar" type="text" name="username" placeholder="Email Address">
+        <input class="next" type="submit" value="Next">
+      </div>
+      <div class="field" id="password_field">
+        <p class="directions">Please enter your password</p>
+        <input class="bar" type="password" name="password" placeholder="Password">
+        <input class="next" type="submit" value="Login">
+      </div>
     </div>
   </form>
 </div>
 
+{% endblock %}
+
+{% block extra_styles %}
+<link rel="stylesheet" href="/static/gardenhub/login.css">
 {% endblock %}
