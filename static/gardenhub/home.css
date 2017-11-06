@@ -8,6 +8,7 @@
 .title_bar {
   display: flex;
   justify-content: space-around;
+  align-items: center;
 }
 
 .date_and_plot_bar {
@@ -33,4 +34,25 @@
 
 .submit_new_harvest.button h1::before {
   content: "+ ";
+}
+
+.title_bar .header {
+  font-family: 'Saira Extra Condensed', sans-serif;
+}
+
+.title_bar .status_indicator {
+  color: #32CD32;
+  font-size: 14px;
+}
+
+.title_bar .status_indicator::before {
+  content: '';
+  display: inline-block;
+  width: 13px;
+  height: 13px;
+  -moz-border-radius: 6.5px;
+  -webkit-border-radius: 6.5px;
+  border-radius: 50%;
+  background-color: #32CD32;
+  margin: 0px 5px;
 }
