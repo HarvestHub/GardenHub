@@ -57,7 +57,7 @@ body::before {
   display: none;
 }
 
-/*Home page styles*/
+/*Nav styles*/
 
 .nav ul {
   display: flex;
@@ -67,19 +67,4 @@ body::before {
 
 .nav .drop {
   list-style-type: none;
-}
-
-.upcoming_harvest {
-  display: flex;
-  justify-content: space-around;
-}
-
-.title_bar {
-  display: flex;
-  justify-content: space-around;
-}
-
-.date_and_plot_bar {
-  display: flex;
-  justify-content: space-around;
 }
