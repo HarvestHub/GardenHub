@@ -33,6 +33,7 @@ def home(request):
     return render(request, 'gardenhub/index.html', {
         "user_is_gardener": is_gardener(request.user),
         "user_is_garden_manager": is_garden_manager(request.user),
+        "gardens": Garden.objects.all(),
     })
 
     """

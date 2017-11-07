@@ -54,7 +54,7 @@ class Order(models.Model):
     requester = models.ForeignKey(User)
 
     def __str__(self):
-        return self.id
+        return str(self.id)
 
 
 class Harvest(models.Model):
@@ -73,7 +73,7 @@ class Harvest(models.Model):
     employee = models.ForeignKey(User)
 
     def __str__(self):
-        return self.id
+        return str(self.id)
 
 
 """
