@@ -1,7 +1,8 @@
 from django.contrib import admin
-from .models import Crop, Garden, Plot, Harvest
+from .models import Crop, Garden, Plot, Harvest, Order
 
 admin.site.register(Crop)
 admin.site.register(Garden)
 admin.site.register(Plot)
 admin.site.register(Harvest)
+admin.site.register(Order)
