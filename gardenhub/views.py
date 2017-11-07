@@ -7,7 +7,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
-from .models import Crop, Garden, Plot, Harvest
+from .models import Crop, Garden, Plot, Harvest, Order
 from .helpers import is_gardener, is_garden_manager
 
 
@@ -34,6 +34,7 @@ def home(request):
         "user_is_gardener": is_gardener(request.user),
         "user_is_garden_manager": is_garden_manager(request.user),
         "gardens": Garden.objects.all(),
+        "orders": Order.objects.all(),
     })
 
     """
