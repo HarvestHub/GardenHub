@@ -37,7 +37,7 @@ class Plot(models.Model):
     crops = models.ManyToManyField('Crop')
 
     def __str__(self):
-        return self.title
+        return "{} [{}]".format(self.garden.title, self.title)
 
 
 class Order(models.Model):
