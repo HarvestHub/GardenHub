@@ -30,25 +30,58 @@
 
 .date_and_plot_bar h3 {
   margin-bottom: 2px;
+  margin-top: 10px;
+  font-weight: 300;
 }
 
 div.view_order {
-  border-left: 2px solid gray;
+  border-left: 2px solid lightgray;
   text-align: center;
   font-family: 'Open Sans Condensed', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 30%;
 }
 
 .view_order h4 {
   text-align: center;
+  font-size: 14px;
+  padding: 5px;
+  font-weight: 300;
 }
 
-.garden_name {
+.view_order a {
+  text-decoration: none;
+  color: black;
+}
 
+.view_order h4::before {
+  content: '';
+  display: block;
+  background-image: url("/static/images/view_order.png");
+  background-repeat: no-repeat;
+  background-size: contain;
+  width: 25px;
+  height: 25px;
+  margin: 2px auto;
+  text-align: center;
+  align-self: center;
+}
+
+.garden_name h2 {
+  margin: 2px auto;
+  font-weight: 300;
+  font-size: 28px;
 }
 
 .harvester_info h4 {
   font-family: 'Open Sans Condensed', sans-serif;
   font-size: 14px;
+  font-weight: 300;
+  margin: 2px auto;
 }
 
 .submit_new_harvest.button {
@@ -82,6 +115,7 @@ div.view_order {
 .title_bar .status_indicator {
   color: #32CD32;
   font-size: 14px;
+  font-weight: 300;
 }
 
 .title_bar .status_indicator::before {
