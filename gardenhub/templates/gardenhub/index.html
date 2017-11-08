@@ -2,27 +2,9 @@
 
 {% block content %}
 
-<div class="nav">
-  <nav>
-    <ul>
-      <li class="manage drop">Manage</li>
-      <li class="name drop">{{ request.user.first_name }}</li>
-      <li><a href="/logout/">log-out</a></li>
-    </ul>
-    {% if request.user.is_superuser %}
-      <p>You can also access the <a href="/admin/">admin</a> screen.</p>
-    {% endif %}
-  </nav>
+{% include "gardenhub/nav.html" %}
 
   <div class="my_harvests">
-
-    {% if user_is_gardener %}
-    <p>You're a gardener!</p>
-    {% endif %}
-
-    {% if user_is_garden_manager %}
-    <p>You're a garden manager!</p>
-    {% endif %}
 
     <div class="title_bar">
       <h1 class="header">My Orders</h1>
@@ -52,6 +34,7 @@
       </div>
     </div>
   {% endfor %}
+</div>
 
 
     <div class="submit_new_harvest button">
