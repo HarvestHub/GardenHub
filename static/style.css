@@ -63,15 +63,3 @@ h1 {
 .hide {
   display: none;
 }
-
-/*Nav styles*/
-
-.nav ul {
-  display: flex;
-  justify-content: space-around;
-  text-align: right;
-}
-
-.nav .drop {
-  list-style-type: none;
-}
