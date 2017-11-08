@@ -7,7 +7,7 @@
           <ul class="user_options">
             <li class="user_option">
               {% if request.user.is_superuser %}
-                <p>Access the <a href="/admin/">admin</a> screen.</p>
+                <a href="/admin/"><p>Admin Screen</p></a>
               {% endif %}
             </li>
             <li class="user_option">
@@ -17,11 +17,11 @@
             </li>
             <li class="user_option">
               {% if user_is_garden_manager %}
-              <p>You're a garden manager!</p>
+              <p>You're a GM!</p>
               {% endif %}
             </li>
             <li class="user_option">
-              <a href="/logout/">log-out</a>
+              <a href="/logout/"><p>log-out</p></a>
             </li>
           </ul>
       </li>

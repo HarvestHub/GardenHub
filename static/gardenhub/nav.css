@@ -1,24 +1,58 @@
 div.nav {
   margin: 20px auto 50px;
+  position: relative;
 }
 
 .nav ul {
   display: flex;
   justify-content: flex-end;
-  text-align: right;
+  top: 0px;
 }
 
 .nav .drop {
   list-style-type: none;
-  margin: auto 20px;
+  margin: 0px 20px;
   font-size: 20px;
+  align-self: flex-start;
+  width: 25%;
+  height: 20px;
+}
+
+.nav .drop::after {
+  
 }
 
 
 nav li {
   font-family: 'Open Sans Condensed', sans-serif;
+  text-align: right;
 }
 
 nav ul .user_options {
-  display: none;
+  display: block;
+  text-align: right;
+  position: absolute;
+  padding: 0px 5px;
+  right: 20px;
+  top: 30px;
+  background-color: #7b2c87;
+;
+}
+
+.user_option {
+  position: relative;
+  border-bottom: 2px solid lightgray;
+}
+
+.user_option:last-of-type {
+  border-bottom: 0px;
+}
+
+.user_option p {
+  padding: 10px;
+  color: white;
+}
+
+a {
+  text-decoration: none;
 }
