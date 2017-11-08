@@ -59,7 +59,10 @@ nav ul .user_options {
   right: 20px;
   top: 30px;
   background-color: #7b2c87;
-;
+}
+
+nav ul .user_options.hidden {
+  display: none;
 }
 
 .user_option {

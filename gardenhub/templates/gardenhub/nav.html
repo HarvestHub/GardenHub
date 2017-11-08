@@ -2,14 +2,9 @@
   <nav>
     <ul>
       <li class="manage drop">Manage</li>
-      <li class="name drop">
+      <li class="name drop" onclick="toggleUserOptionsNav()">
         {{ request.user.first_name }}
-          <ul class="user_options">
-            <li class="user_option">
-              {% if request.user.is_superuser %}
-                <a href="/admin/"><p>Admin Screen</p></a>
-              {% endif %}
-            </li>
+          <ul class="user_options hidden" id="user_options">
             <li class="user_option">
               {% if user_is_gardener %}
               <p>You're a gardener!</p>
@@ -21,6 +16,11 @@
               {% endif %}
             </li>
             <li class="user_option">
+              {% if request.user.is_superuser %}
+                <a href="/admin/"><p>Admin Screen</p></a>
+              {% endif %}
+            </li>
+            <li class="user_option">
               <a href="/logout/"><p>log-out</p></a>
             </li>
           </ul>
@@ -29,7 +29,6 @@
 
   </nav>
 </div>
-
 
 {% block extra_styles %}
 <link rel="stylesheet" href="/static/gardenhub/nav.css">

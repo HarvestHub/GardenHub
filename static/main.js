@@ -13,3 +13,7 @@ loginForm.addEventListener("submit", function(e) {
 });
 
 document.querySelector('#email_field input').focus();
+
+function toggleUserOptionsNav() {
+  document.getElementById('user_options').classList.toggle('hidden');
+};
