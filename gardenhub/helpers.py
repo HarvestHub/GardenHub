@@ -6,7 +6,7 @@ def is_gardener(user):
     A gardener is someone who rents a garden Plot and grows food there.
     Gardeners are assigned to Plot.gardener on at least one Plot.
     """
-    return Plot.objects.filter(gardener__id=user.id).count() > 0
+    return Plot.objects.filter(gardeners__id=user.id).count() > 0
 
 
 def is_garden_manager(user):

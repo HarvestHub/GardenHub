@@ -33,7 +33,7 @@ class Plot(models.Model):
     """
     title = models.CharField(max_length=255)
     garden = models.ForeignKey('Garden')
-    gardener = models.ManyToManyField(User)
+    gardeners = models.ManyToManyField(User)
     crops = models.ManyToManyField('Crop')
 
     def __str__(self):

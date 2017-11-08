@@ -34,7 +34,7 @@ def home(request):
         "user_is_gardener": is_gardener(request.user),
         "user_is_garden_manager": is_garden_manager(request.user),
         "gardens": Garden.objects.all(),
-        "orders": Order.objects.all(),
+        "orders": Order.objects.filter(plot__gardeners__id=request.user.id),
     })
 
     """
