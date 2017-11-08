@@ -7,7 +7,7 @@
 .upcoming_harvest {
   display: flex;
   justify-content: space-around;
-  margin: 5px auto;
+  margin: 10px auto 20px;
 }
 
 .upcoming_harvest_details {
@@ -81,7 +81,19 @@ div.view_order {
   font-family: 'Open Sans Condensed', sans-serif;
   font-size: 14px;
   font-weight: 300;
-  margin: 2px auto;
+  margin: 7px auto;
+}
+
+.harvester_info h4::before {
+  content: '';
+  display: inline-block;
+  width: 13px;
+  height: 13px;
+  -moz-border-radius: 6.5px;
+  -webkit-border-radius: 6.5px;
+  border-radius: 50%;
+  background-color: black;
+  margin: 0px 5px;
 }
 
 .submit_new_harvest.button {
