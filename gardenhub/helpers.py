@@ -15,3 +15,9 @@ def is_garden_manager(user):
     Gardeners. Any person who is set as Garden.manager on at least one Garden.
     """
     return Garden.objects.filter(managers__id=user.id).count() > 0
+
+def has_open_orders(user):
+    """
+    Determine whether or not a user has any current open harvests for home display.
+    """
+    return Order.objects.filter(plot__gardeners__id=request.user.id).count() > 0

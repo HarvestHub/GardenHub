@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from .models import Crop, Garden, Plot, Harvest, Order
-from .helpers import is_gardener, is_garden_manager
+from .helpers import is_gardener, is_garden_manager, has_open_orders
 
 
 def login_user(request):
@@ -29,13 +29,20 @@ def login_user(request):
 
 @login_required()
 def home(request):
-    # Nothing gets returned after this. I left it for progeny.
-    return render(request, 'gardenhub/index.html', {
-        "user_is_gardener": is_gardener(request.user),
-        "user_is_garden_manager": is_garden_manager(request.user),
-        "gardens": Garden.objects.all(),
-        "orders": Order.objects.filter(plot__gardeners__id=request.user.id),
-    })
+
+    if has_open_orders:
+        # Nothing gets returned after this. I left it for progeny.
+        return render(request, 'gardenhub/home_open_orders.html', {
+            "user_is_gardener": is_gardener(request.user),
+            "user_is_garden_manager": is_garden_manager(request.user),
+            "orders": Order.objects.filter(plot__gardeners__id=request.user.id),
+        })
+    else:
+        return render(request, 'gardenhub/home_new_order.html', {
+            "user_is_gardener": is_gardener(request.user),
+            "user_is_garden_manager": is_garden_manager(request.user),
+        })
+
 
     """
     FIXME:
