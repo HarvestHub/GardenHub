@@ -1,4 +1,4 @@
-from .models import Garden, Plot
+from .models import Garden, Plot, Order
 
 
 def is_gardener(user):
@@ -20,4 +20,4 @@ def has_open_orders(user):
     """
     Determine whether or not a user has any current open harvests for home display.
     """
-    return Order.objects.filter(plot__gardeners__id=request.user.id).count() > 0
+    return Order.objects.filter(plot__gardeners__id=user.id).count() > 0

@@ -30,7 +30,7 @@ def login_user(request):
 @login_required()
 def home(request):
 
-    if has_open_orders:
+    if has_open_orders(request.user):
         # Nothing gets returned after this. I left it for progeny.
         return render(request, 'gardenhub/home_open_orders.html', {
             "user_is_gardener": is_gardener(request.user),
