@@ -14,6 +14,15 @@ class Crop(models.Model):
     def __str__(self):
         return self.title
 
+class Organization(models.Model):
+    """
+    A group of affiliated gardens.
+    """
+    title = models.CharField(max_length=255)
+    managers = models.ManyToManyField(User, related_name='+')
+
+    def __str__(self):
+        return self.title
 
 class Garden(models.Model):
     """
@@ -22,6 +31,7 @@ class Garden(models.Model):
     title = models.CharField(max_length=255)
     managers = models.ManyToManyField(User, related_name='+')
     address = models.CharField(max_length=255)
+    affiliation = models.ManyToManyField(Organization, related_name='+')
 
     def __str__(self):
         return self.title
