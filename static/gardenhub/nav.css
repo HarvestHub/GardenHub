@@ -16,6 +16,7 @@ div.nav {
   align-self: flex-start;
   width: 40%;
   height: 20px;
+  cursor: pointer;
 }
 
 .nav .drop::after {
@@ -49,6 +50,7 @@ div.nav {
 nav li {
   font-family: 'Open Sans Condensed', sans-serif;
   text-align: right;
+  cursor: pointer;
 }
 
 nav ul .user_options {
