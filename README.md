@@ -13,6 +13,33 @@ GardenHub is a work in progress web application being developed in the open. It'
 
 Eventually, the inner-workings of this project will be documented in detail. We're making an effort to self-document the code, so take a look. You're welcome to chat with us by opening a GitHub issue. GardenHub is a project by HarvestHub, and it's being developed by Candlewaster.
 
+## Local development
+
+You will need [virtualenvwrapper](http://virtualenvwrapper.readthedocs.io/en/latest/), git, and Python 3 installed.
+
+```
+# Clone the repo
+git clone https://github.com/HarvestHub/GardenHub.git
+
+# Enter the project folder
+cd GardenHub
+
+# Create the Python virtual environment
+mkvirtualenv gardenhub --python=python3
+
+# Install project dependencies
+pip install -r requirements.txt
+
+# Create the sqlite3 database
+python manage.py migrate
+
+# Run the local development server
+python manage.py runserver
+```
+
+### Pull the staging database
+If you have permission to access the staging server, you may pull the staging database locally by running `make pull_dev_db` in the project directory.
+
 ## License
 
 GardenHub is copyright © 2017 HarvestHub and licensed under the GNU AGPL version 3 or later. View the `LICENSE` file for a copy of the full license.

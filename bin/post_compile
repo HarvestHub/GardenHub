@@ -1,0 +1,1 @@
+python manage.py collectstatic --noinput --settings settings.production
