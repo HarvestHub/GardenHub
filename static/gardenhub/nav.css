@@ -1,6 +1,8 @@
 div.nav {
-  margin: 20px auto 50px;
+  margin: 0px auto 50px;
   position: relative;
+  background-color: #fafafa;
+  height: 60px;
 }
 
 .nav ul {
@@ -11,11 +13,10 @@ div.nav {
 
 .nav .drop {
   list-style-type: none;
-  margin: 0px 20px;
+  margin: 18px 20px;
   font-size: 20px;
   align-self: flex-start;
   width: 40%;
-  height: 20px;
   cursor: pointer;
 }
 
@@ -59,7 +60,7 @@ nav ul .user_options {
   position: absolute;
   padding: 0px 5px;
   right: 20px;
-  top: 30px;
+  top: 60px;
   background-color: #7b2c87;
 }
 
@@ -69,7 +70,7 @@ nav ul .user_options.hidden {
 
 .user_option {
   position: relative;
-  border-bottom: 2px solid lightgray;
+  border-bottom: 2px solid #fafafa;
 }
 
 .user_option:last-of-type {
@@ -78,7 +79,7 @@ nav ul .user_options.hidden {
 
 .user_option p {
   padding: 10px;
-  color: white;
+  color: #fafafa;
 }
 
 a {
