@@ -59,9 +59,23 @@ nav ul .user_options {
   text-align: right;
   position: absolute;
   padding: 0px 5px;
-  right: 20px;
+  right: 5px;
   top: 60px;
   background-color: #7b2c87;
+  box-shadow: -3px 3px 3px #d3d3d3;
+}
+
+nav ul .user_options::before {
+  content: '';
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 8px solid #7b2c87;
+  position: absolute;
+  top: -8px;
+  right: 14px;
 }
 
 nav ul .user_options.hidden {
