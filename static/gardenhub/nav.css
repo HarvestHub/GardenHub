@@ -63,6 +63,7 @@ nav ul .user_options {
   top: 60px;
   background-color: #7b2c87;
   box-shadow: -3px 3px 3px #d3d3d3;
+  border-radius: 2px;
 }
 
 nav ul .user_options::before {
