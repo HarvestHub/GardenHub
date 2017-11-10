@@ -108,6 +108,9 @@ def harvest_assignments(request):
 def record_harvest(request):
     return render(request, 'gardenhub/harvest_templates/harvest_assignments_templates/record_harvest.html')
 
+def view_order(request):
+    return render(request,'gardenhub/order_templates/view_order.html')
+
 
 def manage(request):
     user_group = 'manager'

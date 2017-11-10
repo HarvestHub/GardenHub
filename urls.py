@@ -17,6 +17,7 @@ from django.conf.urls import url, include
 from gardenhub import views
 from django.contrib import admin
 
+
 settings_patterns = [
     url(r'^$', views.my_account),
     url(r'^settings/', views.account_settings),
@@ -49,6 +50,8 @@ urlpatterns = [
     url(r'^my_plots/', views.my_plots),
     url(r'^harvest/', include(harvest_patterns)),
     url(r'^manage/', include(manage_patterns)),
+    url(r'^order/', views.view_order),
+
     # Default auth views https://docs.djangoproject.com/en/1.11/topics/auth/default/#using-the-views
     url('^', include('django.contrib.auth.urls')),
 ]
