@@ -1,7 +1,10 @@
 <div class="nav">
   <nav>
     <ul>
-      <li class="manage drop" onclick="toggleMangeOptionsNav()">Manage
+
+      <li class="top_nav"><a href="/" class="home_icon"><i class="fa fa-home" aria-hidden="true"></i></a></li>
+
+      <li class="manage top_nav drop" onclick="toggleMangeOptionsNav()">Manage
         <ul class="drop_options hidden" id="manage_options">
 
           <li class="drop_option">
@@ -19,7 +22,7 @@
         </ul>
       </li>
 
-      <li class="name drop" onclick="toggleUserOptionsNav()">
+      <li class="name top_nav drop" onclick="toggleUserOptionsNav()">
         {{ request.user.first_name }}
           <ul class="drop_options hidden" id="user_options">
 

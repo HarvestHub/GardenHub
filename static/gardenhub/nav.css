@@ -11,13 +11,24 @@ div.nav {
   top: 0px;
 }
 
-.nav .drop {
+.nav .top_nav {
   list-style-type: none;
   margin: 18px 20px;
   font-size: 20px;
   align-self: flex-start;
-  width: 40%;
   cursor: pointer;
+}
+
+.nav .top_nav i {
+  margin: auto 5px;
+  align-self: flex-start;
+  text-align: left;
+  position: absolute;
+  left: 20px;
+}
+
+a.home_icon {
+  color: gray;
 }
 
 .nav .drop::after {
