@@ -2,49 +2,38 @@
 
 {% block content %}
 
-<div class="schedule_harvest">
-  <div class="title">
-    <h2>Schedule Harvest</h2>
-  </div>
+<form id="new_order" action="" method="post">
 
-  <div class="plot_title">
-    <h3 class="garden_name">Spring Garden</h3>
-    <h3 class="plot_num">Plot #15</h3>
-  </div>
+    <h1 class="input_title">Plot</h1>
+    <select name="plot">
+      <option value="plot1">My Plot 1</option>
+      <option value="plot2">My Plot 2</option>
+      <option value="plot3">My Plot 3</option>
+      <option value="plot4">My Plot 4</option>
+    </select>
 
-  <div class="select_crops">
-    <h3>Harvest My:</h3>
-    <ul class="crop_list">
-      <li>tomatos</li>
-      <li>eggplant</li>
-      <li>lettuce</li>
-      <li>strawberries</li>
-      <li>kale</li>
-      <li>cauliflower</li>
-    </ul>
+    <h1 class="input_title">Start</h1>
+    <input type="date" name="order_start">
 
-    <div class="add_crop">
-      <h4>Add crop:</h4>
-    </div>
+    <h1 class="input_title">End</h1>
+    <input type="date" name="order_end">
 
-  </div>
+    <h1 class="input_title">Select crops to harvest</h1>
+    <h1 class="input_title edit">Edit</h1>
 
-  <div class="harvest_details">
-    <div class="date">
-      <h4>From:</h4>
-    </div>
-    <div class="date">
-      <h4>To:</h4>
-    </div>
-    <div class="notes">
-      <h4>Notes:</h4>
-    </div>
-  </div>
+    <select name="crops">
+      <option value="Tomato">Tomato</option>
+      <option value="Zucchini">Zucchini</option>
+      <option value="Strawberry">Strawberry</option>
+      <option value="Add Another">Add Another</option>
+    </select>
 
-  <div class="submit">
-    <h3>Submit</h3>
-  </div>
+    <input type="submit">
 
-</div>
+</form>
 
+{% endblock %}
+
+{% block extra_styles %}
+<link rel="stylesheet" href="/static/gardenhub/schedule_harvest.css">
 {% endblock %}
