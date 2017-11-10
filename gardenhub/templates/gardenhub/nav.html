@@ -5,15 +5,15 @@
         <ul class="drop_options hidden" id="manage_options">
 
           <li class="drop_option">
-            <p>Edit my plots</p>
+            <a href="/edit_plot/"><p>Edit my plots</p></a>
           </li>
 
           <li class="drop_option">
-            <p>Edit my orders</p>
+            <a href="/upcoming_harvests/"><p>Edit my orders</p></a>
           </li>
 
           <li class="drop_option">
-            <p>Manage gardens</p>
+            <a href="/manage_garden/"><p>Manage gardens</p></a>
           </li>
 
         </ul>
@@ -22,7 +22,7 @@
       <li class="name drop" onclick="toggleUserOptionsNav()">
         {{ request.user.first_name }}
           <ul class="drop_options hidden" id="user_options">
-            
+
             {% if user_is_gardener %}
             <li class="drop_option">
               <p>You're a gardener!</p>
