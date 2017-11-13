@@ -1,3 +1,5 @@
+{% load static %}
+
 <div class="nav">
   <nav>
     <ul>
@@ -59,5 +61,5 @@
 </div>
 
 {% block extra_styles %}
-<link rel="stylesheet" href="/static/gardenhub/nav.css">
+<link rel="stylesheet" href="{% static "gardenhub/nav.css" %}">
 {% endblock %}
