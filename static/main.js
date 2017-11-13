@@ -31,6 +31,8 @@ function toggleCheck() {
 
   var icon = this.parentNode.querySelector(".crop_tap_box");
 
+  console.log(checkbox.checked);
+
   if (checkbox.checked == false) {
     checkbox.checked = true;
     icon.classList.toggle('checked');
