@@ -29,12 +29,29 @@
       <h1 class="input_title edit">Edit</h1>
     </div>
 
-    <select name="crops" class="crop_select">
-      <option value="Tomato">Tomato</option>
-      <option value="Zucchini">Zucchini</option>
-      <option value="Strawberry">Strawberry</option>
-      <option value="Add Another">Add Another</option>
-    </select>
+    <div class="select_crops">
+
+      <div class="crop_selector">
+        <input type="checkbox" class="checkbox" id="crop_1" value="tomato">
+        <div class="crop_tap_box" id="crop_tap_1"></div>
+      </div>
+
+      <div class="crop_selector">
+        <input type="checkbox" class="checkbox" id="crop_2" value="zucchini">
+        <div class="crop_tap_box" id="crop_tap_2"></div>
+      </div>
+
+      <div class="crop_selector">
+        <input type="checkbox" class="checkbox" id="crop_3" value="strawberry">
+        <div class="crop_tap_box checked" id="crop_tap_3"></div>
+      </div>
+
+      <div class="crop_selector">
+        <input type="checkbox" class="checkbox" id="crop_4" value="add another">
+        <div class="crop_tap_box checked" id="crop_tap_4"></div>
+      </div>
+
+    </div>
 
     <input type="submit">
 
