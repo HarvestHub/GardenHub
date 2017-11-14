@@ -8,23 +8,38 @@
 <form id="new_order" action="" method="post">
 
     <h1 class="input_title">Plot</h1>
-    <select name="plot">
-      <option value="plot1">My Plot 1</option>
-      <option value="plot2">My Plot 2</option>
-      <option value="plot3">My Plot 3</option>
-      <option value="plot4">My Plot 4</option>
-    </select>
+    <div class="plot_select form_container">
+      <div class="map icon">
+        <i class="fa fa-map-marker" aria-hidden="true"></i>
+      </div>
+      <select name="plot">
+        <option class="default_value" value="" selected data-default>Select a plot...</option>
+        <option value="plot1">My Plot 1</option>
+        <option value="plot2">My Plot 2</option>
+        <option value="plot3">My Plot 3</option>
+        <option value="plot4">My Plot 4</option>
+      </select>
+    </div>
 
   <div class="date_range">
     <div>
       <h1 class="input_title">Start</h1>
-      <input type="date" name="order_start">
+      <div class="plot_select form_container">
+        <div class="map icon">
+          <i class="fa fa-calendar-o" aria-hidden="true"></i>
+        </div>
+        <input type="date" name="order_start">
+      </div>
     </div>
 
     <div>
       <h1 class="input_title">End</h1>
-      <input type="date" name="order_end">
-    </div>
+      <div class="plot_select form_container">
+        <div class="map icon">
+          <i class="fa fa-calendar-o" aria-hidden="true"></i>
+        </div>
+        <input type="date" name="order_end">
+      </div>    </div>
   </div>
 
     <div class="select_crops_bar">

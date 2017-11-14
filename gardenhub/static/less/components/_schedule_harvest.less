@@ -16,17 +16,78 @@ body.schedule_harvest {
     border-bottom: 2px solid gray;
   }
 
+  .form_container {
+    width: 100%;
+    background-color: white;
+    border: 1px solid #d3d3d3;
+    border-radius: 4px;
+    display: block;
+    height: 40px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .icon {
+    height: 40px;
+    display: inline;
+    width: 9%;
+    font-size: 18px;
+    padding: 8px 0px 5px 10px;
+    color: gray;
+  }
+
+  select {
+    font-size: 14px;
+    background-color: white;
+    border: none;
+    height: 30px;
+    margin-top: 5px;
+    width: 92%;
+  }
+
+  .default_value {
+    display: none;
+  }
+
+  option.default_value {
+    color: gray;
+  }
+
+  select[name="plot"]::before {
+    content: 'TEST';
+    padding: auto 5px;
+  }
+
   h1 {
-    font-size: 16px;
-    font-weight: bold;
+    font-size: 12px;
+    font-weight: 900;
+  }
+
+  .input_title {
+    margin-bottom: 5px;
+    margin-top: 20px;
   }
 
   input {
     background-color: white;
-    border: 1px solid gray;
-    border-radius: 4px;
+    border: none;
     display: block;
+    height: 30px;
+    margin-top: 3px;
+    padding-left: 4px;
+    width: 80%;
+    font-size: 14px;
   }
+
+  input[type=date] {
+    font-family: 'Open Sans Condensed', sans-serif;
+  }
+
+  .select_crops_bar {
+    margin-top: 30px;
+    padding: 5px auto;
+  }
+
   .select_crops {
     display: flex;
     align-items: flex-start;
