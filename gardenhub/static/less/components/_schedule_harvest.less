@@ -98,15 +98,49 @@ body.schedule_harvest {
     height: 50px;
     background-image: url(http://via.placeholder.com/50x50);
     border: 1px solid gray;
+    border-radius: 3px;
     margin: 10px 10px 10px 0px;
   }
 
   .crop_tap_box.checked {
-    border: 1px solid green;
+    border: 2px solid limegreen;
+  }
+
+  .crop_tap_box.checked::after {
+    content: '\f058';
+    font-family: FontAwesome;
+    font-size: 32px;
+    padding-top: 7px;
+    text-align: center;
+    color: white;
+    display: block;
+    width: 46px;
+    height: 39px;
+    background: rgba(0, 0, 0, .5);
+    border-radius: 3px;
   }
 
   input[type=checkbox] {
     display: none;
+  }
+
+  .crop_name {
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-size: 14px;
+    width: 50px;
+    text-align: center;
+  }
+
+  .submit {
+    width: 70%;
+    height: 60px;
+    background-color: #7b2c87;
+    text-align: center;
+    margin: 70px auto auto;
+    color: #F9F8F6;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
   }
 
 }
