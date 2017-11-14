@@ -8,10 +8,25 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from .models import Crop, Garden, Plot, Harvest, Order
-from .helpers import is_gardener, is_garden_manager, has_open_orders
+from .helpers import (
+    get_gardens,
+    get_plots,
+    get_orders,
+    is_garden_manager,
+    is_gardener,
+    is_anything,
+    has_open_orders,
+    can_edit_garden,
+    can_edit_plot
+)
 
 
 def login_user(request):
+    """
+    The main login form that gives people access into the site. It's common
+    for people to be redirected here if they don't have permission to view
+    something. It's the entrypoint to the whole site.
+    """
     context = {}
 
     if request.POST:
@@ -30,80 +45,155 @@ def login_user(request):
 
 @login_required()
 def home(request):
-    if has_open_orders(request.user):
-        # Nothing gets returned after this. I left it for progeny.
-        return render(request, 'gardenhub/home/index.html', {
-            "user_is_gardener": is_gardener(request.user),
-            "user_is_garden_manager": is_garden_manager(request.user),
-            "orders": Order.objects.filter(plot__gardeners__id=request.user.id),
-        })
-    else:
+    """
+    The home view displays a user's orders and helps them create new orders.
+    Since placing orders is the main objective of GardenHub users, it makes
+    sense for them to see this first.
+    """
+    # If the user has no assigned gardens or plots...
+    if not is_anything(request.user):
+        # TODO: Handle this error better
+        return HttpResponse("You haven't been assigned to any gardens or plots. This should never happen. Please contact support. We're sorry!")
+
+    # Display a "welcome screen" if the user hasn't placed any orders
+    if not has_open_orders(request.user):
         return render(request, 'gardenhub/home/welcome.html', {
             "user_is_gardener": is_gardener(request.user),
             "user_is_garden_manager": is_garden_manager(request.user),
         })
 
+    # Otherwise, display a list of orders
+    else:
+        return render(request, 'gardenhub/home/index.html', {
+            "user_is_gardener": is_gardener(request.user),
+            "user_is_garden_manager": is_garden_manager(request.user),
+            "orders": get_orders(request.user),
+        })
 
+
+@login_required()
 def orders(request):
+    # FIXME: How is this different from the home view?
+    # Should we rethink the home view or delete this one?
     orders = Order.objects.filter(plot__gardeners__id=request.user.id)
     return render(request, 'gardenhub/order/list.html', {
         "orders": orders
     })
 
 
+@login_required()
 def new_order(request):
+    """
+    This is a form used to submit a new order. It's used by gardeners, garden
+    managers, or anyone who has the ability to edit a plot.
+    """
+    # If the user has no assigned gardens or plots...
+    if not is_anything(request.user):
+        # TODO: Handle this error better
+        return HttpResponse("You haven't been assigned to any gardens or plots. This should never happen. Please contact support. We're sorry!")
+
     return render(request, 'gardenhub/order/create.html')
 
 
+@login_required()
 def view_order(request, orderId):
+    """
+    Review an individual order that's been submitted. Anyone who can edit the
+    plot may view or cancel these orders.
+    """
     order = Order.objects.get(id=orderId)
+
+    # If user isn't allowed to view this order...
+    if not can_edit_plot(request.user, order.plot):
+        # TODO: Handle this error better
+        response = HttpResponse("You are not authorized to view this page.")
+        response.status_code = 501
+        return response
+
     return render(request, 'gardenhub/order/view.html', {
         "order": order
     })
 
 
-def edit_order(request, orderId):
-    order = Order.objects.get(id=orderId)
-    return render(request, 'gardenhub/order/edit.html', {
-        "order": order
+@login_required()
+def gardens(request):
+    """
+    A list of all gardens the logged-in user can edit.
+    """
+    gardens = get_gardens(request.user)
+    return render(request, 'gardenhub/garden/list.html', {
+        "gardens": gardens
     })
 
 
+@login_required()
+def edit_garden(request, gardenId):
+    """
+    Edit form for an individual garden.
+    """
+    garden = Garden.objects.get(id=gardenId)
+
+    # If the user isn't allowed to edit this garden...
+    if not can_edit_garden(request.user, garden):
+        # TODO: Handle this error better
+        response = HttpResponse("You are not authorized to view this page.")
+        response.status_code = 501
+        return response
+
+    return render(request, 'gardenhub/garden/edit.html', {
+        "garden": garden
+    })
+
+
+@login_required()
 def plots(request):
-    # TODO: plots = Plot.objects...
+    """
+    A list of all plots the logged-in user can edit.
+    """
+    plots = get_plots(request.user)
     return render(request, 'gardenhub/plot/list.html', {
-        # "plots": plots
+        "plots": plots
     })
 
 
+@login_required()
 def edit_plot(request, plotId):
-    # TODO: plot = Plot.objects...
+    """
+    Edit form for an individual plot.
+    """
+    plot = Plot.objects.get(id=plotId)
+
+    # If user isn't allowed to edit this plot...
+    if not can_edit_plot(request.user, plot):
+        # TODO: Handle this error better
+        response = HttpResponse("You are not authorized to view this page.")
+        response.status_code = 501
+        return response
+
     return render(request, 'gardenhub/plot/edit.html', {
         "plot": plot
     })
 
 
-def gardens(request):
-    # TODO: gardens = Garden.objects...
-    return render(request, 'gardenhub/garden/list.html', {
-        # "gardens": gardens
-    })
-
-
-def edit_garden(request, gardenId):
-    # TODO: garden = Garden.objects...
-    return render(request, 'gardenhub/garden/edit.html', {
-        # "garden": garden
-    })
-
-
+@login_required()
 def my_account(request):
+    """
+    Profile edit screen for the logged-in user.
+    """
     return render(request, 'gardenhub/account/my_account.html')
 
 
+@login_required()
 def account_settings(request):
+    """
+    Account settings screen for the logged-in user.
+    """
     return render(request, 'gardenhub/account/edit_settings.html')
 
 
+@login_required()
 def delete_account(request):
+    """
+    Delete the logged-in user's GardenHub account.
+    """
     return render(request, 'gardenhub/account/delete_account.html')
