@@ -25,115 +25,85 @@ def login_user(request):
         else:
             context['login_failed'] = True
 
-    return render(request, 'gardenhub/login_templates/new_login.html', context)
+    return render(request, 'gardenhub/auth/login.html', context)
+
 
 @login_required()
 def home(request):
-
     if has_open_orders(request.user):
         # Nothing gets returned after this. I left it for progeny.
-        return render(request, 'gardenhub/home_open_orders.html', {
+        return render(request, 'gardenhub/home/index.html', {
             "user_is_gardener": is_gardener(request.user),
             "user_is_garden_manager": is_garden_manager(request.user),
             "orders": Order.objects.filter(plot__gardeners__id=request.user.id),
         })
     else:
-        return render(request, 'gardenhub/home_new_order.html', {
+        return render(request, 'gardenhub/home/welcome.html', {
             "user_is_gardener": is_gardener(request.user),
             "user_is_garden_manager": is_garden_manager(request.user),
         })
 
 
-    """
-    FIXME:
-    The "user group" concept should be done away with. Instead, the user will
-    belong to a group in Django. That group will have a set of permissions. The
-    user will have the ability to see certain parts of the site based on those
-    permissions. The only exception is an employee, but we'll deal with that
-    later.
-    """
-    user_group = request.GET["user_group"]
+def orders(request):
+    orders = Order.objects.filter(plot__gardeners__id=request.user.id)
+    return render(request, 'gardenhub/order/list.html', {
+        "orders": orders
+    })
 
-    if user_group == 'employee':
-        return render(request, 'gardenhub/homescreen_templates/employee_home.html')
-    elif user_group == 'gardener':
-        return render(request, 'gardenhub/homescreen_templates/gardener_home.html')
-    elif user_group == 'manager':
-        return render(request, 'gardenhub/homescreen_templates/manager_home.html')
+
+def new_order(request):
+    return render(request, 'gardenhub/order/create.html')
+
+
+def view_order(request, orderId):
+    order = Order.objects.get(id=orderId)
+    return render(request, 'gardenhub/order/view.html', {
+        "order": order
+    })
+
+
+def edit_order(request, orderId):
+    order = Order.objects.get(id=orderId)
+    return render(request, 'gardenhub/order/edit.html', {
+        "order": order
+    })
+
+
+def plots(request):
+    # TODO: plots = Plot.objects...
+    return render(request, 'gardenhub/plot/list.html', {
+        # "plots": plots
+    })
+
+
+def edit_plot(request, plotId):
+    # TODO: plot = Plot.objects...
+    return render(request, 'gardenhub/plot/edit.html', {
+        "plot": plot
+    })
+
+
+def gardens(request):
+    # TODO: gardens = Garden.objects...
+    return render(request, 'gardenhub/garden/list.html', {
+        # "gardens": gardens
+    })
+
+
+def edit_garden(request, gardenId):
+    # TODO: garden = Garden.objects...
+    return render(request, 'gardenhub/garden/edit.html', {
+        # "garden": garden
+    })
+
 
 def my_account(request):
-    return render(request, 'gardenhub/account_settings_templates/my_account.html', {
-        'foo': 'bar',
-    })
+    return render(request, 'gardenhub/account/my_account.html')
+
 
 def account_settings(request):
-    return render(request, 'gardenhub/account_settings_templates/edit_settings.html', {
-        'foo': 'bar',
-    })
+    return render(request, 'gardenhub/account/edit_settings.html')
+
 
 def delete_account(request):
-    return render(request, 'gardenhub/account_settings_templates/delete_account.html', {
-        'foo': 'bar',
-    })
-
-def edit_plot(request):
-    return render(request, 'gardenhub/edit_plot_templates/edit_plot.html', {
-        'foo': 'bar',
-    })
-
-def my_plots(request):
-    return render(request, 'gardenhub/edit_plot_templates/my_plots.html', {
-        'foo': 'bar',
-    })
-
-def harvest(request):
-    user_group = 'gardener'
-
-    if user_group == 'employee':
-        return render(request, 'gardenhub/harvest_templates/harvest_assignments_templates/_templates/ep_garden_assignments.html')
-    elif user_group == 'gardener':
-        return render(request, 'gardenhub/harvest_templates/upcoming_harvest_templates/upcoming_harvests.html')
-    elif user_group == 'manager':
-        return render(request, 'gardenhub/harvest_templates/upcoming_harvest_templates/upcoming_harvests.html')
-
-def schedule_harvest(request):
-    return render(request, 'gardenhub/harvest_templates/schedule_harvest_templates/schedule.html')
-
-def upcoming_harvests(request):
-    return render(request, 'gardenhub/harvest_templates/upcoming_harvests_templates/upcoming_harvests.html')
-
-def harvest_assignments(request):
-    return render(request, 'gardenhub/harvest_templates/harvest_assignments_templates/ep_garden_assignments.html')
-
-def record_harvest(request):
-    return render(request, 'gardenhub/harvest_templates/harvest_assignments_templates/record_harvest.html')
-
-def view_order(request):
-    return render(request,'gardenhub/order_templates/view_order.html')
-
-
-def manage(request):
-    user_group = 'manager'
-
-    if user_group == 'employee':
-        return render(request, 'gardenhub/homescreen_templates/employee_home.html')
-    elif user_group == 'gardener':
-        return render(request, 'gardenhub/homescreen_templates/gardener_home.html')
-    elif user_group == 'manager':
-        return render(request, 'gardenhub/manage_gardens_templates/manage_gardens_select.html')
-
-
-def manage_garden(request, gardenId):
-    return render(request, 'gardenhub/manage_gardens_templates/manage_garden.html')
-
-def manage_garden_gardeners(request, gardenId):
-    return render(request, 'gardenhub/manage_gardens_templates/view_gardeners.html')
-
-def manage_garden_gardeners_edit(request, gardenId):
-    return render(request, 'gardenhub/manage_gardens_templates/edit_gardeners.html')
-
-def manage_garden_harvests(request, gardenId):
-    return render(request, 'gardenhub/manage_gardens_templates/garden_harvests')
-
-def manage_garden_settings(request, gardenId):
-    return render(request, 'gardenhub/manage_gardens_templates/garden_settings.html')
+    return render(request, 'gardenhub/account/delete_account.html')

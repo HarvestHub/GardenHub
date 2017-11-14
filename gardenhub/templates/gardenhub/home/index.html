@@ -1,4 +1,4 @@
-{% extends "gardenhub/_base.html" %}
+{% extends "gardenhub/_manage_base.html" %}
 {% load static %}
 
 {% block body_class %}home{% endblock %}
@@ -29,7 +29,7 @@
       </div>
     </div>
     <div class="view_order">
-      <a href="/order">
+      <a href="/order/{{ order.id }}/">
         <h4 class="view_order">View Order</h4>
       </a>
     </div>
@@ -37,7 +37,7 @@
   {% endfor %}
 </div>
 
-<a href="/harvest/schedule">
+<a href="/orders/new/">
   <div class="submit_new_harvest button">
     <h1>Submit New Order</h1>
   </div>

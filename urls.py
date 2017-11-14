@@ -18,40 +18,27 @@ from gardenhub import views
 from django.contrib import admin
 
 
-settings_patterns = [
+account_patterns = [
     url(r'^$', views.my_account),
     url(r'^settings/', views.account_settings),
     url(r'^delete/', views.delete_account),
-]
-
-harvest_patterns = [
-    url(r'^$', views.harvest),
-    url(r'^schedule/', views.schedule_harvest),
-    url(r'^upcoming/', views.upcoming_harvests),
-    url(r'^assignments/', views.harvest_assignments),
-    url(r'^record/', views.record_harvest),
-]
-
-manage_patterns = [
-    url(r'^$', views.manage),
-    url(r'^gardens/(?P<gardenId>.*)', views.manage_garden),
-    url(r'^gardens/(?P<gardenId>.*)/gardeners', views.manage_garden_gardeners),
-    url(r'^gardens/(?P<gardenId>.*)/gardeners/edit', views.manage_garden_gardeners_edit),
-    url(r'^gardens/(?P<gardenId>.*)/harvests', views.manage_garden_harvests),
-    url(r'^gardens/(?P<gardenId>.*)/settings', views.manage_garden_settings),
 ]
 
 urlpatterns = [
     url(r'^$', views.home),
     url(r'^login/$', views.login_user),
     url(r'^admin/', admin.site.urls),
-    url(r'^account/', include(settings_patterns)),
-    url(r'^edit_plot/', views.edit_plot),
-    url(r'^my_plots/', views.my_plots),
-    url(r'^harvest/', include(harvest_patterns)),
-    url(r'^manage/', include(manage_patterns)),
-    url(r'^order/', views.view_order),
-
+    url(r'^account/$', views.my_account),
+    # Orders
+    url(r'^orders/$', views.orders),
+    url(r'^orders/new/$', views.new_order),
+    url(r'^order/(?P<orderId>.*)/$', views.view_order),
+    # Plots
+    url(r'^plots/$', views.plots),
+    url(r'^plot/(?P<plotId>.*)/edit/$', views.edit_plot),
+    # Gardens
+    url(r'^gardens/$', views.gardens),
+    url(r'^garden/(?P<gardenId>.*)/edit/$', views.edit_garden),
     # Default auth views https://docs.djangoproject.com/en/1.11/topics/auth/default/#using-the-views
     url('^', include('django.contrib.auth.urls')),
 ]

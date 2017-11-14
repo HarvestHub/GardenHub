@@ -1,0 +1,8 @@
+{% extends "gardenhub/_manage_base.html" %}
+
+{% block content %}
+  <div>
+    <h1>Order #{{ order.id }}</h1>
+    <p>{{ order.start_date }} to {{ order.end_date }}</p>
+  </div>
+{% endblock %}

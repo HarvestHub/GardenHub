@@ -28,8 +28,7 @@
 </head>
 <body class="{% block body_class %}{% endblock %}">
 
-    {% include "gardenhub/nav.html" %}
-
+    {% block header %}{% endblock %}
     {% block content %}{% endblock %}
 
     <!-- Scripts -->
