@@ -13,11 +13,15 @@
         <i class="fa fa-map-marker" aria-hidden="true"></i>
       </div>
       <select name="plot">
+        
         <option class="default_value" value="" selected data-default>Select a plot...</option>
-        <option value="plot1">My Plot 1</option>
-        <option value="plot2">My Plot 2</option>
-        <option value="plot3">My Plot 3</option>
-        <option value="plot4">My Plot 4</option>
+
+        {% for plot in plots %}
+          <option value="{{ plot.id }}">
+            {{ plot.title }}
+          </option>
+        {% endfor%}
+
       </select>
     </div>
 
@@ -57,29 +61,6 @@
         </div>
       </div>
 
-      <div class="crop_selector">
-        <input type="checkbox" class="checkbox" id="crop_2" value="zucchini">
-        <div class="crop_tap_box" id="crop_tap_2"></div>
-        <div>
-          <h2 class="crop_name">Zucchini</h2>
-        </div>
-      </div>
-
-      <div class="crop_selector">
-        <input type="checkbox" class="checkbox" id="crop_3" value="strawberry">
-        <div class="crop_tap_box" id="crop_tap_3"></div>
-        <div>
-          <h2 class="crop_name">Strawberry</h2>
-        </div>
-      </div>
-
-      <div class="crop_selector">
-        <input type="checkbox" class="checkbox" id="crop_4" value="add another">
-        <div class="crop_tap_box" id="crop_tap_4"></div>
-        <div>
-          <h2 class="crop_name"></h2>
-        </div>
-      </div>
 
     </div>
 
