@@ -13,12 +13,12 @@
         <i class="fa fa-map-marker" aria-hidden="true"></i>
       </div>
       <select name="plot">
-        
+
         <option class="default_value" value="" selected data-default>Select a plot...</option>
 
         {% for plot in plots %}
           <option value="{{ plot.id }}">
-            {{ plot.title }}
+            {{ plot }}
           </option>
         {% endfor%}
 

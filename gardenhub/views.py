@@ -92,7 +92,10 @@ def new_order(request):
         # TODO: Handle this error better
         return HttpResponse("You haven't been assigned to any gardens or plots. This should never happen. Please contact support. We're sorry!")
 
-    return render(request, 'gardenhub/order/create.html')
+    return render(request, 'gardenhub/order/create.html', {
+        "plots": get_plots(request.user)
+    })
+
 
 
 @login_required()
