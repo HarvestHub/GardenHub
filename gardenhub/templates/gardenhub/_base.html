@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 {% load static %}
-<html>
+{% load compile_static %}
+<html lang="en">
 <head>
   <title>GardenHub</title>
   <!-- Meta -->
@@ -15,7 +16,7 @@
   <meta property="og:locale" content="en_US">
 
   <!-- Stylesheets -->
-  <link rel="stylesheet" href="{% static "css/style.css" %}">
+  <link rel="stylesheet" href="{% static "less/style.less"|compile %}">
   <link href="https://fonts.googleapis.com/css?family=Open+Sans|Open+Sans+Condensed:300|Saira+Extra+Condensed" rel="stylesheet">
   <script src="https://use.fontawesome.com/37c7773def.js"></script>
 
@@ -25,7 +26,7 @@
   <!-- Favicons -->
 
 </head>
-<body>
+<body class="{% block body_class %}{% endblock %}">
 
     {% include "gardenhub/nav.html" %}
 
@@ -33,6 +34,7 @@
 
     <!-- Scripts -->
     <script src="{% static "js/main.js" %}"></script>
+    {% block extra_scripts %}{% endblock %}
 
 </body>
 </html>

@@ -15,7 +15,7 @@ Eventually, the inner-workings of this project will be documented in detail. We'
 
 ## Local development
 
-You will need [virtualenvwrapper](http://virtualenvwrapper.readthedocs.io/en/latest/), git, and Python 3 installed.
+You will need [virtualenvwrapper](http://virtualenvwrapper.readthedocs.io/en/latest/), git, lessc, and Python 3 installed.
 
 ```
 # Clone the repo

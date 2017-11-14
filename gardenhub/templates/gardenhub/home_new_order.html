@@ -1,6 +1,8 @@
 {% extends "gardenhub/_base.html" %}
 {% load static %}
 
+{% block body_class %}home_no_orders{% endblock %}
+
 {% block content %}
 
 <div class="home_content">
@@ -15,8 +17,4 @@
    </a>
 </div>
 
-{% endblock %}
-
-{% block extra_styles %}
-<link rel="stylesheet" href="{% static "css/components/home_no_orders.css" %}">
 {% endblock %}
