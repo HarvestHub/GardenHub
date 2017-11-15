@@ -28,8 +28,6 @@ WORKDIR /app
 RUN pip install -r /app/requirements.txt
 
 RUN python manage.py collectstatic --noinput
-RUN python manage.py migrate
-
-EXPOSE 80
+RUN python manage.py compress --force
 
 CMD ["gunicorn", "wsgi", "-b 0.0.0.0:5000"]

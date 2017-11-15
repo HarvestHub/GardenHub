@@ -29,7 +29,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'gardenhub',
-    'static_precompiler',
+    'compressor',
 ]
 
 MIDDLEWARE = [
@@ -128,9 +128,11 @@ STATIC_URL = '/static/'
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    'static_precompiler.finders.StaticPrecompilerFinder',
+    'compressor.finders.CompressorFinder',
 )
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+COMPRESS_PRECOMPILERS = (
+    ('text/less', 'lessc {infile} {outfile}'),
+)
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'

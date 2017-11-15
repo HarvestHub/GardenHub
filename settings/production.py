@@ -34,6 +34,8 @@ LOGGING = {
     },
 }
 
+# Makes WhiteNoise work properly. ref: http://whitenoise.evans.io/en/stable/django.html#django-compressor
+COMPRESS_OFFLINE = True
 
 try:
     from .local import *
