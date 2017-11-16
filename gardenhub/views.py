@@ -2,7 +2,9 @@ import math
 import time
 from datetime import datetime, timedelta
 
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import (
+    HttpResponse, HttpResponseRedirect, HttpResponseForbidden
+)
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
@@ -113,10 +115,7 @@ def view_order(request, orderId):
 
     # If user isn't allowed to view this order...
     if not can_edit_plot(request.user, order.plot):
-        # TODO: Handle this error better
-        response = HttpResponse("You are not authorized to view this page.")
-        response.status_code = 501
-        return response
+        return HttpResponseForbidden()
 
     return render(request, 'gardenhub/order/view.html', {
         "order": order
@@ -143,10 +142,7 @@ def edit_garden(request, gardenId):
 
     # If the user isn't allowed to edit this garden...
     if not can_edit_garden(request.user, garden):
-        # TODO: Handle this error better
-        response = HttpResponse("You are not authorized to view this page.")
-        response.status_code = 501
-        return response
+        return HttpResponseForbidden()
 
     return render(request, 'gardenhub/garden/edit.html', {
         "garden": garden
@@ -173,10 +169,7 @@ def edit_plot(request, plotId):
 
     # If user isn't allowed to edit this plot...
     if not can_edit_plot(request.user, plot):
-        # TODO: Handle this error better
-        response = HttpResponse("You are not authorized to view this page.")
-        response.status_code = 501
-        return response
+        return HttpResponseForbidden()
 
     return render(request, 'gardenhub/plot/edit.html', {
         "plot": plot
@@ -205,3 +198,21 @@ def delete_account(request):
     Delete the logged-in user's GardenHub account.
     """
     return render(request, 'gardenhub/account/delete_account.html')
+
+
+@login_required()
+def crops_for_plot(request, plotId):
+    """
+    AJAX. Pull in HTML crop thumbnails for the selected plot on the "new order"
+    form.
+    """
+    plot = Plot.objects.get(id=plotId)
+
+    # If user isn't allowed to edit this plot...
+    if not can_edit_plot(request.user, plot):
+        return HttpResponseForbidden()
+
+    crops = Plot.objects.get(id=plotId).crops.all()
+    return render(request, 'gardenhub/ajax/crops_for_plot.html', {
+        "crops": crops
+    })

@@ -1,0 +1,9 @@
+{% for crop in crops %}
+  <div class="crop_selector">
+    <input type="checkbox" class="checkbox" name="crop_{{ crop.id }}">
+    <div class="crop_tap_box"></div>
+    <div>
+      <h2 class="crop_name">{{ crop.title }}</h2>
+    </div>
+  </div>
+{% endfor %}

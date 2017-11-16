@@ -49,16 +49,71 @@
     </div>
 
     <div class="select_crops">
-      <div class="crop_selector">
-        <input type="checkbox" class="checkbox" id="crop_1" value="tomato">
-        <div class="crop_tap_box" id="crop_tap_1"></div>
-        <div>
-          <h2 class="crop_name">Tomato</h2>
-        </div>
-      </div>
+      <p class="empty-message">You must select a plot before you can choose any crops.</p>
     </div>
 
     <input class="submit" type="submit">
 
   </form>
+{% endblock %}
+
+{% block extra_scripts %}
+  <script>
+    /* Select crops to harvest */
+    function toggleCheck() {
+      var checkbox = this.parentNode.querySelector(".checkbox");
+
+      var icon = this.parentNode.querySelector(".crop_tap_box");
+
+      console.log(checkbox.checked);
+
+      if (checkbox.checked == false) {
+        checkbox.checked = true;
+        icon.classList.toggle('checked');
+      }
+      else {
+        checkbox.checked = false;
+        icon.classList.toggle('checked');
+      }
+    }
+
+    function checkBoxes() {
+      var boxes = document.querySelectorAll(".crop_selector");
+
+      for (var i=0; i<boxes.length; i++) {
+          var box = boxes[i];
+          var icon = box.querySelector(".crop_tap_box");
+          icon.addEventListener("click", toggleCheck);
+      }
+    }
+
+    /* Plot dropdown element */
+    var dropdown = document.querySelector('select[name="plot"]');
+    /* Crop picker element */
+    var cropPicker = document.querySelector('.select_crops');
+
+    /* Listen for dropdown to change */
+    dropdown.addEventListener("change", function(e) {
+
+      /* Get the plot ID that was selected */
+      var plotId = this.value;
+
+      /* Function to call for HTTP request */
+      var httpRequest = new XMLHttpRequest();
+      httpRequest.onreadystatechange = function() {
+        if (httpRequest.readyState === XMLHttpRequest.DONE) {
+          if (httpRequest.status === 200) {
+            cropPicker.innerHTML = httpRequest.responseText;
+            checkBoxes();
+          } else {
+            console.log('There was a problem with the request.');
+          }
+        }
+      }
+
+      /* Make the HTTP request */
+      httpRequest.open('GET', '/_ajax/crops-for-plot/'+plotId+'/', true);
+      httpRequest.send();
+    });
+  </script>
 {% endblock %}
