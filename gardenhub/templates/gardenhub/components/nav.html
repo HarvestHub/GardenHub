@@ -3,10 +3,13 @@
 <div class="nav">
   <nav>
     <ul>
-
-      <li class="top_nav"><a href="/" class="home_icon"><i class="fa fa-home" aria-hidden="true"></i></a></li>
-
-      <li class="manage top_nav drop" onclick="toggleMangeOptionsNav()">Manage
+      <li class="top_nav">
+        <a href="/" class="home_icon">
+          <i class="fa fa-home" aria-hidden="true"></i>
+        </a>
+      </li>
+      <li class="manage top_nav drop" onclick="toggleMangeOptionsNav()">
+        Manage
         <ul class="drop_options hidden" id="manage_options">
 
           <li class="drop_option">
@@ -26,36 +29,35 @@
 
       <li class="name top_nav drop" onclick="toggleUserOptionsNav()">
         {{ request.user.first_name }}
-          <ul class="drop_options hidden" id="user_options">
+        <ul class="drop_options hidden" id="user_options">
 
-            {% if user_is_gardener %}
+          {% if user_is_gardener %}
             <li class="drop_option">
               <p>You're a gardener!</p>
             </li>
-            {% endif %}
+          {% endif %}
 
-            {% if user_is_garden_manager %}
+          {% if user_is_garden_manager %}
             <li class="drop_option">
               <p>You're a GM!</p>
             </li>
-            {% endif %}
+          {% endif %}
 
-            {% if request.user.is_superuser %}
+          {% if request.user.is_superuser %}
             <li class="drop_option">
               <a href="/admin/"><p>Admin Screen</p></a>
             </li>
-            {% endif %}
+          {% endif %}
 
-            <li class="drop_option">
-              <a href="/account/"><p>My Account</p></a>
-            </li>
+          <li class="drop_option">
+            <a href="/account/"><p>My Account</p></a>
+          </li>
 
-            <li class="drop_option">
-              <a href="/logout/"><p>Log-out</p></a>
-            </li>
-          </ul>
+          <li class="drop_option">
+            <a href="/logout/"><p>Log-out</p></a>
+          </li>
+        </ul>
       </li>
     </ul>
-
   </nav>
 </div>

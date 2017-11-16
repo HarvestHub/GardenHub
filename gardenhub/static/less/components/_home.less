@@ -1,6 +1,7 @@
 /*HOME PAGE STYLES*/
 
 body.home {
+  padding-bottom: 55px;
 
   .my_harvests {
     margin: auto 20px;
@@ -13,8 +14,8 @@ body.home {
   }
 
   .upcoming_harvest_details {
-    width: 70%;
     margin-right: 10px;
+    flex: 1;
   }
 
   .title_bar {
@@ -45,7 +46,7 @@ body.home {
     align-items: center;
     justify-content: center;
     text-align: center;
-    width: 30%;
+    padding: 20px;
   }
 
   .view_order h4 {
@@ -104,11 +105,11 @@ body.home {
   }
 
   .submit_new_harvest.button {
-    position: absolute;
-    top: 550px;
-    left: 0px;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
     width: 100%;
-    max-width: 400px;
     background-color: #7b2c87;
     text-align: center;
   }

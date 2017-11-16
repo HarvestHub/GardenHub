@@ -4,8 +4,7 @@
 {% block body_class %}schedule_harvest{% endblock %}
 
 {% block content %}
-
-<form id="new_order" action="" method="post">
+  <form id="new_order" action="" method="post">
 
     <h1 class="input_title">Plot</h1>
     <div class="plot_select form_container">
@@ -13,38 +12,36 @@
         <i class="fa fa-map-marker" aria-hidden="true"></i>
       </div>
       <select name="plot">
-
         <option class="default_value" value="" selected data-default>Select a plot...</option>
-
         {% for plot in plots %}
           <option value="{{ plot.id }}">
             {{ plot }}
           </option>
         {% endfor%}
-
       </select>
     </div>
 
-  <div class="date_range">
-    <div>
-      <h1 class="input_title">Start</h1>
-      <div class="plot_select form_container">
-        <div class="map icon">
-          <i class="fa fa-calendar-o" aria-hidden="true"></i>
+    <div class="date_range">
+      <div>
+        <h1 class="input_title">Start</h1>
+        <div class="plot_select form_container">
+          <div class="map icon">
+            <i class="fa fa-calendar-o" aria-hidden="true"></i>
+          </div>
+          <input type="date" name="order_start">
         </div>
-        <input type="date" name="order_start">
+      </div>
+
+      <div>
+        <h1 class="input_title">End</h1>
+        <div class="plot_select form_container">
+          <div class="map icon">
+            <i class="fa fa-calendar-o" aria-hidden="true"></i>
+          </div>
+          <input type="date" name="order_end">
+        </div>
       </div>
     </div>
-
-    <div>
-      <h1 class="input_title">End</h1>
-      <div class="plot_select form_container">
-        <div class="map icon">
-          <i class="fa fa-calendar-o" aria-hidden="true"></i>
-        </div>
-        <input type="date" name="order_end">
-      </div>    </div>
-  </div>
 
     <div class="select_crops_bar">
       <h1 class="input_title">Select crops to harvest</h1>
@@ -52,7 +49,6 @@
     </div>
 
     <div class="select_crops">
-
       <div class="crop_selector">
         <input type="checkbox" class="checkbox" id="crop_1" value="tomato">
         <div class="crop_tap_box" id="crop_tap_1"></div>
@@ -60,12 +56,9 @@
           <h2 class="crop_name">Tomato</h2>
         </div>
       </div>
-
-
     </div>
 
     <input class="submit" type="submit">
 
-</form>
-
+  </form>
 {% endblock %}

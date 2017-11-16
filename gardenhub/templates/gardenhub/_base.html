@@ -2,40 +2,34 @@
 {% load static %}
 {% load compress %}
 <html lang="en">
-<head>
-  <title>GardenHub</title>
-  <!-- Meta -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <meta name="description" content="GardenHub application">
-  <!-- Open Graph protocol -->
-  <meta property="og:title" content="GardenHub">
-  <meta property="og:type" content="application">
-  <meta property="og:url" content="">
-  <meta property="og:image" content="">
-  <meta property="og:description" content="GardenHub app.">
-  <meta property="og:locale" content="en_US">
+  <head>
+    <title>GardenHub</title>
+    <!-- Meta -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="description" content="GardenHub application">
+    <!-- Open Graph protocol -->
+    <meta property="og:title" content="GardenHub">
+    <meta property="og:type" content="application">
+    <meta property="og:url" content="">
+    <meta property="og:image" content="">
+    <meta property="og:description" content="GardenHub app.">
+    <meta property="og:locale" content="en_US">
 
-  <!-- Stylesheets -->
-  {% compress css %}
-    <link type="text/less" rel="stylesheet" href="{% static "less/style.less" %}">
-  {% endcompress %}
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans|Open+Sans+Condensed:300|Saira+Extra+Condensed" rel="stylesheet">
-  <script src="https://use.fontawesome.com/37c7773def.js"></script>
+    <!-- Stylesheets -->
+    {% compress css %}
+      <link type="text/less" rel="stylesheet" href="{% static "less/style.less" %}">
+    {% endcompress %}
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans|Open+Sans+Condensed:300|Saira+Extra+Condensed" rel="stylesheet">
+    <script src="https://use.fontawesome.com/37c7773def.js"></script>
 
-
-  {% block extra_styles %}{% endblock %}
-
-  <!-- Favicons -->
-
-</head>
-<body class="{% block body_class %}{% endblock %}">
-
+    {% block extra_styles %}{% endblock %}
+  </head>
+  <body class="{% block body_class %}{% endblock %}">
     {% block header %}{% endblock %}
     {% block content %}{% endblock %}
 
     <!-- Scripts -->
     <script src="{% static "js/main.js" %}"></script>
     {% block extra_scripts %}{% endblock %}
-
-</body>
+  </body>
 </html>
