@@ -1,4 +1,3 @@
-
 deploy:
 	git push dokku master
 pull_dev_db:
