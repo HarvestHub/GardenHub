@@ -39,6 +39,8 @@ urlpatterns = [
     # Gardens
     url(r'^gardens/$', views.gardens),
     url(r'^garden/(?P<gardenId>.*)/edit/$', views.edit_garden),
+    # AJAX
+    url(r'^_ajax/crops-for-plot/(?P<plotId>.*)/$', views.crops_for_plot),
     # Default auth views https://docs.djangoproject.com/en/1.11/topics/auth/default/#using-the-views
     url('^', include('django.contrib.auth.urls')),
 ]

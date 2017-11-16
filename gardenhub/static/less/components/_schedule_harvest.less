@@ -54,7 +54,6 @@ body.schedule_harvest {
   }
 
   select[name="plot"]::before {
-    content: 'TEST';
     padding: auto 5px;
   }
 
@@ -91,6 +90,12 @@ body.schedule_harvest {
   .select_crops {
     display: flex;
     align-items: flex-start;
+  }
+
+  p.empty-message {
+    font-size: 14px;
+    margin: 0.6rem 0;
+    color: #666;
   }
 
   .crop_tap_box {

@@ -16,7 +16,7 @@ def get_plots(user):
     """
     return Plot.objects.filter(
         Q(gardeners__id=user.id) | Q(garden__managers__id=user.id)
-    )
+    ).distinct()
 
 
 def get_orders(user):
