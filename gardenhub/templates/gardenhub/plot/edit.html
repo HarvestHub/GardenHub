@@ -4,6 +4,7 @@
 
 
 {% block content %}
+  <form id="edit_plot" action="" method="post">
 
     <div class="field_box">
       <div class="field_name">
@@ -13,10 +14,10 @@
         <p>The plot's name is probably a number, like 11. The plot should be clearly labeled with a sign.</p>
       </div>
       <div class="field">
-        <div class="map icon">
-          <i class="fa fa-calendar-o" aria-hidden="true"></i>
+        <div class="plot icon">
+          <i class="fa fa-map-marker" aria-hidden="true"></i>
         </div>
-        <input type="text" name="plot_name">
+        <input type="text" name="plot_name" placeholder="Enter a name...">
       </div>
     </div>
 
@@ -29,7 +30,7 @@
       </div>
       <div class="field">
         <div class="map icon">
-          <i class="fa fa-map-marker" aria-hidden="true"></i>
+          <i class="fa fa-map" aria-hidden="true"></i>
         </div>
         <select name="plot">
           <option class="default_value" value="" selected data-default>Select a garden...</option>
@@ -51,10 +52,17 @@
       </div>
       <div class="field">
         <div class="map icon">
-          <i class="fa fa-calendar-o" aria-hidden="true"></i>
         </div>
         <input type="text" name="email">
       </div>
     </div>
 
+    <div class="field_box">
+      <div class="field_name">
+        <h1>Crops</h1>
+      </div>
+    </div>
+
+
+  </form>
 {% endblock %}
