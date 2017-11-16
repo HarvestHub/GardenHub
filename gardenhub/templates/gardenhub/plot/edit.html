@@ -1,36 +1,60 @@
 {% extends "gardenhub/_manage_base.html" %}
 
+{% block body_class %}edit_plot{% endblock %}
+
+
 {% block content %}
 
-  <div class="edit_plot">
-    <div class="Title">
-      <h2>Edit Plot</h2>
-    </div>
-
-    <div class="my_plot">
-      <div class="plot_title">
-        <h3 class="garden_name">Spring Garden</h3>
-        <h3 class="plot_num">Plot #15</h3>
+    <div class="field_box">
+      <div class="field_name">
+        <h1>Name</h1>
       </div>
-
-
-      <div class="select_crops">
-        <h3>My Crops:</h3>
-        <ul class="crop_list">
-          <li>tomatos</li>
-          <li>eggplant</li>
-          <li>lettuce</li>
-          <li>strawberries</li>
-          <li>kale</li>
-          <li>cauliflower</li>
-        </ul>
-        <h3>Add Crop:</h3>
-        <div class="add_crop">
+      <div class="field_description">
+        <p>The plot's name is probably a number, like 11. The plot should be clearly labeled with a sign.</p>
+      </div>
+      <div class="field">
+        <div class="map icon">
+          <i class="fa fa-calendar-o" aria-hidden="true"></i>
         </div>
+        <input type="text" name="plot_name">
       </div>
-
     </div>
 
-  </div>
+    <div class="field_box">
+      <div class="field_name">
+        <h1>Garden</h1>
+      </div>
+      <div class="field_description">
+        <p>Choose the garden this plot is in.</p>
+      </div>
+      <div class="field">
+        <div class="map icon">
+          <i class="fa fa-map-marker" aria-hidden="true"></i>
+        </div>
+        <select name="plot">
+          <option class="default_value" value="" selected data-default>Select a garden...</option>
+          {% for garden in gardens %}
+            <option value="{{ garden.id }}">
+              {{ garden }}
+            </option>
+          {% endfor%}
+        </select>
+      </div>
+    </div>
+
+    <div class="field_box">
+      <div class="field_name">
+        <h1>Gardeners</h1>
+      </div>
+      <div class="field_description">
+        <p>List the people who should manage trhis plot. Enter an email address to invite someone.</p>
+      </div>
+      <div class="field">
+        <div class="map icon">
+          <i class="fa fa-calendar-o" aria-hidden="true"></i>
+        </div>
+        <input type="text" name="email">
+      </div>
+    </div>
 
 {% endblock %}
