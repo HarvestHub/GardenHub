@@ -26,7 +26,9 @@
   </head>
   <body class="{% block body_class %}{% endblock %}">
     {% block header %}{% endblock %}
-    {% block content %}{% endblock %}
+    {% block wrap %}
+      {% block content %}{% endblock %}
+    {% endblock %}
 
     <!-- Scripts -->
     <script src="{% static "js/main.js" %}"></script>

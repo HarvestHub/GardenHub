@@ -3,3 +3,9 @@
 {% block header %}
   {% include "gardenhub/components/nav.html" %}
 {% endblock %}
+
+{% block wrap %}
+  <div class="wrap">
+    {% block content %}{% endblock %}
+  </div>
+{% endblock %}

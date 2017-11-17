@@ -3,17 +3,17 @@
 body.home {
   padding-bottom: 55px;
 
-  .my_harvests {
+  .my_orders {
     margin: auto 20px;
   }
 
-  .upcoming_harvest {
+  .upcoming_order {
     display: flex;
     justify-content: space-around;
     margin: 10px auto 20px;
   }
 
-  .upcoming_harvest_details {
+  .upcoming_order_details {
     margin-right: 10px;
     flex: 1;
   }
@@ -80,14 +80,14 @@ body.home {
     font-size: 28px;
   }
 
-  .harvester_info h4 {
+  .order_info h4 {
     font-family: 'Open Sans Condensed', sans-serif;
     font-size: 14px;
     font-weight: 300;
     margin: 7px auto;
   }
 
-  .harvester_info h4::before {
+  .order_info h4::before {
     content: '';
     display: inline-block;
     width: 13px;
@@ -104,7 +104,7 @@ body.home {
     bottom: 0px;
   }
 
-  .submit_new_harvest.button {
+  .submit_new_order.button {
     position: fixed;
     left: 0;
     right: 0;
@@ -112,16 +112,25 @@ body.home {
     width: 100%;
     background-color: #7b2c87;
     text-align: center;
+
+    @media(min-width: 960px) {
+      width: auto;
+      right: 0;
+      left: auto;
+      margin: 10px;
+      padding: 0 20px;
+      border-radius: 8px;
+    }
   }
 
-  .submit_new_harvest.button h1 {
+  .submit_new_order.button h1 {
     color: #F9F8F6;
     text-align: center;
     font-size: 20px;
     font-weight: bold;
   }
 
-  .submit_new_harvest.button h1::before {
+  .submit_new_order.button h1::before {
     content: "+ ";
   }
 

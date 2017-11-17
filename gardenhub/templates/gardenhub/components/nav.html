@@ -1,63 +1,64 @@
 {% load static %}
 
-<div class="nav">
-  <nav>
-    <ul>
-      <li class="top_nav">
-        <a href="/" class="home_icon">
-          <i class="fa fa-home" aria-hidden="true"></i>
-        </a>
-      </li>
-      <li class="manage top_nav drop" onclick="toggleMangeOptionsNav()">
-        Manage
-        <ul class="drop_options hidden" id="manage_options">
+<div class="topbar">
+  <div class="wrap">
+    <nav class="topnav">
+      <ul>
+        <li class="nav_item home_icon">
+          <a href="/">
+            <i class="fa fa-home" aria-hidden="true"></i>
+          </a>
+        </li>
+        <li class="nav_item manage top_nav drop" onclick="toggleMangeOptionsNav()">
+          Manage
+          <ul class="drop_options hidden" id="manage_options">
 
-          <li class="drop_option">
-            <a href="/plots/"><p>Edit my plots</p></a>
-          </li>
-
-          <li class="drop_option">
-            <a href="/orders/"><p>Edit my orders</p></a>
-          </li>
-
-          <li class="drop_option">
-            <a href="/gardens/"><p>Manage gardens</p></a>
-          </li>
-
-        </ul>
-      </li>
-
-      <li class="name top_nav drop" onclick="toggleUserOptionsNav()">
-        {{ request.user.first_name }}
-        <ul class="drop_options hidden" id="user_options">
-
-          {% if user_is_gardener %}
             <li class="drop_option">
-              <p>You're a gardener!</p>
+              <a href="/plots/"><p>Edit my plots</p></a>
             </li>
-          {% endif %}
 
-          {% if user_is_garden_manager %}
             <li class="drop_option">
-              <p>You're a GM!</p>
+              <a href="/orders/"><p>Edit my orders</p></a>
             </li>
-          {% endif %}
 
-          {% if request.user.is_superuser %}
             <li class="drop_option">
-              <a href="/admin/"><p>Admin Screen</p></a>
+              <a href="/gardens/"><p>Manage gardens</p></a>
             </li>
-          {% endif %}
 
-          <li class="drop_option">
-            <a href="/account/"><p>My Account</p></a>
-          </li>
+          </ul>
+        </li>
+        <li class="nav_item name top_nav drop" onclick="toggleUserOptionsNav()">
+          {{ request.user.first_name }}
+          <ul class="drop_options hidden" id="user_options">
 
-          <li class="drop_option">
-            <a href="/logout/"><p>Log-out</p></a>
-          </li>
-        </ul>
-      </li>
-    </ul>
-  </nav>
+            {% if user_is_gardener %}
+              <li class="drop_option">
+                <p>You're a gardener!</p>
+              </li>
+            {% endif %}
+
+            {% if user_is_garden_manager %}
+              <li class="drop_option">
+                <p>You're a GM!</p>
+              </li>
+            {% endif %}
+
+            {% if request.user.is_superuser %}
+              <li class="drop_option">
+                <a href="/admin/"><p>Admin Screen</p></a>
+              </li>
+            {% endif %}
+
+            <li class="drop_option">
+              <a href="/account/"><p>My Account</p></a>
+            </li>
+
+            <li class="drop_option">
+              <a href="/logout/"><p>Log-out</p></a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+  </div>
 </div>

@@ -21,12 +21,18 @@ body {
   font-family: 'Open Sans', sans-serif;
   background-position: center;
   background-size: cover;
+  min-height: 100vh;
 }
 
 /* Create new block formatting context around body */
 body::before {
   content: "";
   display: table;
+}
+
+.wrap {
+  max-width: 960px;
+  margin: 0 auto;
 }
 
 h1 {

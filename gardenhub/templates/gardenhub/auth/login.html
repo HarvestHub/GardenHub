@@ -4,20 +4,20 @@
 {% block body_class %}login{% endblock %}
 
 {% block content %}
-  <div class="login_page">
+  <div class="wrap">
     <div class="logo">
       <h1>GardenHub</h1>
     </div>
-    <form id="login" action="" method="post">
+    <form class="login_form" action="" method="post">
       {% csrf_token %}
       {% if login_failed %}<p class="directions error">Login failed! Invalid email address or password.</p>{% endif %}
       <div class="fields">
-        <div class="field" id="email_field">
+        <div class="email field">
           <p class="directions">Please enter your email address to sign in</p>
           <input class="bar" type="text" name="username" placeholder="Email Address">
           <input class="next" type="submit" value="Next">
         </div>
-        <div class="field" id="password_field">
+        <div class="password field">
           <p class="directions">Please enter your password</p>
           <input class="bar" type="password" name="password" placeholder="Password">
           <input class="next" type="submit" value="Login">

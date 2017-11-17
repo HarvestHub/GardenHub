@@ -4,7 +4,7 @@
 {% block body_class %}home{% endblock %}
 
 {% block content %}
-  <div class="my_harvests">
+  <div class="my_orders">
 
     <div class="title_bar">
       <h1 class="header">My Orders</h1>
@@ -13,8 +13,8 @@
 
     <!-- For each order attached to the current user, display info below. If no current order, display schedule harvest block. -->
     {% for order in orders %}
-      <div class="upcoming_harvest">
-        <div class="upcoming_harvest_details">
+      <div class="upcoming_order">
+        <div class="upcoming_order_details">
           <div class="date_and_plot_bar">
             <h3>{{ order.start_date }} - {{ order.end_date }} </h3>
             <h3>Plot #{{ order.plot.title }}</h3>
@@ -22,7 +22,7 @@
           <div class="garden_name">
             <h2>{{ order.plot.garden }}</h2>
           </div>
-          <div class="harvester_info">
+          <div class="order_info">
             <h4>Enrique is harvesting your crops</h4>
           </div>
         </div>
@@ -36,7 +36,7 @@
   </div>
 
   <a href="/orders/new/">
-    <div class="submit_new_harvest button">
+    <div class="submit_new_order button">
       <h1>Submit New Order</h1>
     </div>
   </a>
