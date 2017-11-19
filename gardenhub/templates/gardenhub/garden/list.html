@@ -1,15 +1,17 @@
 {% extends "gardenhub/_manage_base.html" %}
 
 {% block content %}
-  <div class="page_title">
-    <h2>Manage Gardens</h2>
-  </div>
+  <div class="ui container">
+    <div class="page_title">
+      <h2>Manage Gardens</h2>
+    </div>
 
-  <div class="buttons">
-    {% for garden in gardens %}
-      <a href="/garden/{{ garden.id }}/edit/" class="button gm_select_garden">
-        <h2>{{ garden.title }}</h2>
-      </a>
-    {% endfor %}
+    <div class="buttons">
+      {% for garden in gardens %}
+        <a href="/garden/{{ garden.id }}/edit/" class="button gm_select_garden">
+          <h2>{{ garden.title }}</h2>
+        </a>
+      {% endfor %}
+    </div>
   </div>
 {% endblock %}

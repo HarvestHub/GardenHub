@@ -20,14 +20,14 @@ RUN apk add --update \
     tcl-dev \
   && rm -rf /var/cache/apk/*
 
-RUN npm install -g less
-
 ADD . /app
 WORKDIR /app
 
-RUN pip install -r /app/requirements.txt
+RUN npm install && \
+    npm install -g less && \
+    pip install -r /app/requirements.txt
 
-RUN python manage.py collectstatic --noinput
-RUN python manage.py compress --force
+RUN python manage.py collectstatic --noinput && \
+    python manage.py compress --force
 
 CMD ["gunicorn", "wsgi", "-b 0.0.0.0:5000"]

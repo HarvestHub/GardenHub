@@ -1,9 +1,7 @@
-function toggleUserOptionsNav() {
-  document.getElementById('user_options').classList.toggle('hidden');
-  document.getElementById('manage_options').classList.add('hidden');
-}
+$('.top.menu .ui.dropdown')
+  .dropdown({
+    "action": "nothing"
+  });
 
-function toggleMangeOptionsNav() {
-  document.getElementById('manage_options').classList.toggle('hidden');
-  document.getElementById('user_options').classList.add('hidden');
-}
+$('form .ui.dropdown')
+  .dropdown();

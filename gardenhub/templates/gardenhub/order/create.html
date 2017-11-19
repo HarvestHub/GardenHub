@@ -4,57 +4,56 @@
 {% block body_class %}schedule_harvest{% endblock %}
 
 {% block content %}
-  <form id="new_order" action="" method="post">
-
-    <h1 class="input_title">Plot</h1>
-    <div class="plot_select form_container">
-      <div class="map icon">
-        <i class="fa fa-map-marker" aria-hidden="true"></i>
-      </div>
-      <select name="plot">
-        <option class="default_value" value="" selected data-default>Select a plot...</option>
-        {% for plot in plots %}
-          <option value="{{ plot.id }}">
-            {{ plot }}
-          </option>
-        {% endfor%}
-      </select>
-    </div>
-
-    <div class="date_range">
-      <div>
-        <h1 class="input_title">Start</h1>
-        <div class="plot_select form_container">
-          <div class="map icon">
-            <i class="fa fa-calendar-o" aria-hidden="true"></i>
+  <div class="ui container">
+    <form class="ui form" action="" method="post">
+      <div class="field">
+        <label>Plot</label>
+        <div class="ui fluid search selection dropdown">
+          <input name="plotId" type="hidden">
+          <i class="dropdown icon"></i>
+          <div class="default text">
+            <i class="marker icon"></i>
+            Select a Plot
           </div>
-          <input type="date" name="order_start">
+          <div class="menu">
+            <!-- <div class="header">Spring Garden</div>
+            <div class="item" data-value="1"></i>Plot 1</div>
+            <div class="item" data-value="2"></i>Plot 2</div>
+            <div class="header">Corinthian Garden</div>
+            <div class="item" data-value="7"></i>Plot 7</div>
+            <div class="item" data-value="9"></i>Plot 9</div> -->
+            {% for plot in plots %}
+              <div class="item" data-value="{{ plot.id }}">{{ plot }}</div>
+            {% endfor%}
+          </div>
         </div>
       </div>
-
-      <div>
-        <h1 class="input_title">End</h1>
-        <div class="plot_select form_container">
-          <div class="map icon">
-            <i class="fa fa-calendar-o" aria-hidden="true"></i>
+      <div class="two fields">
+        <div class="field">
+          <label>Start Date</label>
+          <div class="ui left icon input">
+            <input placeholder="Start Date" type="date">
+            <i class="calendar icon"></i>
           </div>
-          <input type="date" name="order_end">
+        </div>
+        <div class="field">
+          <label>End Date</label>
+          <div class="ui left icon input">
+            <input placeholder="End Date" type="date">
+            <i class="calendar icon"></i>
+          </div>
         </div>
       </div>
-    </div>
-
-    <div class="select_crops_bar">
-      <h1 class="input_title">Select crops to harvest</h1>
-      <h1 class="input_title edit">Edit</h1>
-    </div>
-
-    <div class="select_crops">
-      <p class="empty-message">You must select a plot before you can choose any crops.</p>
-    </div>
-
-    <input class="submit" type="submit">
-
-  </form>
+      <div class="field">
+        <label>Crops</label>
+        <div class="ui divider"></div>
+        <div class="select_crops">
+          <p class="empty-message">You must select a plot before you can choose any crops.</p>
+        </div>
+      </div>
+      <input class="purple ui button" type="submit" value="Submit">
+    </form>
+  </div>
 {% endblock %}
 
 {% block extra_scripts %}
@@ -88,7 +87,7 @@
     }
 
     /* Plot dropdown element */
-    var dropdown = document.querySelector('select[name="plot"]');
+    var dropdown = document.querySelector('input[name="plotId"]');
     /* Crop picker element */
     var cropPicker = document.querySelector('.select_crops');
 
