@@ -23,8 +23,7 @@ RUN apk add --update \
 ADD . /app
 WORKDIR /app
 
-RUN npm install && \
-    npm install -g less && \
+RUN npm install -g less && \
     pip install -r /app/requirements.txt
 
 RUN python manage.py collectstatic --noinput && \
