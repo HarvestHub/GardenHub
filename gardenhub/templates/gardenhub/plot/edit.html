@@ -4,34 +4,25 @@
 
 
 {% block content %}
-  <form id="edit_plot" action="" method="post">
-
-    <div class="field_box">
-      <div class="field_name">
-        <h1>Name</h1>
-      </div>
+<div class="ui container">
+  <form class="ui form" action="" method="post">
+    <div class="field">
+      <label>Name</label>
       <div class="field_description">
         <p>The plot's name is probably a number, like 11. The plot should be clearly labeled with a sign.</p>
       </div>
-      <div class="field">
-        <div class="plot icon">
-          <i class="fa fa-map-marker" aria-hidden="true"></i>
-        </div>
+      <div class="ui left icon input">
         <input type="text" name="plot_name" placeholder="Enter a name...">
       </div>
     </div>
 
-    <div class="field_box">
-      <div class="field_name">
-        <h1>Garden</h1>
-      </div>
+
+    <div class="field">
+      <label>Garden</label>
       <div class="field_description">
-        <p>Choose the garden this plot is in.</p>
+        <p>The plot's name is probably a number, like 11. The plot should be clearly labeled with a sign.</p>
       </div>
-      <div class="field">
-        <div class="map icon">
-          <i class="fa fa-map" aria-hidden="true"></i>
-        </div>
+      <div class="ui left icon input">
         <select name="plot">
           <option class="default_value" value="" selected data-default>Select a garden...</option>
           {% for garden in gardens %}
@@ -40,29 +31,28 @@
             </option>
           {% endfor%}
         </select>
+        <i class="fa fa-map" aria-hidden="true"></i>
       </div>
     </div>
 
-    <div class="field_box">
-      <div class="field_name">
-        <h1>Gardeners</h1>
-      </div>
+
+    <div class="field">
+      <label>Gardeners</label>
       <div class="field_description">
-        <p>List the people who should manage trhis plot. Enter an email address to invite someone.</p>
+        <p>List the people who should manage this plot. Enter an email address to invite someone.</p>
       </div>
-      <div class="field">
-        <div class="map icon">
-        </div>
+      <div class="ui left icon input">
         <input type="text" name="email">
       </div>
     </div>
 
-    <div class="field_box">
-      <div class="field_name">
-        <h1>Crops</h1>
+    <div class="field">
+      <label>Crops</label>
+      <div class="ui left icon input">
+        <input type="text" name="email">
       </div>
     </div>
 
-
   </form>
+</div>
 {% endblock %}
