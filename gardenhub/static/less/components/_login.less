@@ -8,13 +8,23 @@ body.login {
     font-size: 68px;
     color: white;
   }
+
   > .grid {
     height: 100%;
+    margin: 0;
   }
+
   .image {
     margin-top: -100px;
   }
+
   .column {
     max-width: 450px;
+  }
+
+  /* Create new block formatting context */
+  &::before {
+    content: '';
+    display: flex;
   }
 }
