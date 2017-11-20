@@ -1,64 +1,33 @@
 {% load static %}
 
-<div class="topbar">
-  <div class="wrap">
-    <nav class="topnav">
-      <ul>
-        <li class="nav_item home_icon">
-          <a href="/">
-            <i class="fa fa-home" aria-hidden="true"></i>
-          </a>
-        </li>
-        <li class="nav_item manage top_nav drop" onclick="toggleMangeOptionsNav()">
-          Manage
-          <ul class="drop_options hidden" id="manage_options">
-
-            <li class="drop_option">
-              <a href="/plots/"><p>Edit my plots</p></a>
-            </li>
-
-            <li class="drop_option">
-              <a href="/orders/"><p>Edit my orders</p></a>
-            </li>
-
-            <li class="drop_option">
-              <a href="/gardens/"><p>Manage gardens</p></a>
-            </li>
-
-          </ul>
-        </li>
-        <li class="nav_item name top_nav drop" onclick="toggleUserOptionsNav()">
-          {{ request.user.first_name }}
-          <ul class="drop_options hidden" id="user_options">
-
-            {% if user_is_gardener %}
-              <li class="drop_option">
-                <p>You're a gardener!</p>
-              </li>
-            {% endif %}
-
-            {% if user_is_garden_manager %}
-              <li class="drop_option">
-                <p>You're a GM!</p>
-              </li>
-            {% endif %}
-
-            {% if request.user.is_superuser %}
-              <li class="drop_option">
-                <a href="/admin/"><p>Admin Screen</p></a>
-              </li>
-            {% endif %}
-
-            <li class="drop_option">
-              <a href="/account/"><p>My Account</p></a>
-            </li>
-
-            <li class="drop_option">
-              <a href="/logout/"><p>Log-out</p></a>
-            </li>
-          </ul>
-        </li>
-      </ul>
-    </nav>
+<div class="ui large fixed borderless top menu">
+  <div class="ui container">
+    <div class="left menu">
+      <div class="borderless ui item">
+        <a href="/">
+          <i class="large grey home icon"></i>
+        </a>
+      </div>
+    </div>
+    <div class="skinny right menu">
+      <div class="ui dropdown item">
+        <div class="text">Manage</div>
+        <i class="dropdown icon"></i>
+        <div class="menu">
+          <a class="item" href="/gardens/"><i class="grey map icon"></i> Gardens</a>
+          <a class="item" href="/plots/"><i class="grey marker icon"></i> Plots</a>
+          <a class="item" href="/orders/"><i class="grey file icon"></i> Orders</a>
+        </div>
+      </div>
+      <div class="ui dropdown item">
+        <img class="ui avatar image" src="//placehold.it/50x50">
+        <div class="text">{{ request.user.first_name }}</div>
+        <i class="dropdown icon"></i>
+        <div class="menu">
+          <a class="item" href="/account/"><i class="grey user icon"></i> Profile</a>
+          <a class="item" href="/logout/"><i class="grey sign out icon"></i> Sign out</a>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

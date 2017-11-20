@@ -17,21 +17,28 @@
 
     <!-- Stylesheets -->
     {% compress css %}
+      <link type="text/css" rel="stylesheet" href="{% static "semantic-ui-css/semantic.min.css" %}">
       <link type="text/less" rel="stylesheet" href="{% static "less/style.less" %}">
     {% endcompress %}
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans|Open+Sans+Condensed:300|Saira+Extra+Condensed" rel="stylesheet">
-    <script src="https://use.fontawesome.com/37c7773def.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Saira+Extra+Condensed" rel="stylesheet">
 
     {% block extra_styles %}{% endblock %}
   </head>
-  <body class="{% block body_class %}{% endblock %}">
+  <body class="{% block primary_body_class %}{% endblock %} {% block body_class %}{% endblock %}">
     {% block header %}{% endblock %}
     {% block wrap %}
       {% block content %}{% endblock %}
     {% endblock %}
 
     <!-- Scripts -->
-    <script src="{% static "js/main.js" %}"></script>
+    <script
+      src="https://code.jquery.com/jquery-3.1.1.min.js"
+      integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+      crossorigin="anonymous"></script>
+    {% compress js %}
+      <script src="{% static "semantic-ui-css/semantic.min.js" %}"></script>
+      <script src="{% static "js/main.js" %}"></script>
+    {% endcompress %}
     {% block extra_scripts %}{% endblock %}
   </body>
 </html>

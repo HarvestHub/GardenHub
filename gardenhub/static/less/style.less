@@ -1,76 +1,21 @@
-@import "_reset.less";
-
-@import "components/_home_no_orders.less";
 @import "components/_home.less";
 @import "components/_login.less";
 @import "components/_nav.less";
-@import "components/_schedule_harvest.less";
-@import "components/_edit_plot.less";
+@import "components/_crop_selector.less";
+@import "components/_welcome_screen.less";
 
-
-* {
-  transition: .3s;
-  box-sizing: border-box;
-}
 
 html {
   background: white;
 }
 
 body {
-  font-family: 'Open Sans', sans-serif;
   background-position: center;
   background-size: cover;
   min-height: 100vh;
 }
 
-/* Create new block formatting context around body */
-body::before {
-  content: "";
-  display: table;
-}
-
-.wrap {
-  max-width: 960px;
-  margin: 0 auto;
-}
-
-h1 {
-  margin: .83em 0;
-  font-size: 30px;
-}
-
-.content_background {
-  position: absolute;
-  left: 0;
-  right: 0;
-  z-index: -999;
-  min-height: 600px;
-  width: 100%;
-  max-width: 400px;
-  background: #F9F8F6;
-}
-
 .content {
-  margin: 20px;
-}
-
-.field {
-  width: 100%;
-  z-index: 0;
-}
-
-.field input.bar {
-  background-color: rgba(249, 248, 246, .6);
-  z-index: 1;
-  width: 100%;
-  padding: 0px 20px;
-  height: 50px;
-  border: none;
-  color: #F9F8F6;
-  font-size: 24px;
-}
-
-.hide {
-  display: none;
+  height: 100%;
+  padding: 40px 0;
 }

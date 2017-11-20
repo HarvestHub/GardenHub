@@ -1,11 +1,13 @@
 {% extends "gardenhub/_base.html" %}
 
+{% block primary_body_class %}has-top-menu{% endblock %}
+
 {% block header %}
   {% include "gardenhub/components/nav.html" %}
 {% endblock %}
 
 {% block wrap %}
-  <div class="wrap">
+  <div class="content">
     {% block content %}{% endblock %}
   </div>
 {% endblock %}
