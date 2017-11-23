@@ -166,13 +166,15 @@ def edit_plot(request, plotId):
     Edit form for an individual plot.
     """
     plot = Plot.objects.get(id=plotId)
+    gardens = get_gardens(request.user)
 
     # If user isn't allowed to edit this plot...
     if not can_edit_plot(request.user, plot):
         return HttpResponseForbidden()
 
     return render(request, 'gardenhub/plot/edit.html', {
-        "plot": plot
+        "plot": plot,
+        "gardens": gardens
     })
 
 
