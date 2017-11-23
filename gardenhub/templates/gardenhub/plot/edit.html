@@ -11,7 +11,7 @@
       <div class="field_description">
         <p>The plot's name is probably a number, like 11. The plot should be clearly labeled with a sign.</p>
       </div>
-      <div class="ui left icon input">
+      <div class="ui input">
         <input type="text" name="plot_name" placeholder="Enter a name...">
       </div>
     </div>
@@ -19,11 +19,8 @@
 
     <div class="field">
       <label>Garden</label>
-      <div class="field_description">
-        <p>The plot's name is probably a number, like 11. The plot should be clearly labeled with a sign.</p>
-      </div>
       <div class="ui left icon input">
-        <select name="plot">
+        <select name="garden">
           <option class="default_value" value="" selected data-default>Select a garden...</option>
           {% for garden in gardens %}
             <option value="{{ garden.id }}">
@@ -47,7 +44,7 @@
     </div>
 
     <div class="field">
-      <label>Crops</label>
+      <h4 class="ui dividing header">Crops</h4>
       <div class="ui left icon input">
         <input type="text" name="email">
       </div>
