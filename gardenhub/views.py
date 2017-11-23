@@ -167,6 +167,8 @@ def edit_plot(request, plotId):
     """
     plot = Plot.objects.get(id=plotId)
     gardens = get_gardens(request.user)
+    # FIXME: This should only pull in gardeners from the selected garden
+    gardeners = User.objects.all()
 
     # If user isn't allowed to edit this plot...
     if not can_edit_plot(request.user, plot):
@@ -174,7 +176,8 @@ def edit_plot(request, plotId):
 
     return render(request, 'gardenhub/plot/edit.html', {
         "plot": plot,
-        "gardens": gardens
+        "gardens": gardens,
+        "gardeners": gardeners
     })
 
 

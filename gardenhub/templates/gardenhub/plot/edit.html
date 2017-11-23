@@ -37,10 +37,13 @@
 
     <div class="field">
       <label>Gardeners</label>
-      <p class="description">List the people who should manage this plot. Enter an email address to invite someone.</p>
-      <div class="ui left icon input">
-        <input type="text" name="email">
-      </div>
+      <p class="description">List the people who should manage this plot, or enter an email address to invite someone.</p>
+      <select name="gardeners" multiple="" class="ui fluid dropdown">
+        <option value="">Add gardeners...</option>
+        {% for gardener in gardeners %}
+          <option data-value="{{ gardener.id }}">{{ gardener.first_name }}</option>
+        {% endfor%}
+      </select>
     </div>
 
     <div class="field">
