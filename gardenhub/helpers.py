@@ -75,30 +75,3 @@ def can_edit_plot(user, plot):
     False otherwise.
     """
     return user in plot.gardeners.all() or user in plot.garden.managers.all()
-
-
-def crops_from_post(data):
-    """
-    Takes in request POST data and returns Crop objects from that data. Expects
-    crops to be in the format `crop_<cropId>`. Used for new order submissions.
-    """
-    return [
-        Crop.objects.get(id=crop.split('_')[1])
-        for crop in data if crop.startswith('crop_')
-    ]
-
-
-def html5date_to_python(datestring):
-    """
-    Converts an HTML5 date input string (ex: "2017-11-26") into a Python
-    datetime.date object. A ValueError is raised for a bad input.
-    """
-    try:
-        tokens = datestring.split('-')
-        return date(
-            year=int(tokens[0]),
-            month=int(tokens[1]),
-            day=int(tokens[2])
-        )
-    except:
-        raise ValueError("Invalid date format, use YYYY-MM-DD")

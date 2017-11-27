@@ -2,6 +2,8 @@ deploy:
 	git push dokku master
 pull_dev_db:
 	scp root@candlewaster.co:/var/lib/dokku/data/storage/gardenhub/db.sqlite3 .
+pull_dev_media:
+	scp -r root@candlewaster.co:/var/lib/dokku/data/storage/gardenhub/media .
 local_prod_test:
 	pwd | export PWD
 	docker build -t gardenhub .

@@ -20,9 +20,7 @@ from .helpers import (
     is_anything,
     has_open_orders,
     can_edit_garden,
-    can_edit_plot,
-    crops_from_post,
-    html5date_to_python
+    can_edit_plot
 )
 
 
@@ -121,7 +119,6 @@ def new_order(request):
     else:
         form = CreateOrderForm(request.user)
 
-    context["plots"] = get_plots(request.user)
     context["form"] = form
     return render(request, 'gardenhub/order/create.html', context)
 
@@ -243,7 +240,8 @@ def api_crops(request):
         return JsonResponse({
             "crops": [{
                 "id": crop.id,
-                "title": crop.title
+                "title": crop.title,
+                "image": crop.image.url
             } for crop in crops] })
 
     except:
