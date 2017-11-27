@@ -5,24 +5,29 @@
 
 {% block content %}
   <div class="ui container">
+    {% if success %}
+      <div class="ui positive message">
+        <i class="close icon"></i>
+        <div class="header">
+          Order Submitted
+        </div>
+        <p>Your order has been submitted successfully!</p>
+      </div>
+    {% endif %}
     <form class="ui form" action="" method="post">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
       <div class="field">
         <label>Plot</label>
         <div class="ui fluid search selection dropdown">
-          <input name="plotId" type="hidden">
+          <input name="{{ form.plot.name }}" type="hidden">
           <i class="dropdown icon"></i>
           <div class="default text">
             <i class="marker icon"></i>
             Select a Plot
           </div>
           <div class="menu">
-            <!-- <div class="header">Spring Garden</div>
-            <div class="item" data-value="1"></i>Plot 1</div>
-            <div class="item" data-value="2"></i>Plot 2</div>
-            <div class="header">Corinthian Garden</div>
-            <div class="item" data-value="7"></i>Plot 7</div>
-            <div class="item" data-value="9"></i>Plot 9</div> -->
-            {% for plot in plots %}
+            {% for plot in form.plot.field.queryset %}
               <div class="item" data-value="{{ plot.id }}">{{ plot }}</div>
             {% endfor%}
           </div>
@@ -31,25 +36,29 @@
       <div class="two fields">
         <div class="field">
           <label>Start Date</label>
-          <div class="ui left icon input">
-            <input placeholder="Start Date" type="date">
-            <i class="calendar icon"></i>
+          <div class="ui calendar" id="start_date">
+            <div class="ui left icon input">
+              <input placeholder="Start Date" type="text" name="{{ form.start_date.name }}" required>
+              <i class="calendar icon"></i>
+            </div>
           </div>
         </div>
         <div class="field">
           <label>End Date</label>
-          <div class="ui left icon input">
-            <input placeholder="End Date" type="date">
-            <i class="calendar icon"></i>
+          <div class="ui calendar" id="end_date">
+            <div class="ui left icon input">
+              <input placeholder="End Date" type="text" name="{{ form.end_date.name }}" required>
+              <i class="calendar icon"></i>
+            </div>
           </div>
         </div>
       </div>
       <div class="field">
         <label>Crops</label>
         <div class="ui divider"></div>
-        <div class="select_crops">
-          <p class="empty-message">You must select a plot before you can choose any crops.</p>
-        </div>
+        <select class="crops" name="{{ form.crops.name }}" style="display:none" multiple></select>
+        <p class="ui crop message">You must select a plot before you can choose any crops.</p>
+        <div class="crop tapicons" style="display:none"></div>
       </div>
       <input class="purple ui button" type="submit" value="Submit">
     </form>
@@ -58,61 +67,91 @@
 
 {% block extra_scripts %}
   <script>
-    /* Select crops to harvest */
-    function toggleCheck() {
-      var checkbox = this.parentNode.querySelector(".checkbox");
-
-      var icon = this.parentNode.querySelector(".crop_tap_box");
-
-      console.log(checkbox.checked);
-
-      if (checkbox.checked == false) {
-        checkbox.checked = true;
-        icon.classList.toggle('checked');
-      }
-      else {
-        checkbox.checked = false;
-        icon.classList.toggle('checked');
-      }
-    }
-
-    function checkBoxes() {
-      var boxes = document.querySelectorAll(".crop_selector");
-
-      for (var i=0; i<boxes.length; i++) {
-          var box = boxes[i];
-          var icon = box.querySelector(".crop_tap_box");
-          icon.addEventListener("click", toggleCheck);
-      }
-    }
-
-    /* Plot dropdown element */
-    var dropdown = document.querySelector('input[name="plotId"]');
-    /* Crop picker element */
-    var cropPicker = document.querySelector('.select_crops');
-
-    /* Listen for dropdown to change */
-    dropdown.addEventListener("change", function(e) {
-
-      /* Get the plot ID that was selected */
-      var plotId = this.value;
-
-      /* Function to call for HTTP request */
-      var httpRequest = new XMLHttpRequest();
-      httpRequest.onreadystatechange = function() {
-        if (httpRequest.readyState === XMLHttpRequest.DONE) {
-          if (httpRequest.status === 200) {
-            cropPicker.innerHTML = httpRequest.responseText;
-            checkBoxes();
-          } else {
-            console.log('There was a problem with the request.');
-          }
-        }
-      }
-
-      /* Make the HTTP request */
-      httpRequest.open('GET', '/_ajax/crops-for-plot/'+plotId+'/', true);
-      httpRequest.send();
+    // Calendar initialization
+    $('.ui.calendar#start_date').calendar({
+      type: 'date',
+      endCalendar: $('.ui.calendar#end_date')
     });
+    $('.ui.calendar#end_date').calendar({
+      type: 'date',
+      startCalendar: $('.ui.calendar#start_date')
+    });
+
+    // Message close
+    $('.message .close')
+    .on('click', function() {
+      $(this)
+        .closest('.message')
+        .transition('fade');
+    });
+
+    // Generates the hidden <select> crop template
+    function cropSelectTemplate(crops) {
+      var html = '';
+      $.each(crops, function(i, crop) {
+        html += '<option value=' + crop.id + '>' + crop.title + '</option>';
+      });
+      return html;
+    }
+
+    // Generates the tappable crop thumbnails
+    function cropThumbsTemplate(crops) {
+      var html = '';
+      $.each(crops, function(i, crop) {
+        html += '' +
+          '<div class="tapicon" data-id=' + crop.id + '>' +
+            '<div class="image">' +
+              // TODO: Implement image
+              // '<img src="' + crop.image + '">' +
+              '<img src="//placehold.it/75x75">' +
+            '</div>' +
+            '<div class="title">' + crop.title + '</div>' +
+          '</div>'
+      });
+      return html;
+    }
+
+    // Sync crops <select> with tapicons
+    function tapiconSync() {
+      $('.crop .tapicon').each(function(i, tapicon) {
+        var cropId = $(this).data('id');
+        $('select.crops option[value="' + cropId + '"]')[0].selected = $(tapicon).hasClass("active");
+      })
+    }
+
+    // Calls the API and sets the crops markup
+    function doCrops(plotId) {
+      $.get('/_api/crops.json', { plot: plotId })
+      .done(function(data) {
+        $('select.crops').html(cropSelectTemplate(data.crops));
+        $('.crop.tapicons').html(cropThumbsTemplate(data.crops));
+        $('.crop.message').slideUp();
+        $('.crop.tapicons').slideDown();
+        $('.crop .tapicon').click(function(e) {
+          $(this).toggleClass("active");
+          tapiconSync();
+        });
+      });
+    }
+
+    // On "Plot" dropdown change...
+    $('input[name="plot"]').on("change", function(e) {
+
+      // If the Plot has been set to a blank value
+      if (this.value == '') {
+        $('.crop.tapicons').slideUp();
+        $('.crop.message').slideDown();
+        return;
+
+      // Otherwise, proceed
+      } else {
+        doCrops(this.value);
+      }
+    });
+
+    // Initialize
+    if($('input[name="plot"]').val() != '') {
+      doCrops($('input[name="plot"]').val());
+    }
   </script>
 {% endblock %}

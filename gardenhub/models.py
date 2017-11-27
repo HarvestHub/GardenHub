@@ -59,7 +59,7 @@ class Order(models.Model):
     crops = models.ManyToManyField('Crop')
     start_date = models.DateField()
     end_date = models.DateField()
-    canceled = models.BooleanField
+    canceled = models.BooleanField(default=False)
     canceled_date = models.DateField(null=True, blank=True)
     requester = models.ForeignKey(User)
 

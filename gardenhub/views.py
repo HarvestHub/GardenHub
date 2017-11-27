@@ -3,13 +3,14 @@ import time
 from datetime import datetime, timedelta
 
 from django.http import (
-    HttpResponse, HttpResponseRedirect, HttpResponseForbidden
+    HttpResponse, HttpResponseRedirect, HttpResponseForbidden, JsonResponse
 )
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from .models import Crop, Garden, Plot, Harvest, Order
+from .forms import CreateOrderForm
 from .helpers import (
     get_gardens,
     get_plots,
@@ -19,7 +20,9 @@ from .helpers import (
     is_anything,
     has_open_orders,
     can_edit_garden,
-    can_edit_plot
+    can_edit_plot,
+    crops_from_post,
+    html5date_to_python
 )
 
 
@@ -94,14 +97,33 @@ def new_order(request):
     This is a form used to submit a new order. It's used by gardeners, garden
     managers, or anyone who has the ability to edit a plot.
     """
+    context = {}
+
     # If the user has no assigned gardens or plots...
     if not is_anything(request.user):
         # TODO: Handle this error better
         return HttpResponse("You haven't been assigned to any gardens or plots. This should never happen. Please contact support. We're sorry!")
 
-    return render(request, 'gardenhub/order/create.html', {
-        "plots": get_plots(request.user)
-    })
+    # A form has been submitted
+    if request.POST:
+        form = CreateOrderForm(request.user, request.POST)
+        if form.is_valid():
+            order = Order.objects.create(
+                plot=form.cleaned_data['plot'],
+                start_date=form.cleaned_data['start_date'],
+                end_date=form.cleaned_data['end_date'],
+                canceled=False,
+                requester=request.user
+            )
+            order.crops = form.cleaned_data['crops']
+            order.save()
+            context["success"] = True
+    else:
+        form = CreateOrderForm(request.user)
+
+    context["plots"] = get_plots(request.user)
+    context["form"] = form
+    return render(request, 'gardenhub/order/create.html', context)
 
 
 
@@ -206,18 +228,23 @@ def delete_account(request):
 
 
 @login_required()
-def crops_for_plot(request, plotId):
+def api_crops(request):
     """
-    AJAX. Pull in HTML crop thumbnails for the selected plot on the "new order"
-    form.
+    Return JSON about crops.
     """
-    plot = Plot.objects.get(id=plotId)
+    try:
+        plot = Plot.objects.get(id=request.GET['plot'])
 
-    # If user isn't allowed to edit this plot...
-    if not can_edit_plot(request.user, plot):
-        return HttpResponseForbidden()
+        # If user isn't allowed to edit this plot...
+        if not can_edit_plot(request.user, plot):
+            return HttpResponseForbidden()
 
-    crops = Plot.objects.get(id=plotId).crops.all()
-    return render(request, 'gardenhub/ajax/crops_for_plot.html', {
-        "crops": crops
-    })
+        crops = Plot.objects.get(id=plot.id).crops.all()
+        return JsonResponse({
+            "crops": [{
+                "id": crop.id,
+                "title": crop.title
+            } for crop in crops] })
+
+    except:
+        return JsonResponse({})
