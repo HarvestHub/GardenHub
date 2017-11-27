@@ -1,8 +1,6 @@
 {% extends "gardenhub/_manage_base.html" %}
 {% load static %}
 
-{% block body_class %}schedule_harvest{% endblock %}
-
 {% block content %}
   <div class="ui container">
     {% if success %}
@@ -60,7 +58,10 @@
         <p class="ui crop message">You must select a plot before you can choose any crops.</p>
         <div class="crop tapicons" style="display:none"></div>
       </div>
-      <input class="purple ui button" type="submit" value="Submit">
+      <button class="purple ui right floated button" type="submit">
+        <i class="checkmark icon"></i>
+        Submit Order
+      </button>
     </form>
   </div>
 {% endblock %}
@@ -102,6 +103,7 @@
           '<div class="tapicon" data-id=' + crop.id + '>' +
             '<div class="image">' +
               '<img src="' + crop.image + '">' +
+              '<i class="big inverted check circle icon"></i>' +
             '</div>' +
             '<div class="title">' + crop.title + '</div>' +
           '</div>'
