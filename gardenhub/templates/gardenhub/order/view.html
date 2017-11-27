@@ -1,8 +1,50 @@
 {% extends "gardenhub/_manage_base.html" %}
 
 {% block content %}
-  <div class="ui container">
-    <h1>Order #{{ order.id }}</h1>
-    <p>{{ order.start_date }} to {{ order.end_date }}</p>
+
+  <div class="ui card">
+    <div class="content">
+      <div class="header">Order #{{ order.id }}</div>
+    </div>
+    <div class="content">
+
+      <h4 class="ui sub header">Date Range</h4>
+        <div class="summary">
+           {{ order.start_date }} to {{ order.end_date }}
+        </div>
+
+
+      <h4 class="ui sub header">Crops</h4>
+      <div class="ui divider"></div>
+
+      <div class="content">
+        <div class="field">
+          <div class="crop tapicons">
+              {% for crop in crops %}
+
+                <div class="tapicon">
+                  <div class="image">
+                    <img src="{{ crop.image }}">
+                    <i class="big inverted check circle icon"></i>
+                  </div>
+                  <div class="title">{{ crop.title }}</div>
+                </div>
+
+              {% endfor %}
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="extra content">
+      <button class="ui button">Cancel Order</button>
+    </div>
   </div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+  <script>
+
+  </script>
 {% endblock %}
