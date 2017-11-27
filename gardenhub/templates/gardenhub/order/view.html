@@ -20,19 +20,17 @@
           </div>
 
 
-      <h4 class="ui sub header">Crops</h4>
+      <h4 class="ui sub header">Crops Being Harvested</h4>
       <div class="ui divider"></div>
 
-      <div class="content">
         <div class="field">
-          <div class="crop tapicons">
+          <div class="crop smallicons">
 
               {% for crop in crops %}
 
-                <div class="tapicon">
+                <div class="smallicon">
                   <div class="image">
                     <img src="{{ crop.image }}">
-                    <i class="big inverted check circle icon"></i>
                   </div>
                   <div class="title">{{ crop.title }}</div>
                 </div>
@@ -41,7 +39,6 @@
 
           </div>
         </div>
-      </div>
 
     </div>
     <div class="extra content">
