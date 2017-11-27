@@ -55,7 +55,7 @@ def has_open_orders(user):
     """
     Determine whether or not a user has any current open harvests for home display.
     """
-    return Order.objects.filter(plot__gardeners__id=user.id).count() > 0
+    return get_orders(user).count() > 0
 
 
 def can_edit_garden(user, garden):
