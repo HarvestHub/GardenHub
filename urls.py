@@ -30,7 +30,7 @@ urlpatterns = [
     url(r'^$', views.home),
     url(r'^login/$', views.login_user),
     url(r'^admin/', admin.site.urls),
-    url(r'^account/$', views.my_account),
+    url(r'^account/', include(account_patterns)),
     # Orders
     url(r'^orders/$', views.orders),
     url(r'^orders/new/$', views.new_order),
