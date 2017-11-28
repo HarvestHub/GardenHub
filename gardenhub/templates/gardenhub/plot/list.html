@@ -1,31 +1,31 @@
 {% extends "gardenhub/_manage_base.html" %}
 
 {% block content %}
-
-<div class="my_plots">
+<div class="ui container">
   <h2>My Plots</h2>
 
-  <div class="plots">
+  <div class="ui divided items">
     {% for plot in plots %}
-      <div class="plot">
-        <div class="plot_title">
-          <h3 class="garden_name">{{ plot.garden.title }}</h3>
-          <h3 class="plot_num">Plot #{{ plot.title }}</h3>
-        </div>
-        <div class="plot_subtitle">
-          <!-- <h4 class="contact">Contact manager</h4> -->
-          <h4 class="edit_plot_button">
-            <a href="/plot/{{ plot.id }}/edit/">Edit</a>
-          </h4>
+
+      <div class="item">
+        <div class="middle aligned content">
+          <div class="header">
+            {{ plot.garden.title }}, Plot #{{ plot.title }}
+          </div>
+          <div class="description">
+            <p>Crops list</p>
+            <p>Upcoming orders</p>
+          </div>
+          <div class="extra">
+            <div class="ui right floated button" href="/plot/{{ plot.id }}/edit/">
+              Edit Plot
+            </div>
+          </div>
         </div>
       </div>
     {% endfor %}
-  </div>
 
-  <div class="add_plot">
-    <h3>Add Plot</h3>
   </div>
 
 </div>
-
 {% endblock %}
