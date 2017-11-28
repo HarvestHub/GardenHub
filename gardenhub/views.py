@@ -129,7 +129,6 @@ def view_order(request, orderId):
     plot may view or cancel these orders.
     """
     order = Order.objects.get(id=orderId)
-    crops = order.crops.all()
 
 
     # If user isn't allowed to view this order...
@@ -137,8 +136,7 @@ def view_order(request, orderId):
         return HttpResponseForbidden()
 
     return render(request, 'gardenhub/order/view.html', {
-        "order": order,
-        "crops": crops
+        "order": order
     })
 
 

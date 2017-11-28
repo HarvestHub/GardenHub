@@ -21,7 +21,7 @@
 
         <h4 class="ui sub header">Crops Being Harvested</h4>
         <div class="ui mini horizontal list">
-          {% for crop in crops %}
+          {% for crop in order.crops.all %}
             <div class="item">
               <img class="ui avatar image" src="{{ crop.image.url }}">
               <div class="middle aligned content">
