@@ -1,6 +1,7 @@
 {% extends "gardenhub/_manage_base.html" %}
 
 {% block content %}
+<div class="ui container">
 
   <div class="ui card">
     <div class="content">
@@ -13,27 +14,31 @@
            {{ order.start_date }} to {{ order.end_date }}
         </div>
 
+        <h4 class="ui sub header">Status</h4>
+          <div class="summary">
+            Enrique is harvesting your crops
+          </div>
 
-      <h4 class="ui sub header">Crops</h4>
+
+      <h4 class="ui sub header">Crops Being Harvested</h4>
       <div class="ui divider"></div>
 
-      <div class="content">
         <div class="field">
-          <div class="crop tapicons">
+          <div class="crop smallicons">
+
               {% for crop in crops %}
 
-                <div class="tapicon">
+                <div class="smallicon">
                   <div class="image">
                     <img src="{{ crop.image }}">
-                    <i class="big inverted check circle icon"></i>
                   </div>
                   <div class="title">{{ crop.title }}</div>
                 </div>
 
               {% endfor %}
+
           </div>
         </div>
-      </div>
 
     </div>
     <div class="extra content">
@@ -41,6 +46,9 @@
     </div>
   </div>
 
+  <button class="ui button">Next Order</button>
+
+</div>
 {% endblock %}
 
 {% block extra_scripts %}
