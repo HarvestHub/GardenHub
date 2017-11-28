@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 
 
 class Crop(models.Model):
@@ -19,7 +19,7 @@ class Organization(models.Model):
     A group of affiliated gardens.
     """
     title = models.CharField(max_length=255)
-    managers = models.ManyToManyField(User, related_name='+')
+    managers = models.ManyToManyField(get_user_model(), related_name='+')
 
     def __str__(self):
         return self.title
@@ -29,7 +29,7 @@ class Garden(models.Model):
     A whole landscape, divided into many plots. Managed by Garden Managers.
     """
     title = models.CharField(max_length=255)
-    managers = models.ManyToManyField(User, related_name='+')
+    managers = models.ManyToManyField(get_user_model(), related_name='+')
     address = models.CharField(max_length=255)
     affiliation = models.ManyToManyField(Organization, related_name='+')
 
@@ -43,7 +43,7 @@ class Plot(models.Model):
     """
     title = models.CharField(max_length=255)
     garden = models.ForeignKey('Garden')
-    gardeners = models.ManyToManyField(User)
+    gardeners = models.ManyToManyField(get_user_model())
     crops = models.ManyToManyField('Crop')
 
     def __str__(self):
@@ -61,7 +61,7 @@ class Order(models.Model):
     end_date = models.DateField()
     canceled = models.BooleanField(default=False)
     canceled_date = models.DateField(null=True, blank=True)
-    requester = models.ForeignKey(User)
+    requester = models.ForeignKey(get_user_model())
 
     def __str__(self):
         return str(self.id)
@@ -80,7 +80,7 @@ class Harvest(models.Model):
             ('finished', 'Finished'),
         ),
     )
-    employee = models.ForeignKey(User)
+    employee = models.ForeignKey(get_user_model())
 
     def __str__(self):
         return str(self.id)

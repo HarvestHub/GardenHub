@@ -1,6 +1,6 @@
-from .models import Crop, Garden, Plot, Harvest
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from rest_framework import serializers
+from .models import Crop, Garden, Plot, Harvest
 
 
 class CropSerializer(serializers.HyperlinkedModelSerializer):
@@ -29,5 +29,5 @@ class HarvestSerializer(serializers.HyperlinkedModelSerializer):
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = User
+        model = get_user_model()
         fields = ('id', 'username')

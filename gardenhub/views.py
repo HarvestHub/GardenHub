@@ -1,12 +1,10 @@
 import math
 import time
 from datetime import datetime, timedelta
-
 from django.http import (
     HttpResponse, HttpResponseRedirect, HttpResponseForbidden, JsonResponse
 )
-from django.contrib.auth import authenticate, login
-from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from .models import Crop, Garden, Plot, Harvest, Order
@@ -190,7 +188,7 @@ def edit_plot(request, plotId):
     plot = Plot.objects.get(id=plotId)
     gardens = get_gardens(request.user)
     # FIXME: This should only pull in gardeners from the selected garden
-    gardeners = User.objects.all()
+    gardeners = get_user_model().objects.all()
 
     # If user isn't allowed to edit this plot...
     if not can_edit_plot(request.user, plot):
