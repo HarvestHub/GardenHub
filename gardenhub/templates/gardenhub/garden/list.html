@@ -1,4 +1,5 @@
 {% extends "gardenhub/_manage_base.html" %}
+{% load gardenhub %}
 
 {% block content %}
   <div class="ui container">
@@ -6,11 +7,21 @@
       <h2>Manage Gardens</h2>
     </div>
 
-    <div class="buttons">
+    <div class="ui unstackable items">
       {% for garden in gardens %}
-        <a href="/garden/{{ garden.id }}/edit/" class="button gm_select_garden">
-          <h2>{{ garden.title }}</h2>
-        </a>
+        <div class="item">
+          <a class="ui tiny image" href="/garden/{{ garden.id }}/edit/">
+            <img src="http://via.placeholder.com/500x500">
+          </a>
+          <div class="middle aligned content">
+            <a class="header" href="/garden/{{ garden.id }}/edit/">{{ garden.title }}</a>
+            <div class="description">
+              <p>{{ garden.address }}</p>
+              {% garden_user_orders garden as orders %}
+              <p>{{ orders|length }} upcoming orders.</p>
+            </div>
+          </div>
+        </div>
       {% endfor %}
     </div>
   </div>
