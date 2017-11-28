@@ -1,9 +1,11 @@
 @tapicon-size: 75px;
 @tapicon-gutter: 20px;
+@tapicon-size-sm: 50px;
 
 .tapicons {
   display: flex;
   align-items: flex-start;
+  flex-wrap: wrap;
   margin: -@tapicon-gutter 0 0 -@tapicon-gutter;
 }
 
@@ -80,4 +82,15 @@
       }
     }
   }
+}
+
+/* Untappable variation */
+.untappable.tapicons .tapicon {
+  cursor: default;
+}
+
+/* Small variation */
+.small.tapicons .tapicon .image {
+  width: @tapicon-size-sm;
+  height: @tapicon-size-sm;
 }

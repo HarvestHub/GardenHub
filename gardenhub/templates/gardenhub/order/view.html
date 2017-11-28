@@ -1,58 +1,47 @@
 {% extends "gardenhub/_manage_base.html" %}
 
 {% block content %}
-<div class="ui container">
+  <div class="ui container">
 
-  <div class="ui card">
-    <div class="content">
-      <div class="header">Order #{{ order.id }}</div>
-    </div>
-    <div class="content">
+    <div class="ui card">
+      <div class="content">
+        <div class="header">Order #{{ order.id }}</div>
+      </div>
 
-      <h4 class="ui sub header">Date Range</h4>
-        <div class="summary">
-           {{ order.start_date }} to {{ order.end_date }}
-        </div>
+      <div class="content">
+        <h4 class="ui sub header">Date Range</h4>
+          <div class="summary">
+            {{ order.start_date }} to {{ order.end_date }}
+          </div>
 
-        <h4 class="ui sub header">Status</h4>
+          <h4 class="ui sub header">Status</h4>
           <div class="summary">
             Enrique is harvesting your crops
           </div>
 
+          <h4 class="ui sub header">Crops Being Harvested</h4>
 
-      <h4 class="ui sub header">Crops Being Harvested</h4>
-      <div class="ui divider"></div>
+          <div class="ui divider"></div>
 
-        <div class="field">
-          <div class="crop smallicons">
-
+          <div class="field">
+            <div class="small untappable tapicons">
               {% for crop in crops %}
-
-                <div class="smallicon">
+                <div class="tapicon">
                   <div class="image">
-                    <img src="{{ crop.image }}">
+                    <img src="{{ crop.image.url }}">
                   </div>
                   <div class="title">{{ crop.title }}</div>
                 </div>
-
               {% endfor %}
-
           </div>
         </div>
+      </div>
+      <a class="ui bottom attached button" href="#">
+        <i class="trash icon"></i>
+        Cancel Order
+      </a>
+    </div>
 
-    </div>
-    <div class="extra content">
-      <button class="ui button">Cancel Order</button>
-    </div>
+    <a class="ui button" href="#">Next Order</a>
   </div>
-
-  <button class="ui button">Next Order</button>
-
-</div>
-{% endblock %}
-
-{% block extra_scripts %}
-  <script>
-
-  </script>
 {% endblock %}
