@@ -10,30 +10,25 @@
 
       <div class="content">
         <h4 class="ui sub header">Date Range</h4>
-          <div class="summary">
-            {{ order.start_date }} to {{ order.end_date }}
-          </div>
+        <div class="summary">
+          {{ order.start_date }} to {{ order.end_date }}
+        </div>
 
-          <h4 class="ui sub header">Status</h4>
-          <div class="summary">
-            Enrique is harvesting your crops
-          </div>
+        <h4 class="ui sub header">Status</h4>
+        <div class="summary">
+          Enrique is harvesting your crops
+        </div>
 
-          <h4 class="ui sub header">Crops Being Harvested</h4>
-
-          <div class="ui divider"></div>
-
-          <div class="field">
-            <div class="small untappable tapicons">
-              {% for crop in crops %}
-                <div class="tapicon">
-                  <div class="image">
-                    <img src="{{ crop.image.url }}">
-                  </div>
-                  <div class="title">{{ crop.title }}</div>
-                </div>
-              {% endfor %}
-          </div>
+        <h4 class="ui sub header">Crops Being Harvested</h4>
+        <div class="ui mini horizontal list">
+          {% for crop in crops %}
+            <div class="item">
+              <img class="ui avatar image" src="{{ crop.image.url }}">
+              <div class="middle aligned content">
+                <div class="description">{{ crop.title }}</div>
+              </div>
+            </div>
+          {% endfor %}
         </div>
       </div>
       <a class="ui bottom attached button" href="#">
