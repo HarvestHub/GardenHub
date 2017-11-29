@@ -52,9 +52,7 @@ def login_user(request):
 @login_required()
 def home(request):
     """
-    The home view displays a user's orders and helps them create new orders.
-    Since placing orders is the main objective of GardenHub users, it makes
-    sense for them to see this first.
+    # FIXME:Redesign home screen
     """
     # If the user has no assigned gardens or plots...
     if not is_anything(request.user):
@@ -81,11 +79,9 @@ def home(request):
 def orders(request):
     # FIXME: How is this different from the home view?
     # Should we rethink the home view or delete this one?
-    
+
     """
-    The home view displays a user's orders and helps them create new orders.
-    Since placing orders is the main objective of GardenHub users, it makes
-    sense for them to see this first.
+    Manage orders page to view all upcoming orders. (Previously the home page)
     """
     # If the user has no assigned gardens or plots...
     if not is_anything(request.user):
@@ -94,14 +90,14 @@ def orders(request):
 
     # Display a "welcome screen" if the user hasn't placed any orders
     if not has_open_orders(request.user):
-        return render(request, 'gardenhub/home/welcome.html', {
+        return render(request, 'gardenhub/order/list.html', {
             "user_is_gardener": is_gardener(request.user),
             "user_is_garden_manager": is_garden_manager(request.user),
         })
 
     # Otherwise, display a list of orders
     else:
-        return render(request, 'gardenhub/home/index.html', {
+        return render(request, 'gardenhub/order/list.html', {
             "user_is_gardener": is_gardener(request.user),
             "user_is_garden_manager": is_garden_manager(request.user),
             "orders": get_orders(request.user),

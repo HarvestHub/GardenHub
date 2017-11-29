@@ -3,27 +3,102 @@
 {% block content %}
 <div class="ui container">
   <h2>Manage Plots</h2>
+  <div class="ui divider"></div>
+
+
+  <div class="ui divided unstackable items">
+    {% for plot in plots %}
+      <div class="item">
+
+        <div class="content">
+
+          <div class="header">{{ plot.garden.title }}, Plot #{{ plot.title }}</div>
+
+          <div class="meta">
+            <span class="notes">Some sort of notes</span>
+          </div>
+
+          <div class="description">
+
+            <div class="ui mini horizontal list">
+              {% for crop in plot.crops.all %}
+                <div class="item">
+                  <img class="ui avatar image" src="{{ crop.image.url }}">
+                  <div class="middle aligned content">
+                    <div class="description">{{ crop.title }}</div>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+
+          </div>
+
+          <div class="ui bottom aligned content">
+            <div class="ui tiny left floated button">
+              <a href="/plot/{{ plot.id }}/edit/">
+                Edit Plot
+              </a>
+            </div>
+          </div>
+
+        </div>
+
+
+
+
+      </div>
+    {% endfor %}
+
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   <div class="ui divided items">
     {% for plot in plots %}
 
       <div class="item">
         <div class="middle aligned content">
+
           <div class="header">
             {{ plot.garden.title }}, Plot #{{ plot.title }}
           </div>
-          <div class="description">
-            <p>Crops list</p>
-            <p>Upcoming orders</p>
+
+          <div class="ui container">
+
+            <div class="ui mini horizontal list">
+
+              {% for crop in plot.crops.all %}
+                <div class="item">
+                  <img class="ui avatar image" src="{{ crop.image.url }}">
+                  <div class="middle aligned content">
+                    <div class="description">{{ crop.title }}</div>
+                  </div>
+                </div>
+              {% endfor %}
+
+            </div>
+
           </div>
-          <div class="extra">
+
             <div class="ui right floated button">
               <a href="/plot/{{ plot.id }}/edit/">
                 Edit Plot
               </a>
             </div>
-          </div>
+
         </div>
+
       </div>
     {% endfor %}
 
