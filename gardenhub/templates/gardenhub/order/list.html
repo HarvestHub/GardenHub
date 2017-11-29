@@ -1,11 +1,43 @@
 {% extends "gardenhub/_manage_base.html" %}
 
 {% block content %}
-  <div class="ui container">
-    <h2>Manage Orders</h2>
+<div class="ui container">
+  <div class="my_orders">
 
-    
+    <div class="title_bar">
+      <h1 class="header">Manage Orders</h1>
+      <h1 class="status_indicator">OK</h1>
+    </div>
 
-
+    <!-- For each order attached to the current user, display info below. If no current order, display schedule harvest block. -->
+    {% for order in orders %}
+      <div class="upcoming_order">
+        <div class="upcoming_order_details">
+          <div class="date_and_plot_bar">
+            <h3>{{ order.start_date }}&ndash;{{ order.end_date }} </h3>
+            <h3>Plot #{{ order.plot.title }}</h3>
+          </div>
+          <div class="garden_name">
+            <h2>{{ order.plot.garden }}</h2>
+          </div>
+          <div class="order_info">
+            <h4>Enrique is harvesting your crops</h4>
+          </div>
+        </div>
+        <div class="view_order">
+          <a href="/order/{{ order.id }}/">
+            <i class="big external link icon"></i>
+            <h4 class="view_order">View Order</h4>
+          </a>
+        </div>
+      </div>
+    {% endfor %}
   </div>
+
+  <a href="/orders/new/">
+    <div class="submit_new_order button">
+      <h1>Submit New Order</h1>
+    </div>
+  </a>
+</div>
 {% endblock %}

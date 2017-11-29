@@ -81,10 +81,31 @@ def home(request):
 def orders(request):
     # FIXME: How is this different from the home view?
     # Should we rethink the home view or delete this one?
-    orders = Order.objects.filter(plot__gardeners__id=request.user.id)
-    return render(request, 'gardenhub/order/list.html', {
-        "orders": orders
-    })
+    
+    """
+    The home view displays a user's orders and helps them create new orders.
+    Since placing orders is the main objective of GardenHub users, it makes
+    sense for them to see this first.
+    """
+    # If the user has no assigned gardens or plots...
+    if not is_anything(request.user):
+        # TODO: Handle this error better
+        return HttpResponse("You haven't been assigned to any gardens or plots. This should never happen. Please contact support. We're sorry!")
+
+    # Display a "welcome screen" if the user hasn't placed any orders
+    if not has_open_orders(request.user):
+        return render(request, 'gardenhub/home/welcome.html', {
+            "user_is_gardener": is_gardener(request.user),
+            "user_is_garden_manager": is_garden_manager(request.user),
+        })
+
+    # Otherwise, display a list of orders
+    else:
+        return render(request, 'gardenhub/home/index.html', {
+            "user_is_gardener": is_gardener(request.user),
+            "user_is_garden_manager": is_garden_manager(request.user),
+            "orders": get_orders(request.user),
+        })
 
 
 @login_required()
