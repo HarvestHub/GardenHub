@@ -5,14 +5,27 @@
 
 {% block content %}
   <div class="welcome-screen">
-    <div class="contents">
+    {% if not has_open_orders %}
       <div class="ui center aligned container">
         <h1 class="ui header">
           No Orders Placed
           <span class="sub header">Create an order to get started.</span>
         </h1>
+
         <a class="big purple ui button" href="/orders/new/"><i class="plus icon"></i> New Order</a>
       </div>
-    </div>
+
+      {% else %}
+      <div class="ui top aligned container">
+
+        <a class="big purple ui fluid button" href="/orders/new/"><i class="plus icon"></i> New Order</a>
+
+        <a class="big purple ui fluid button" href="/orders"><i class="edit icon"></i> View My Orders</a>
+
+        <a class="big purple ui fluid button" href="/plots"><i class="marker icon"></i> View My Plots</a>
+
+      </div>
+    {% endif %}
+
   </div>
 {% endblock %}
