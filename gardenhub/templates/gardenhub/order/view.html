@@ -3,40 +3,53 @@
 {% block content %}
   <div class="ui container">
 
-    <div class="ui card">
-      <div class="content">
-        <div class="header">Order #{{ order.id }}</div>
+    <!-- FIX ME: Indicate atatus of order with different icons/colors-->
+
+    <h2 class="ui header">{{ order.plot.garden }}, Plot #{{ order.plot.title }}</h2>
+
+    <h4 class="ui sub header">
+      <i class="left floated check circle icon"></i>
+      Order #{{ order.id }}
+    </h4>
+
+    <h4 class="ui sub header">Date Range</h4>
+    <div class="summary">
+      {{ order.start_date }}&ndash;{{ order.end_date }}
+    </div>
+
+    <h4 class="ui sub header">Status</h4>
+      Enrique is harvesting your crops.
+      <!-- FIX ME: Indicate Progess of Order based on recorded Harvests-->
+      <div class="ui olive progress">
+        <div class="bar"></div>
       </div>
+    <div class="summary">
+    </div>
 
-      <div class="content">
-        <h4 class="ui sub header">Date Range</h4>
-        <div class="summary">
-          {{ order.start_date }} to {{ order.end_date }}
+    <h4 class="ui sub header">Crops to be Harvested</h4>
+    <div class="ui mini horizontal list">
+      {% for crop in order.crops.all %}
+        <div class="item">
+          <img class="ui avatar image" src="{{ crop.image.url }}">
+          <div class="middle aligned content">
+            <div class="description">{{ crop.title }}</div>
+          </div>
         </div>
+        {% endfor %}
+    </div>
 
-        <h4 class="ui sub header">Status</h4>
-        <div class="summary">
-          Enrique is harvesting your crops
-        </div>
-
-        <h4 class="ui sub header">Crops Being Harvested</h4>
-        <div class="ui mini horizontal list">
-          {% for crop in order.crops.all %}
-            <div class="item">
-              <img class="ui avatar image" src="{{ crop.image.url }}">
-              <div class="middle aligned content">
-                <div class="description">{{ crop.title }}</div>
-              </div>
-            </div>
-          {% endfor %}
-        </div>
-      </div>
-      <a class="ui bottom attached button" href="#">
+    <!-- FIX ME: Make these buttons actually edit and cancel orders -->
+    <div class="content">
+      <a class="ui left floated labeled icon button">
+        <i class="edit icon"></i>
+        Edit Order
+      </a>
+      <a class="ui right floated right labeled negative icon button">
         <i class="trash icon"></i>
         Cancel Order
       </a>
     </div>
 
-    <a class="ui button" href="#">Next Order</a>
   </div>
+
 {% endblock %}
