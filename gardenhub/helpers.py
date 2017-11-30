@@ -1,7 +1,6 @@
 from django.db.models import Q
 from .models import Garden, Plot, Order
 
-
 def get_gardens(user):
     """
     Return all the Gardens the given user can edit.

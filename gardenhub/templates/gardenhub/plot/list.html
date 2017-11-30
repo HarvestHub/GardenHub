@@ -1,4 +1,5 @@
 {% extends "gardenhub/_manage_base.html" %}
+{% load gardenhub %}
 
 {% block content %}
 <div class="ui container">
@@ -15,7 +16,10 @@
           <div class="header">{{ plot.garden.title }}, Plot #{{ plot.title }}</div>
 
           <div class="meta">
-            <span class="notes">Some sort of notes</span>
+            <span class="notes">
+              {% plot_user_orders plot as orders %}
+                {{ orders|length }} upcoming orders
+              </span>
           </div>
 
           <div class="description">
