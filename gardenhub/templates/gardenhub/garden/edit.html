@@ -2,44 +2,48 @@
 
 {% block content %}
   <div class="ui container">
-    <div class="gm_manage_garden">
+    <img src="http://via.placeholder.com/150x150" class="ui centered small circular image">
+    <h2 class="ui center aligned header">
+      {{garden.title}}
+    </h2>
 
-      <div class="title">
-        <h2>Spring Garden</h2>
+      <div class="ui basic padded segment">
+        <div class="ui list">
+          <div class="item">
+            <i class="marker icon"></i>
+            <div class="content">
+              Number of plots
+            </div>
+          </div>
+          <div class="item">
+            <i class="users icon"></i>
+            <div class="content">
+              Member of:
+              {% for affiliation in garden.affiliation.all %}
+                <span class="member-of-list-item">{{  affiliation.title }}</span>
+              {% endfor %}
+            </div>
+          </div>
+          <div class="item">
+            <i class="mail icon"></i>
+            <div class="content">
+              <a href="mailto:mk@candlewaster.co">mk@candlewaster.co</a>
+            </div>
+          </div>
+          <div class="item">
+            <i class="address icon"></i>
+            <div class="content">
+              {{ garden.address }}
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div class="gm_manage_option">
-        <h3 class="manage_info">Plots</h3>
-        <h3 class-"manage_info">55</h3>
-        <a href="" class="button gm_manage_info">
-          <h3>Manage Plots</h3>
-        </a>
+      <div class="ui basic padded segment">
+        <button class="ui right floated negative button">Delete Garden</button>
+        <button class="ui left floated button">Edit Garden</button>
       </div>
 
-      <div class="gm_manage_option">
-        <h3 class="manage_info">Gardeners</h3>
-        <h3 class-"manage_info">46</h3>
-        <a href="" class="button gm_manage_info">
-          <h3>Manage Gardeners</h3>
-        </a>
-      </div>
 
-      <div class="gm_manage_option">
-        <h3 class="manage_info">Harvests</h3>
-        <h3 class-"manage_info">7</h3>
-        <a href="" class="button gm_manage_info">
-          <h3>Manage Harvests</h3>
-        </a>
-      </div>
-
-      <a href="" class="button gm_manage_info">
-        <h3>Garden Settings</h3>
-      </a>
-
-      <a href="" class="button gm_manage_info">
-        <h3>Schedule a Harvest Here</h3>
-      </a>
-
-    </div>
   </div>
 {% endblock %}
