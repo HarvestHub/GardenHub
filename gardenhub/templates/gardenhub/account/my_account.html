@@ -2,14 +2,45 @@
 
 {% block content %}
 <div class="ui container">
-    <h2>Manage Account</h2>
-    <ul>
-      <li>
-        <a href="/account/settings"><p>Account Settings</p></a>
-      </li>
-      <li>
-        <a href="/account/delete"><p>Delete acount</p></a>
-      </li>
-    </ul>
+  <img src="http://via.placeholder.com/150x150" class="ui centered small circular image">
+  <h2 class="ui center aligned header">
+    {{user.first_name}} {{user.last_name}}
+  </h2>
+
+  <div class="ui basic padded segment">
+    <div class="ui list">
+      <div class="item">
+        <i class="marker icon"></i>
+        <div class="content">
+          Philadelphia, PA
+        </div>
+      </div>
+      <div class="item">
+        <i class="map icon"></i>
+        <div class="content">
+          Member of: Spring Gardens <!-- FIX ME: PULL IN -->
+        </div>
+      </div>
+      <div class="item">
+        <i class="mail icon"></i>
+        <div class="content">
+          <a href="mailto:mk@candlewaster.co">mk@candlewaster.co</a>
+        </div>
+      </div>
+      <div class="item">
+        <i class="food icon"></i>
+        <div class="content">
+          You have donated 14lbs of food this year!
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ui basic padded segment">
+    <button class="ui right floated negative button">Delete Account</button>
+    <button class="ui left floated button">Edit Profile</button>
+  </div>
+
+
   </div>
 {% endblock %}
