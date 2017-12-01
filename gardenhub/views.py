@@ -7,7 +7,7 @@ from django.http import (
 from django.contrib.auth import authenticate, login, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
-from .models import Crop, Garden, Plot, Harvest, Order, Organization
+from .models import Crop, Garden, Plot, Harvest, Order, Affiliation
 from .forms import CreateOrderForm
 from .helpers import (
     get_gardens,

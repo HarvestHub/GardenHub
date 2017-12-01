@@ -14,7 +14,7 @@ class Crop(models.Model):
     def __str__(self):
         return self.title
 
-class Organization(models.Model):
+class Affiliation(models.Model):
     """
     A group of affiliated gardens.
     """
@@ -31,7 +31,7 @@ class Garden(models.Model):
     title = models.CharField(max_length=255)
     managers = models.ManyToManyField(get_user_model(), related_name='+')
     address = models.CharField(max_length=255)
-    affiliation = models.ManyToManyField(Organization, related_name='+')
+    affiliations = models.ManyToManyField(Affiliation, related_name='+')
 
     def __str__(self):
         return self.title
