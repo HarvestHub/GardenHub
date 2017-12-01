@@ -19,7 +19,7 @@
             <i class="users icon"></i>
             <div class="content">
               Member of:
-              {% for affiliation in garden.affiliation.all %}
+              {% for affiliation in garden.affiliations.all %}
                 <span class="member-of-list-item">{{  affiliation.title }}</span>
               {% endfor %}
             </div>

@@ -138,7 +138,6 @@ def view_order(request, orderId):
     """
     order = Order.objects.get(id=orderId)
 
-
     # If user isn't allowed to view this order...
     if not can_edit_plot(request.user, order.plot):
         return HttpResponseForbidden()
