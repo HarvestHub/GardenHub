@@ -1,0 +1,19 @@
+.member-of-list-item::after {
+  content: ", ";
+  margin: 0px;
+  padding: 0px;
+}
+
+.member-of-list-item:last-of-type::before {
+  content: "and ";
+  margin: 0px;
+  padding: 0px;
+}
+
+.member-of-list-item:last-of-type::after {
+  content: "";
+}
+
+.member-of-list-item:only-of-type::after {
+  content: "";
+}

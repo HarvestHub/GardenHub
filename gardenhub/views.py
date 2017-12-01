@@ -212,7 +212,12 @@ def my_account(request):
     """
     Profile edit screen for the logged-in user.
     """
-    return render(request, 'gardenhub/account/my_account.html')
+
+    gardens = get_gardens(request.user)
+
+    return render(request, 'gardenhub/account/my_account.html', {
+        "gardens": gardens
+})
 
 
 @login_required()

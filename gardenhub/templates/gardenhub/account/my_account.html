@@ -18,7 +18,10 @@
       <div class="item">
         <i class="map icon"></i>
         <div class="content">
-          Member of: Spring Gardens <!-- FIX ME: PULL IN -->
+          Member of:
+          {% for garden in gardens %}
+            <span class="member-of-list-item"><a href="/garden/{{ garden.id }}/edit/">{{ garden.title }}</a></span>
+          {% endfor %}
         </div>
       </div>
       <div class="item">
