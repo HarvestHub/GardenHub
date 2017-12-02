@@ -1,41 +1,39 @@
 {% extends "gardenhub/_manage_base.html" %}
 {% load static %}
 
-{% block body_class %}home_no_orders{% endblock %}
-
 {% block content %}
-<div class=" ui container">
-  <h1 class ="left aligned">Welcome, {{user.first_name}}!</h1>
-  <!-- FIX ME: what sort of info would be useful here -->
-  <span class="sub header">You have donated 12 lbs of food this year.</span>
-</div>
+  <div class=" ui container">
+    <h1 class ="left aligned">Welcome, {{user.first_name}}!</h1>
+    <!-- FIX ME: what sort of info would be useful here -->
+    <span class="sub header">You have donated 12 lbs of food this year.</span>
+  </div>
 
-<div class="ui center aligned container">
-  <div class="welcome-screen">
+  <div class="ui center aligned container">
+    <div class="welcome-screen">
 
-    {% if not has_open_orders %}
-      <div class="ui container">
-        <h2 class="ui header">
-          No Orders Placed
-          <span class="sub header">Create an order to get started.</span>
-        </h2>
-        <a class="big purple ui button" href="/orders/new/"><i class="plus icon"></i> New Order</a>
-      </div>
+      {% if not has_open_orders %}
+        <div class="ui container">
+          <h2 class="ui header">
+            No Orders Placed
+            <span class="sub header">Create an order to get started.</span>
+          </h2>
+          <a class="big purple ui button" href="/orders/new/"><i class="plus icon"></i> New Order</a>
+        </div>
 
       {% else %}
         <div class="ui items">
-          <div class="ui item">
-            <a class="huge purple ui button" href="/orders/new/"><i class="plus icon"></i> New Order</a>
+          <div class="item">
+            <a class="huge fluid purple ui button" href="/orders/new/"><i class="plus icon"></i> New Order</a>
           </div>
-          <div class="ui item">
-            <a class="huge purple ui button" href="/orders"><i class="edit icon"></i> View My Orders</a>
+          <div class="item">
+            <a class="huge fluid purple ui button" href="/orders"><i class="edit icon"></i> View My Orders</a>
           </div>
-          <div class="ui item">
-            <a class="huge purple ui button" href="/plots"><i class="marker icon"></i> View My Plots</a>
+          <div class="item">
+            <a class="huge fluid purple ui button" href="/plots"><i class="marker icon"></i> View My Plots</a>
           </div>
         </div>
-    {% endif %}
+      {% endif %}
 
+    </div>
   </div>
-</div>
 {% endblock %}
