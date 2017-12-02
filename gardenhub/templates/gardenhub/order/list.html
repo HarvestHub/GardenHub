@@ -1,89 +1,55 @@
 {% extends "gardenhub/_manage_base.html" %}
 
-{% block body_class %}home{% endblock %}
-
 {% block content %}
-<div class="ui container">
-  <h2>Manage Orders</h2>
+  <div class="ui container">
+    <h2>Manage Orders</h2>
 
-<!-- -________________________________________________ -->
-
-{% for order in orders %}
-    <div class="ui fluid card">
-      <div class="content">
-        <!-- FIX ME: Indicate atatus of order with different icons/colors-->
-        <i class="right floated check circle icon"></i>
-        <div class="header">{{ order.plot.garden }}, Plot #{{ order.plot.title }}</div>
-      </div>
-
-      <div class="content">
-
-        <h4 class="ui sub header">Date Range</h4>
-        <div class="summary">
-          {{ order.start_date }}&ndash;{{ order.end_date }}
-        </div>
-
-        <h4 class="ui sub header">Status</h4>
-          Enrique is harvesting your crops.
-          <!-- FIX ME: Indicate Progess of Order based on recorded Harvests-->
-          <div class="ui olive progress">
-            <div class="bar"></div>
-          </div>
-        <div class="summary">
-        </div>
-
-        <h4 class="ui sub header">Crops to be Harvested</h4>
-        <div class="ui mini horizontal list">
-          {% for crop in order.crops.all %}
-            <div class="item">
-              <img class="ui avatar image" src="{{ crop.image.url }}">
-              <div class="middle aligned content">
-                <div class="description">{{ crop.title }}</div>
-              </div>
+    <div class="ui three stackable cards">
+      {% for order in orders %}
+        <div class="card">
+          <div class="content">
+            <!-- TODO: Indicate atatus of order with different icons/colors-->
+            <i class="right floated check circle icon"></i>
+            <div class="header">{{ order.plot.garden }}, Plot #{{ order.plot.title }}</div>
+            <div class="ui clearing divider"></div>
+            <h4 class="ui sub header">Date Range</h4>
+            <div class="summary">
+              {{ order.start_date }}&ndash;{{ order.end_date }}
             </div>
-            {% endfor %}
-        </div>
-      </div>
-      <a class="ui bottom attached button" href="/order/{{ order.id }}/">
-        <i class="edit icon"></i>
-        View Order
-      </a>
-    </div>
-  {% endfor %}
 
-  <!-- -________________________________________________
+            <h4 class="ui sub header">Status</h4>
+              Enrique is harvesting your crops.
+              <!-- FIXME: Indicate Progess of Order based on recorded Harvests -->
+              <div class="ui olive progress">
+                <div class="bar"></div>
+              </div>
+            <div class="summary">
+            </div>
 
-
-    For each order attached to the current user, display info below. If no current order, display schedule harvest block.
-
-    {% for order in orders %}
-      <div class="upcoming_order">
-        <div class="upcoming_order_details">
-          <div class="date_and_plot_bar">
-            <h3>{{ order.start_date }}&ndash;{{ order.end_date }} </h3>
-            <h3>Plot #{{ order.plot.title }}</h3>
+            <h4 class="ui sub header">Crops to be Harvested</h4>
+            <div class="ui mini horizontal list">
+              {% for crop in order.crops.all %}
+                <div class="item">
+                  <img class="ui avatar image" src="{{ crop.image.url }}">
+                  <div class="middle aligned content">
+                    <div class="description">{{ crop.title }}</div>
+                  </div>
+                </div>
+                {% endfor %}
+            </div>
           </div>
-          <div class="garden_name">
-            <h2>{{ order.plot.garden }}</h2>
-          </div>
-          <div class="order_info">
-            <h4>Enrique is harvesting your crops</h4>
-          </div>
-        </div>
-        <div class="view_order">
-          <a href="/order/{{ order.id }}/">
-            <i class="big external link icon"></i>
-            <h4 class="view_order">View Order</h4>
+          <a class="ui bottom attached button" href="/order/{{ order.id }}/">
+            <i class="edit icon"></i>
+            View Order
           </a>
         </div>
-      </div>
-    {% endfor %}
-  </div> -->
-
-  <a href="/orders/new/">
-    <div class="submit_new_order button">
-      <h1>Submit New Order</h1>
+      {% endfor %}
     </div>
-  </a>
-</div>
+
+    <a href="/orders/new/">
+      <div class="submit_new_order button">
+        <h1>Submit New Order</h1>
+      </div>
+    </a>
+  </div>
 {% endblock %}
