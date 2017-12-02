@@ -164,13 +164,16 @@ def edit_garden(request, gardenId):
     Edit form for an individual garden.
     """
     garden = Garden.objects.get(id=gardenId)
+    plots = Plot.objects.filter(garden__id=garden.id)
+    # plots = Plot.objects.get(gardenId=garden_id)
 
     # If the user isn't allowed to edit this garden...
     if not can_edit_garden(request.user, garden):
         return HttpResponseForbidden()
 
     return render(request, 'gardenhub/garden/edit.html', {
-        "garden": garden
+        "garden": garden,
+        "plots": plots
     })
 
 
