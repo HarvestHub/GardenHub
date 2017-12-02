@@ -2,45 +2,42 @@
 {% load gardenhub %}
 
 {% block content %}
-<div class="ui container">
-  <h2>Manage Plots</h2>
+  <div class="ui container">
+    <h2>Manage Plots</h2>
 
-  <!-- TO DO:  If someone has more than multiple plots and multiple gardens, provide "filter by garden" option?-->
+    <!-- TODO:  If someone has more than multiple plots and multiple gardens, provide "filter by garden" option?-->
 
-  {% for plot in plots %}
-    <div class="ui fluid card">
-      <div class="content">
-        <i class="right floated marker icon"></i>
-        <div class="header">{{ plot.garden.title }}, Plot #{{ plot.title }}</div>
-      </div>
-
-      <div class="content">
-
-        <h4 class="ui sub header">Upcoming Orders</h4>
-        <div class="summary">
-          {% plot_user_orders plot as orders %}
-            {{ orders|length }} upcoming orders.
-        </div>
-
-        <h4 class="ui sub header">Crops in this Plot</h4>
-        <div class="ui mini horizontal list">
-          {% for crop in plot.crops.all %}
-            <div class="item">
-              <img class="ui avatar image" src="{{ crop.image.url }}">
-              <div class="middle aligned content">
-                <div class="description">{{ crop.title }}</div>
-              </div>
+    <div class="ui three stackable cards">
+      {% for plot in plots %}
+        <div class="card">
+          <div class="content">
+            <i class="right floated marker icon"></i>
+            <div class="header">{{ plot.garden.title }}, Plot #{{ plot.title }}</div>
+            <div class="ui clearing divider"></div>
+            <h4 class="ui sub header">Upcoming Orders</h4>
+            <div class="summary">
+              {% plot_user_orders plot as orders %}
+              {{ orders|length }} upcoming orders.
             </div>
-            {% endfor %}
-        </div>
-      </div>
-      <a class="ui bottom attached button" href="/plot/{{ plot.id }}/edit/">
-        <i class="edit icon"></i>
-        Edit Plot
-      </a>
-    </div>
-  {% endfor %}
 
+            <h4 class="ui sub header">Crops in this Plot</h4>
+            <div class="ui mini horizontal list">
+              {% for crop in plot.crops.all %}
+                <div class="item">
+                  <img class="ui avatar image" src="{{ crop.image.url }}">
+                  <div class="middle aligned content">
+                    <div class="description">{{ crop.title }}</div>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+          <a class="ui bottom attached button" href="/plot/{{ plot.id }}/edit/">
+            <i class="edit icon"></i>
+            Edit Plot
+          </a>
+        </div>
+      {% endfor %}
+    </div>
   </div>
-</div>
 {% endblock %}
