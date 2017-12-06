@@ -31,7 +31,7 @@ def login_user(request):
     context = {}
 
     # The user is already logged in; redirect them home.
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         return HttpResponseRedirect('/')
 
     # Login credentials have been submitted via the form.
