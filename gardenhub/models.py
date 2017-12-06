@@ -36,7 +36,7 @@ class Garden(models.Model):
     title = models.CharField(max_length=255)
     managers = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='+')
     address = models.CharField(max_length=255)
-    affiliations = models.ManyToManyField(Affiliation, related_name='+')
+    affiliations = models.ManyToManyField(Affiliation, related_name='+', blank=True)
 
     def __str__(self):
         return self.title
