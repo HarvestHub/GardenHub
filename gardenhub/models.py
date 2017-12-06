@@ -42,7 +42,7 @@ class Plot(models.Model):
     Subdivision of a Garden, allocated to a Gardener for growing food.
     """
     title = models.CharField(max_length=255)
-    garden = models.ForeignKey('Garden')
+    garden = models.ForeignKey('Garden', models.CASCADE)
     gardeners = models.ManyToManyField(get_user_model())
     crops = models.ManyToManyField('Crop')
 
@@ -55,13 +55,13 @@ class Order(models.Model):
     A request from a Gardener or Garden Manager to enlist a particular Plot for
     Harvest over a specified number of days.
     """
-    plot = models.ForeignKey('Plot')
+    plot = models.ForeignKey('Plot', models.DO_NOTHING)
     crops = models.ManyToManyField('Crop')
     start_date = models.DateField()
     end_date = models.DateField()
     canceled = models.BooleanField(default=False)
     canceled_date = models.DateField(null=True, blank=True)
-    requester = models.ForeignKey(get_user_model())
+    requester = models.ForeignKey(get_user_model(), models.DO_NOTHING)
 
     def __str__(self):
         return str(self.id)
@@ -80,7 +80,7 @@ class Harvest(models.Model):
             ('finished', 'Finished'),
         ),
     )
-    employee = models.ForeignKey(get_user_model())
+    employee = models.ForeignKey(get_user_model(), models.DO_NOTHING)
 
     def __str__(self):
         return str(self.id)
