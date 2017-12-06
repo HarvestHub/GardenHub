@@ -9,17 +9,6 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from .models import Crop, Garden, Plot, Harvest, Order, Affiliation
 from .forms import CreateOrderForm
-from .helpers import (
-    get_gardens,
-    get_plots,
-    get_orders,
-    is_garden_manager,
-    is_gardener,
-    is_anything,
-    has_open_orders,
-    can_edit_garden,
-    can_edit_plot
-)
 
 
 def login_user(request):
@@ -51,19 +40,12 @@ def login_user(request):
 
 @login_required()
 def home(request):
-    """
-    # FIXME:Redesign home screen
-    """
     # If the user has no assigned gardens or plots...
-    if not is_anything(request.user):
+    if not request.user.is_anything():
         # TODO: Handle this error better
         return HttpResponse("You haven't been assigned to any gardens or plots. This should never happen. Please contact support. We're sorry!")
 
-    return render(request, 'gardenhub/home/welcome.html', {
-        "user_is_gardener": is_gardener(request.user),
-        "user_is_garden_manager": is_garden_manager(request.user),
-        "has_open_orders": has_open_orders(request.user),
-    })
+    return render(request, 'gardenhub/home/welcome.html')
 
 
 @login_required()
@@ -75,23 +57,18 @@ def orders(request):
     Manage orders page to view all upcoming orders. (Previously the home page)
     """
     # If the user has no assigned gardens or plots...
-    if not is_anything(request.user):
+    if not request.user.is_anything():
         # TODO: Handle this error better
         return HttpResponse("You haven't been assigned to any gardens or plots. This should never happen. Please contact support. We're sorry!")
 
     # Display a "welcome screen" if the user hasn't placed any orders
-    if not has_open_orders(request.user):
-        return render(request, 'gardenhub/order/list.html', {
-            "user_is_gardener": is_gardener(request.user),
-            "user_is_garden_manager": is_garden_manager(request.user),
-        })
+    if not request.user.has_open_orders():
+        return render(request, 'gardenhub/order/list.html')
 
     # Otherwise, display a list of orders
     else:
         return render(request, 'gardenhub/order/list.html', {
-            "user_is_gardener": is_gardener(request.user),
-            "user_is_garden_manager": is_garden_manager(request.user),
-            "orders": get_orders(request.user),
+            "orders": request.user.get_orders()
         })
 
 
@@ -104,7 +81,7 @@ def new_order(request):
     context = {}
 
     # If the user has no assigned gardens or plots...
-    if not is_anything(request.user):
+    if not request.user.is_anything():
         # TODO: Handle this error better
         return HttpResponse("You haven't been assigned to any gardens or plots. This should never happen. Please contact support. We're sorry!")
 
@@ -119,7 +96,7 @@ def new_order(request):
                 canceled=False,
                 requester=request.user
             )
-            order.crops = form.cleaned_data['crops']
+            order.crops.set(form.cleaned_data['crops'])
             order.save()
             context["success"] = True
     else:
@@ -139,7 +116,7 @@ def view_order(request, orderId):
     order = Order.objects.get(id=orderId)
 
     # If user isn't allowed to view this order...
-    if not can_edit_plot(request.user, order.plot):
+    if not request.user.can_edit_plot(order.plot):
         return HttpResponseForbidden()
 
     return render(request, 'gardenhub/order/view.html', {
@@ -152,7 +129,7 @@ def gardens(request):
     """
     A list of all gardens the logged-in user can edit.
     """
-    gardens = get_gardens(request.user)
+    gardens = request.user.get_gardens()
     return render(request, 'gardenhub/garden/list.html', {
         "gardens": gardens
     })
@@ -168,7 +145,7 @@ def edit_garden(request, gardenId):
     # plots = Plot.objects.get(gardenId=garden_id)
 
     # If the user isn't allowed to edit this garden...
-    if not can_edit_garden(request.user, garden):
+    if not request.user.can_edit_garden(garden):
         return HttpResponseForbidden()
 
     return render(request, 'gardenhub/garden/edit.html', {
@@ -182,7 +159,7 @@ def plots(request):
     """
     A list of all plots the logged-in user can edit.
     """
-    plots = get_plots(request.user)
+    plots = request.user.get_plots()
     return render(request, 'gardenhub/plot/list.html', {
         "plots": plots
     })
@@ -194,12 +171,12 @@ def edit_plot(request, plotId):
     Edit form for an individual plot.
     """
     plot = Plot.objects.get(id=plotId)
-    gardens = get_gardens(request.user)
+    gardens = request.user.get_gardens()
     # FIXME: This should only pull in gardeners from the selected garden
     gardeners = get_user_model().objects.all()
 
     # If user isn't allowed to edit this plot...
-    if not can_edit_plot(request.user, plot):
+    if not request.user.can_edit_plot(plot):
         return HttpResponseForbidden()
 
     return render(request, 'gardenhub/plot/edit.html', {
@@ -215,7 +192,7 @@ def my_account(request):
     Profile edit screen for the logged-in user.
     """
 
-    gardens = get_gardens(request.user)
+    gardens = request.user.get_gardens()
 
     return render(request, 'gardenhub/account/my_account.html', {
         "gardens": gardens
@@ -247,7 +224,7 @@ def api_crops(request):
         plot = Plot.objects.get(id=request.GET['plot'])
 
         # If user isn't allowed to edit this plot...
-        if not can_edit_plot(request.user, plot):
+        if not request.user.can_edit_plot(plot):
             return HttpResponseForbidden()
 
         crops = Plot.objects.get(id=plot.id).crops.all()

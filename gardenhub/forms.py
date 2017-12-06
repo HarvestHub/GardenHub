@@ -1,6 +1,5 @@
 from django import forms
 from .models import Order, Plot, Crop
-from .helpers import get_plots
 
 class CreateOrderForm(forms.Form):
     plot = forms.ModelChoiceField(queryset=None)
@@ -10,4 +9,4 @@ class CreateOrderForm(forms.Form):
 
     def __init__(self, user, *args, **kwargs):
         super(CreateOrderForm, self).__init__(*args, **kwargs)
-        self.fields['plot'].queryset = get_plots(user)
+        self.fields['plot'].queryset = user.get_plots()

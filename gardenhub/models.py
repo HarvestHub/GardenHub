@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib.auth.models import PermissionsMixin
@@ -19,6 +20,7 @@ class Crop(models.Model):
     def __str__(self):
         return self.title
 
+
 class Affiliation(models.Model):
     """
     A group of affiliated gardens.
@@ -28,6 +30,7 @@ class Affiliation(models.Model):
 
     def __str__(self):
         return self.title
+
 
 class Garden(models.Model):
     """
@@ -178,21 +181,68 @@ class User(AbstractBaseUser, PermissionsMixin):
         """Send an email to this user."""
         send_mail(subject, message, from_email, [self.email], **kwargs)
 
+    def get_gardens(self):
+        """
+        Return all the Gardens the given user can edit.
+        """
+        return Garden.objects.filter(managers__id=self.id)
 
-"""
-There are several conceptual types of users that we should be aware of.
+    def get_plots(self):
+        """
+        Return all the Plots the given user can edit. Users can edit any plot which
+        they are a gardener on, and any plot in a garden they manage.
+        """
+        return Plot.objects.filter(
+            Q(gardeners__id=self.id) | Q(garden__managers__id=self.id)
+        ).distinct()
 
-1. Site Administrator -- Has full access to all data, and is granted the ability
-   to invite any new member to the site. TBD: Identifying them programatically.
+    def get_orders(self):
+        """
+        Return all Orders for the given user's Plots and Gardens.
+        """
+        plot_ids = [ plot.id for plot in self.get_plots().all() ]
+        return Order.objects.filter(plot__id__in=plot_ids)
 
-2. Garden Manager -- Someone who facilitates renting Plots of a Garden out to
-   Gardeners. Any person who is set as Garden.manager on at least one Garden.
+    def is_garden_manager(self):
+        """
+        A garden manager is someone who facilitates renting Plots of a Garden out to
+        Gardeners. Any person who is set as Garden.manager on at least one Garden.
+        """
+        return self.get_gardens().count() > 0
 
-3. Gardener -- Someone who rents a garden Plot and grows food there. Gardeners
-   are assigned to Plot.gardener on at least one Plot.
+    def is_gardener(self):
+        """
+        A gardener is someone who rents a garden Plot and grows food there.
+        Gardeners are assigned to Plot.gardener on at least one Plot.
+        """
+        return self.get_plots().count() > 0
 
-4. Employee -- A hired employee responsible for fulfilling Orders. It is safe to
-   say that anyone with an Order assigned to them is an Employee, but TBD:
-   figure out how to determine them programatically when there's no active
-   order.
-"""
+    def is_anything(self):
+        """
+        GardenHub is only useful if the logged-in user can manage any garden or
+        plot. If not, that is very sad. :(
+        """
+        return self.is_gardener() or self.is_garden_manager()
+
+    def has_open_orders(self):
+        """
+        Determine whether or not a user has any current open harvests for home display.
+        """
+        return self.get_orders().count() > 0
+
+    def can_edit_garden(self, garden):
+        """
+        Can the given user manage this garden?
+        True if the user is listed in Garden.managers for that garden.
+        False otherwise.
+        """
+        return self in garden.managers.all()
+
+    def can_edit_plot(self, plot):
+        """
+        Can the given user manage this plot?
+        True if the user is listed in Plot.gardeners for that plot, OR the user is
+        listed in Garden.managers for the garden in Plot.garden.
+        False otherwise.
+        """
+        return self in plot.gardeners.all() or self in plot.garden.managers.all()

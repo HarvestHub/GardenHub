@@ -11,7 +11,7 @@
   <div class="ui center aligned container">
     <div class="welcome-screen">
 
-      {% if not has_open_orders %}
+      {% if not request.user.has_open_orders %}
         <div class="ui container">
           <h2 class="ui header">
             No Orders Placed
