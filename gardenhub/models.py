@@ -26,7 +26,7 @@ class Affiliation(models.Model):
     A group of affiliated gardens.
     """
     title = models.CharField(max_length=255)
-    managers = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='+')
+    managers = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='+', blank=True)
 
     def __str__(self):
         return self.title
@@ -37,7 +37,7 @@ class Garden(models.Model):
     A whole landscape, divided into many plots. Managed by Garden Managers.
     """
     title = models.CharField(max_length=255)
-    managers = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='+')
+    managers = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='+', blank=True)
     address = models.CharField(max_length=255)
     affiliations = models.ManyToManyField(Affiliation, related_name='+', blank=True)
 
@@ -51,8 +51,8 @@ class Plot(models.Model):
     """
     title = models.CharField(max_length=255)
     garden = models.ForeignKey('Garden', models.CASCADE)
-    gardeners = models.ManyToManyField(settings.AUTH_USER_MODEL)
-    crops = models.ManyToManyField('Crop')
+    gardeners = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)
+    crops = models.ManyToManyField('Crop', blank=True)
 
     def __str__(self):
         return "{} [{}]".format(self.garden.title, self.title)
