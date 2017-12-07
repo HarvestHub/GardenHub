@@ -246,3 +246,11 @@ class User(AbstractBaseUser, PermissionsMixin):
         False otherwise.
         """
         return self in plot.gardeners.all() or self in plot.garden.managers.all()
+
+    def can_edit_order(self, order):
+        """
+        Can the given user manage this order?
+        True if the user can edit Order.plot for that order.
+        False otherwise.
+        """
+        return self.can_edit_plot(order.plot)

@@ -42,7 +42,7 @@ urlpatterns = [
     url(r'^gardens/$', views.gardens),
     url(r'^garden/(?P<gardenId>.*)/edit/$', views.edit_garden),
     # API
-    url(r'^_api/crops\.json$', views.api_crops),
+    url(r'^_api/crops/(?P<plotId>.*)/$', views.api_crops),
     # Default auth views https://docs.djangoproject.com/en/1.11/topics/auth/default/#using-the-views
     url('^', include('django.contrib.auth.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,7 +1,9 @@
 from datetime import date
-from django.test import TestCase
+from django.test import TestCase, RequestFactory
 from django.contrib.auth import get_user_model, authenticate
+from django.http import HttpResponse
 from .models import Garden, Plot, Order
+from gardenhub import decorators
 
 
 class UserTestCase(TestCase):
@@ -218,12 +220,194 @@ class UserTestCase(TestCase):
         garden = Garden.objects.create(title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
         plot = Plot.objects.create(title='Plot 1', garden=garden)
 
-        # Assign gardener to plot
+        # Test that the gardener can edit the plot
         gardener = get_user_model().objects.create_user(email='gardener2@gardenhub.dev', password='gardener2')
         plot.gardeners.add(gardener)
-
-        # Test that the gardener can edit the plot
         self.assertTrue(gardener.can_edit_plot(plot))
 
-        # Test that a normal user can't edit the garden
+        # Test that a garden manager can edit the plot
+        garden_manager = get_user_model().objects.create_user(email='test_can_edit_plot_garden_manager@gardenhub.dev', password='test_can_edit_plot_garden_manager')
+        garden.managers.add(garden_manager)
+        self.assertTrue(garden_manager.can_edit_plot(plot))
+
+        # Test that a normal user can't edit the plot
         self.assertFalse(self.normal_user.can_edit_plot(plot))
+
+
+    def can_edit_order(self):
+        """ User.can_edit_order() """
+
+        # Create order
+        garden = Garden.objects.create(title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
+        plot = Plot.objects.create(title='Plot 1', garden=garden)
+        order = Order.objects.create(plot=plot, start_date=date(2017, 1, 1), end_date=date(2017, 1, 5), requester=self.normal_user)
+
+        # Test that the gardener can edit the order
+        gardener = get_user_model().objects.create_user(email='can_edit_order_gardener@gardenhub.dev', password='can_edit_order_gardener')
+        plot.gardeners.add(gardener)
+        self.assertTrue(gardener.can_edit_order(order))
+
+        # Test that a garden manager can edit the order
+        garden_manager = get_user_model().objects.create_user(email='can_edit_order_garden_manager@gardenhub.dev', password='can_edit_order_garden_manager')
+        garden.managers.add(garden_manager)
+        self.assertTrue(garden_manager.can_edit_order(order))
+
+        # Test that a normal user can't edit the order
+        self.assertFalse(self.normal_user.can_edit_order(order))
+
+
+
+class DecoratorTestCase(TestCase):
+    """
+    Test the functions in decorators.py
+    """
+
+    def setUp(self):
+        # Create a basic view for testing auth decorators on
+        def generic_view(request):
+            return HttpResponse()
+        self.generic_view = generic_view
+
+        # Create a normal user who isn't assigned to anything
+        self.normal_user = get_user_model().objects.create_user(email='normal_user2@gardenhub.dev', password='normal_user2')
+
+        # Faking requests
+        self.factory = RequestFactory()
+
+        # Create an instance of a GET request with a normal user
+        self.unauthorized_request = self.factory.get('/')
+        self.unauthorized_request.user = self.normal_user
+
+
+    def test_is_anything(self):
+        """ decorators.is_anything() """
+
+        # Test an unauthorized request
+        view = decorators.is_anything(self.generic_view)
+        response = view(self.unauthorized_request)
+        self.assertEqual(response.status_code, 403)
+
+        # Create an instance of a GET request with a gardener
+        garden = Garden.objects.create(title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
+        plot = Plot.objects.create(title='Plot 1', garden=garden)
+        gardener = get_user_model().objects.create_user(email='gardener3@gardenhub.dev', password='gardener3')
+        plot.gardeners.add(gardener)
+        gardener_request = self.factory.get('/')
+        gardener_request.user = gardener
+
+        # Test a gardener request
+        view = decorators.is_anything(self.generic_view)
+        response = view(gardener_request)
+        self.assertEqual(response.status_code, 200)
+
+        # Create an instance of a GET request with a garden manager
+        garden = Garden.objects.create(title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
+        garden_manager = get_user_model().objects.create_user(email='test_is_anything_garden_manager@gardenhub.dev', password='test_is_anything_garden_manager')
+        garden.managers.add(garden_manager)
+        garden_manager_request = self.factory.get('/')
+        garden_manager_request.user = garden_manager
+
+        # Test a gardener request
+        view = decorators.is_anything(self.generic_view)
+        response = view(garden_manager_request)
+        self.assertEqual(response.status_code, 200)
+
+
+    def test_can_edit_plot(self):
+        """ decorators.can_edit_plot() """
+
+        # Create a test view
+        @decorators.can_edit_plot
+        def plot_view(request, plotId):
+            return HttpResponse()
+
+        # Create a plot
+        garden = Garden.objects.create(title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
+        plot = Plot.objects.create(title='Plot 1', garden=garden)
+
+        # Test an unauthorized request
+        response = plot_view(self.unauthorized_request, plot.id)
+        self.assertEqual(response.status_code, 403)
+
+        # Test a gardener on the plot
+        gardener = get_user_model().objects.create_user(email='test_can_edit_plot_gardener@gardenhub.dev', password='test_can_edit_plot_gardener')
+        plot.gardeners.add(gardener)
+        gardener_request = self.factory.get('/')
+        gardener_request.user = gardener
+        response = plot_view(gardener_request, plot.id)
+        self.assertEqual(response.status_code, 200)
+
+        # Test a garden manager on the plot
+        garden_manager = get_user_model().objects.create_user(email='test_can_edit_plot_garden_manager@gardenhub.dev', password='test_can_edit_plot_garden_manager')
+        garden.managers.add(garden_manager)
+        garden_manager_request = self.factory.get('/')
+        garden_manager_request.user = garden_manager
+        response = plot_view(garden_manager_request, plot.id)
+        self.assertEqual(response.status_code, 200)
+
+
+    def test_can_edit_garden(self):
+        """ decorators.can_edit_garden() """
+
+        # Create a test view
+        @decorators.can_edit_garden
+        def garden_view(request, gardenId):
+            return HttpResponse()
+
+        # Create a plot
+        garden = Garden.objects.create(title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
+        plot = Plot.objects.create(title='Plot 1', garden=garden)
+
+        # Test an unauthorized request
+        response = garden_view(self.unauthorized_request, garden.id)
+        self.assertEqual(response.status_code, 403)
+
+        # Test a gardener on the plot
+        gardener = get_user_model().objects.create_user(email='test_can_edit_garden_gardener@gardenhub.dev', password='test_can_edit_garden_gardener')
+        plot.gardeners.add(gardener)
+        gardener_request = self.factory.get('/')
+        gardener_request.user = gardener
+        response = garden_view(gardener_request, garden.id)
+        self.assertEqual(response.status_code, 403)
+
+        # Test a garden manager on the plot
+        garden_manager = get_user_model().objects.create_user(email='test_can_edit_garden_garden_manager@gardenhub.dev', password='test_can_edit_garden_garden_manager')
+        garden.managers.add(garden_manager)
+        garden_manager_request = self.factory.get('/')
+        garden_manager_request.user = garden_manager
+        response = garden_view(garden_manager_request, garden.id)
+        self.assertEqual(response.status_code, 200)
+
+
+    def test_can_edit_order(self):
+        """ decorators.can_edit_order() """
+
+        # Create a test view
+        @decorators.can_edit_order
+        def order_view(request, orderId):
+            return HttpResponse()
+
+        # Create an order
+        garden = Garden.objects.create(title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
+        plot = Plot.objects.create(title='Plot 1', garden=garden)
+        order = Order.objects.create(plot=plot, start_date=date(2017, 1, 1), end_date=date(2017, 1, 5), requester=self.normal_user)
+
+        # Test an unauthorized request
+        response = order_view(self.unauthorized_request, order.id)
+        self.assertEqual(response.status_code, 403)
+
+        # Test a gardener on the order's plot
+        gardener = get_user_model().objects.create_user(email='test_can_edit_order_gardener@gardenhub.dev', password='test_can_edit_order_gardener')
+        plot.gardeners.add(gardener)
+        gardener_request = self.factory.get('/')
+        gardener_request.user = gardener
+        response = order_view(gardener_request, order.id)
+        self.assertEqual(response.status_code, 200)
+
+        # Test a garden manager on the order's plot
+        garden_manager = get_user_model().objects.create_user(email='test_can_edit_order_garden_manager@gardenhub.dev', password='test_can_edit_order_garden_manager')
+        garden.managers.add(garden_manager)
+        garden_manager_request = self.factory.get('/')
+        garden_manager_request.user = garden_manager
+        response = order_view(garden_manager_request, order.id)
+        self.assertEqual(response.status_code, 200)

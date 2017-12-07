@@ -124,7 +124,7 @@
 
     // Calls the API and sets the crops markup
     function doCrops(plotId) {
-      $.get('/_api/crops.json', { plot: plotId })
+      $.get('/_api/crops/' + plotId + '/')
       .done(function(data) {
         $('select.crops').html(cropSelectTemplate(data.crops));
         $('.crop.tapicons').html(cropThumbsTemplate(data.crops));

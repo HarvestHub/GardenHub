@@ -9,6 +9,12 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from .models import Crop, Garden, Plot, Harvest, Order, Affiliation
 from .forms import CreateOrderForm
+from .decorators import (
+    is_anything,
+    can_edit_plot,
+    can_edit_garden,
+    can_edit_order
+)
 
 
 def login_user(request):
@@ -38,29 +44,21 @@ def login_user(request):
     return render(request, 'gardenhub/auth/login.html', context)
 
 
-@login_required()
+@login_required
+@is_anything
 def home(request):
-    # If the user has no assigned gardens or plots...
-    if not request.user.is_anything():
-        # TODO: Handle this error better
-        return HttpResponse("You haven't been assigned to any gardens or plots. This should never happen. Please contact support. We're sorry!")
-
+    """
+    Welcome screen with calls to action.
+    """
     return render(request, 'gardenhub/home/welcome.html')
 
 
-@login_required()
+@login_required
+@is_anything
 def orders(request):
-    # FIXME: How is this different from the home view?
-    # Should we rethink the home view or delete this one?
-
     """
-    Manage orders page to view all upcoming orders. (Previously the home page)
+    Manage orders page to view all upcoming orders.
     """
-    # If the user has no assigned gardens or plots...
-    if not request.user.is_anything():
-        # TODO: Handle this error better
-        return HttpResponse("You haven't been assigned to any gardens or plots. This should never happen. Please contact support. We're sorry!")
-
     # Display a "welcome screen" if the user hasn't placed any orders
     if not request.user.has_open_orders():
         return render(request, 'gardenhub/order/list.html')
@@ -72,18 +70,14 @@ def orders(request):
         })
 
 
-@login_required()
+@login_required
+@is_anything
 def new_order(request):
     """
     This is a form used to submit a new order. It's used by gardeners, garden
     managers, or anyone who has the ability to edit a plot.
     """
     context = {}
-
-    # If the user has no assigned gardens or plots...
-    if not request.user.is_anything():
-        # TODO: Handle this error better
-        return HttpResponse("You haven't been assigned to any gardens or plots. This should never happen. Please contact support. We're sorry!")
 
     # A form has been submitted
     if request.POST:
@@ -106,8 +100,8 @@ def new_order(request):
     return render(request, 'gardenhub/order/create.html', context)
 
 
-
-@login_required()
+@login_required
+@can_edit_order
 def view_order(request, orderId):
     """
     Review an individual order that's been submitted. Anyone who can edit the
@@ -115,38 +109,31 @@ def view_order(request, orderId):
     """
     order = Order.objects.get(id=orderId)
 
-    # If user isn't allowed to view this order...
-    if not request.user.can_edit_plot(order.plot):
-        return HttpResponseForbidden()
-
     return render(request, 'gardenhub/order/view.html', {
         "order": order
     })
 
 
-@login_required()
+@login_required
 def gardens(request):
     """
     A list of all gardens the logged-in user can edit.
     """
     gardens = request.user.get_gardens()
+
     return render(request, 'gardenhub/garden/list.html', {
         "gardens": gardens
     })
 
 
-@login_required()
+@login_required
+@can_edit_garden
 def edit_garden(request, gardenId):
     """
     Edit form for an individual garden.
     """
     garden = Garden.objects.get(id=gardenId)
     plots = Plot.objects.filter(garden__id=garden.id)
-    # plots = Plot.objects.get(gardenId=garden_id)
-
-    # If the user isn't allowed to edit this garden...
-    if not request.user.can_edit_garden(garden):
-        return HttpResponseForbidden()
 
     return render(request, 'gardenhub/garden/edit.html', {
         "garden": garden,
@@ -154,18 +141,20 @@ def edit_garden(request, gardenId):
     })
 
 
-@login_required()
+@login_required
 def plots(request):
     """
     A list of all plots the logged-in user can edit.
     """
     plots = request.user.get_plots()
+
     return render(request, 'gardenhub/plot/list.html', {
         "plots": plots
     })
 
 
-@login_required()
+@login_required
+@can_edit_plot
 def edit_plot(request, plotId):
     """
     Edit form for an individual plot.
@@ -175,10 +164,6 @@ def edit_plot(request, plotId):
     # FIXME: This should only pull in gardeners from the selected garden
     gardeners = get_user_model().objects.all()
 
-    # If user isn't allowed to edit this plot...
-    if not request.user.can_edit_plot(plot):
-        return HttpResponseForbidden()
-
     return render(request, 'gardenhub/plot/edit.html', {
         "plot": plot,
         "gardens": gardens,
@@ -186,12 +171,11 @@ def edit_plot(request, plotId):
     })
 
 
-@login_required()
+@login_required
 def my_account(request):
     """
     Profile edit screen for the logged-in user.
     """
-
     gardens = request.user.get_gardens()
 
     return render(request, 'gardenhub/account/my_account.html', {
@@ -199,7 +183,7 @@ def my_account(request):
 })
 
 
-@login_required()
+@login_required
 def account_settings(request):
     """
     Account settings screen for the logged-in user.
@@ -207,7 +191,7 @@ def account_settings(request):
     return render(request, 'gardenhub/account/edit_settings.html')
 
 
-@login_required()
+@login_required
 def delete_account(request):
     """
     Delete the logged-in user's GardenHub account.
@@ -215,19 +199,15 @@ def delete_account(request):
     return render(request, 'gardenhub/account/delete_account.html')
 
 
-@login_required()
-def api_crops(request):
+@login_required
+@can_edit_plot
+def api_crops(request, plotId):
     """
     Return JSON about crops.
     """
     try:
-        plot = Plot.objects.get(id=request.GET['plot'])
-
-        # If user isn't allowed to edit this plot...
-        if not request.user.can_edit_plot(plot):
-            return HttpResponseForbidden()
-
-        crops = Plot.objects.get(id=plot.id).crops.all()
+        plot = Plot.objects.get(id=plotId)
+        crops = plot.crops.all()
         return JsonResponse({
             "crops": [{
                 "id": crop.id,
