@@ -2,10 +2,6 @@ from django.http import HttpResponseForbidden
 from .models import Plot, Garden, Order
 
 
-# TODO: Handle this error better
-FORBIDDEN = HttpResponseForbidden("You haven't been assigned to any gardens or plots. This should never happen. Please contact support. We're sorry!")
-
-
 def is_anything(func):
     """
     Only a user who has access to at least one Plot or Garden may access this.
@@ -13,7 +9,7 @@ def is_anything(func):
     def func_wrapper(request, *args, **kwargs):
         # If the user has no assigned gardens or plots...
         if not request.user.is_anything():
-            return FORBIDDEN
+            return HttpResponseForbidden("You haven't been assigned to any gardens or plots. This should never happen. Please contact support. We're sorry!")
         # Otherwise, carry on
         else:
             return func(request, *args, **kwargs)
@@ -30,7 +26,7 @@ def can_edit_plot(func):
 
         # If user isn't allowed to edit this plot...
         if not request.user.can_edit_plot(plot):
-            return FORBIDDEN
+            return HttpResponseForbidden("You do not have permission to edit this plot.")
         # Otherwise, carry on
         else:
             return func(request, plotId, *args, **kwargs)
@@ -47,7 +43,7 @@ def can_edit_garden(func):
 
         # If the user isn't allowed to edit this garden...
         if not request.user.can_edit_garden(garden):
-            return FORBIDDEN
+            return HttpResponseForbidden("You do not have permission to edit this garden.")
         # Otherwise, carry on
         else:
             return func(request, gardenId, *args, **kwargs)
@@ -64,7 +60,7 @@ def can_edit_order(func):
 
         # If user isn't allowed to view this order...
         if not request.user.can_edit_order(order):
-            return FORBIDDEN
+            return HttpResponseForbidden("You do not have permission to manage this order.")
         # Otherwise, carry on
         else:
             return func(request, orderId, *args, **kwargs)
