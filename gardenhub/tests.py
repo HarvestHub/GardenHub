@@ -1,3 +1,4 @@
+from datetime import date
 from django.test import TestCase
 from django.contrib.auth import get_user_model, authenticate
 from .models import Garden, Plot, Order
@@ -111,8 +112,26 @@ class UserTestCase(TestCase):
 
     def test_get_orders(self):
         """ User.get_orders() """
-        # TODO: Writing a test for this will be painful and I don't feel like it right now
-        pass
+
+        # Create plot
+        garden = Garden.objects.create(title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
+        plot = Plot.objects.create(title='Plot 1', garden=garden)
+
+        # Create orders
+        orders = [
+            Order.objects.create(plot=plot, start_date=date(2017, 1, 1), end_date=date(2017, 1, 5), requester=self.normal_user),
+            Order.objects.create(plot=plot, start_date=date(2017, 2, 1), end_date=date(2017, 2, 5), requester=self.normal_user),
+            Order.objects.create(plot=plot, start_date=date(2017, 3, 1), end_date=date(2017, 3, 5), requester=self.normal_user),
+            Order.objects.create(plot=plot, start_date=date(2017, 4, 1), end_date=date(2017, 4, 5), requester=self.normal_user),
+            Order.objects.create(plot=plot, start_date=date(2017, 5, 1), end_date=date(2017, 5, 5), requester=self.normal_user)
+        ]
+
+        # Create user and assign it to the plot
+        user = get_user_model().objects.create_user(email='test_get_orders@gardenhub.dev', password='test_get_orders')
+        plot.gardeners.add(user)
+
+        # Test orders
+        self.assertEqual(list(user.get_orders()), orders)
 
 
     def test_is_garden_manager(self):
@@ -152,8 +171,27 @@ class UserTestCase(TestCase):
 
     def test_has_open_orders(self):
         """ User.has_open_orders() """
-        # TODO
-        pass
+
+        # Create plot
+        garden = Garden.objects.create(title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
+        plot = Plot.objects.create(title='Plot 1', garden=garden)
+
+        # Create orders
+        orders = [
+            Order.objects.create(plot=plot, start_date=date(2017, 1, 1), end_date=date(2017, 1, 5), requester=self.normal_user),
+            Order.objects.create(plot=plot, start_date=date(2017, 2, 1), end_date=date(2017, 2, 5), requester=self.normal_user),
+            Order.objects.create(plot=plot, start_date=date(2017, 3, 1), end_date=date(2017, 3, 5), requester=self.normal_user),
+            Order.objects.create(plot=plot, start_date=date(2017, 4, 1), end_date=date(2017, 4, 5), requester=self.normal_user),
+            Order.objects.create(plot=plot, start_date=date(2017, 5, 1), end_date=date(2017, 5, 5), requester=self.normal_user)
+        ]
+
+        # Create user and assign it to the plot
+        user = get_user_model().objects.create_user(email='test_has_open_orders@gardenhub.dev', password='test_has_open_orders')
+        plot.gardeners.add(user)
+
+        # Test orders
+        self.assertTrue(user.has_open_orders())
+        self.assertFalse(self.normal_user.has_open_orders())
 
 
     def test_can_edit_garden(self):
