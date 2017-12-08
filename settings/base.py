@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
     'compressor',
+    'sorl.thumbnail',
     'gardenhub',
 ]
 

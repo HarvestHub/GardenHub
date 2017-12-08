@@ -1,4 +1,4 @@
-{% load static %}
+{% load static thumbnail %}
 
 <div class="ui large fixed borderless top menu">
   <div class="ui container">
@@ -20,7 +20,13 @@
         </div>
       </div>
       <div class="ui dropdown item">
-        <img class="ui avatar image" src="//via.placeholder.com/100x100?text={{ request.user.first_name.0 }}">
+        {% if request.user.photo %}
+          {% thumbnail request.user.photo "100x100" crop="center" as photo %}
+            <img class="ui avatar image" src="{{ photo.url }}" width="{{ photo.width }}" height="{{ photo.height }}">
+          {% endthumbnail %}
+        {% else %}
+          <img class="ui avatar image" src="//via.placeholder.com/100/a333c8/ffffff?text={{ request.user.first_name.0 }}">
+        {% endif %}
         <div class="text">{{ request.user.first_name }}</div>
         <i class="dropdown icon"></i>
         <div class="menu">

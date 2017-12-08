@@ -1,8 +1,15 @@
 {% extends "gardenhub/_manage_base.html" %}
+{% load thumbnail %}
 
 {% block content %}
 <div class="ui container">
-  <img src="http://via.placeholder.com/150x150" class="ui centered small circular image">
+  {% if request.user.photo %}
+    {% thumbnail request.user.photo "300x300" crop="center" as photo %}
+      <img class="ui centered small circular image" src="{{ photo.url }}" width="{{ photo.width }}" height="{{ photo.height }}">
+    {% endthumbnail %}
+  {% else %}
+    <img class="ui centered small circular image" src="//via.placeholder.com/300/a333c8/ffffff?text={{ request.user.first_name.0 }}">
+  {% endif %}
   <h2 class="ui center aligned header">
     {{user.first_name}} {{user.last_name}}
   </h2>
