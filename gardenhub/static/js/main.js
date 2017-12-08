@@ -3,5 +3,5 @@ $('.top.menu .ui.dropdown')
     "action": "nothing"
   });
 
-$('form .ui.dropdown')
-  .dropdown();
+// $('form .ui.dropdown')
+//   .dropdown();

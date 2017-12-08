@@ -38,10 +38,10 @@
     <div class="field">
       <label>Gardeners</label>
       <p class="description">List the people who should manage this plot, or enter an email address to invite someone.</p>
-      <select name="gardeners" multiple="" class="ui fluid dropdown">
+      <select name="gardeners" multiple="" class="ui gardeners fluid search dropdown"  multiple="">
         <option value="">Add gardeners...</option>
         {% for gardener in gardeners %}
-          <option data-value="{{ gardener.id }}">{{ gardener.first_name }}</option>
+          <option data-value="{{ gardener.email }}">{{ gardener.first_name }}</option>
         {% endfor%}
       </select>
     </div>
@@ -55,4 +55,14 @@
 
   </form>
 </div>
+{% endblock %}
+
+{% block extra_scripts %}
+  <script>
+    $('.ui.gardeners.dropdown')
+      .dropdown({
+        allowAdditions: true
+      })
+    ;
+  </script>
 {% endblock %}
