@@ -10,8 +10,10 @@
           <div class="content">
             <!-- TODO: Indicate atatus of order with different icons/colors-->
             <i class="right floated check circle icon"></i>
-            <div class="header">{{ order.plot.garden }}, Plot #{{ order.plot.title }}</div>
+            <div class="header">Order #{{ order.id }}</div>
             <div class="ui clearing divider"></div>
+            <h4 class="ui sub header">Location</h4>
+            <p><strong><a href="/garden/{{ order.plot.garden.id }}/">{{ order.plot.garden }}</a></strong>, Plot {{ order.plot.title }}</p>
             <h4 class="ui sub header">Date Range</h4>
             <div class="summary">
               {{ order.start_date }}&ndash;{{ order.end_date }}
@@ -20,7 +22,7 @@
             <h4 class="ui sub header">Status</h4>
               Enrique is harvesting your crops.
               <!-- FIXME: Indicate Progess of Order based on recorded Harvests -->
-              <div class="ui olive progress">
+              <div class="ui olive progress" data-value="100" data-total="200">
                 <div class="bar"></div>
               </div>
             <div class="summary">
@@ -45,11 +47,6 @@
         </div>
       {% endfor %}
     </div>
-
-    <a href="/orders/new/">
-      <div class="submit_new_order button">
-        <h1>Submit New Order</h1>
-      </div>
-    </a>
+    <a href="/orders/new/" class="right floated large purple ui button clearfix">Submit New Order</a>
   </div>
 {% endblock %}

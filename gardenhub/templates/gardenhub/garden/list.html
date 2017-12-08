@@ -10,11 +10,11 @@
     <div class="ui unstackable divided items">
       {% for garden in gardens %}
         <div class="item">
-          <a class="ui tiny image" href="/garden/{{ garden.id }}/edit/">
+          <a class="ui tiny image" href="/garden/{{ garden.id }}/">
             <img src="http://via.placeholder.com/500x500">
           </a>
           <div class="middle aligned content">
-            <a class="header" href="/garden/{{ garden.id }}/edit/">{{ garden.title }}</a>
+            <a class="header" href="/garden/{{ garden.id }}/">{{ garden.title }}</a>
             <div class="description">
               <p>{{ garden.address }}</p>
               {% garden_user_orders garden as orders %}

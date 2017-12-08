@@ -128,6 +128,19 @@ def gardens(request):
 
 @login_required
 @can_edit_garden
+def view_garden(request, gardenId):
+    """
+    View a single garden.
+    """
+    garden = Garden.objects.get(id=gardenId)
+
+    return render(request, 'gardenhub/garden/view.html', {
+        "garden": garden
+    })
+
+
+@login_required
+@can_edit_garden
 def edit_garden(request, gardenId):
     """
     Edit form for an individual garden.

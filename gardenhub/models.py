@@ -50,7 +50,7 @@ class Plot(models.Model):
     Subdivision of a Garden, allocated to a Gardener for growing food.
     """
     title = models.CharField(max_length=255)
-    garden = models.ForeignKey('Garden', models.CASCADE)
+    garden = models.ForeignKey('Garden', models.CASCADE, related_name='plots')
     gardeners = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)
     crops = models.ManyToManyField('Crop', blank=True)
 
