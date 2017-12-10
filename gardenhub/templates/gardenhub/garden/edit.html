@@ -2,6 +2,58 @@
 
 {% block content %}
   <div class="ui container">
-    <p>Edit {{ garden.title }}</p>
+    {% if success %}
+      <div class="ui positive message">
+        <i class="close icon"></i>
+        <div class="header">
+          Garden Updated
+        </div>
+        <p>{{ garden }} has been successfully updated!</p>
+      </div>
+    {% endif %}
+    <form class="ui form" action="" method="post">
+      {% csrf_token %}
+      <div class="field">
+        <label>Name</label>
+        <p class="description">Enter the name of this garden.</p>
+        <div class="ui input">
+          <input type="text" name="title" placeholder="Enter a name..." value="{{ garden.title }}">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Managers</label>
+        <p class="description">List the people who should manage this garden, or enter an email address to invite someone new.</p>
+        <select name="managers" class="ui managers fluid search dropdown" multiple="">
+          <option value="">Add managers...</option>
+          {% for gardener in gardeners %}
+            <option value="{{ gardener.email }}"{% if gardener in plot.gardeners.all %} selected{% endif %}>{% if gardener.get_full_name %}{{ gardener.get_full_name }}{% else %}{{ gardener.email }}{% endif %}</option>
+          {% endfor%}
+        </select>
+      </div>
+
+      <button class="large purple ui right floated button" type="submit">
+        <i class="checkmark icon"></i>
+        Save
+      </button>
+    </form>
   </div>
+{% endblock %}
+
+{% block extra_scripts %}
+  <script>
+    // Message close
+    $('.message .close')
+    .on('click', function() {
+      $(this)
+        .closest('.message')
+        .transition('fade');
+    });
+
+    $('.ui.managers.dropdown')
+      .dropdown({
+        allowAdditions: true
+      })
+    ;
+  </script>
 {% endblock %}

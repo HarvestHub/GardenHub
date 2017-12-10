@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models import Q
 from django.core.mail import send_mail
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.utils import timezone
@@ -26,7 +27,7 @@ class Affiliation(models.Model):
     A group of affiliated gardens.
     """
     title = models.CharField(max_length=255)
-    managers = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='+', blank=True)
+    managers = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)
 
     def __str__(self):
         return self.title
@@ -37,9 +38,9 @@ class Garden(models.Model):
     A whole landscape, divided into many plots. Managed by Garden Managers.
     """
     title = models.CharField(max_length=255)
-    managers = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='+', blank=True)
+    managers = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='gardens', blank=True)
     address = models.CharField(max_length=255)
-    affiliations = models.ManyToManyField(Affiliation, related_name='+', blank=True)
+    affiliations = models.ManyToManyField(Affiliation, related_name='gardens', blank=True)
 
     def __str__(self):
         return self.title
@@ -56,8 +57,8 @@ class Plot(models.Model):
             "The plot should be clearly labeled with a sign."
         ))
     garden = models.ForeignKey('Garden', models.CASCADE, related_name='plots')
-    gardeners = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)
-    crops = models.ManyToManyField('Crop', blank=True)
+    gardeners = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='plots', blank=True)
+    crops = models.ManyToManyField('Crop', related_name='+', blank=True)
 
     def __str__(self):
         return "{} [{}]".format(self.garden.title, self.title)
@@ -198,8 +199,8 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def get_plots(self):
         """
-        Return all the Plots the given user can edit. Users can edit any plot which
-        they are a gardener on, and any plot in a garden they manage.
+        Return all the Plots the given user can edit. Users can edit any plot
+        which they are a gardener on, and any plot in a garden they manage.
         """
         return Plot.objects.filter(
             Q(gardeners__id=self.id) | Q(garden__managers__id=self.id)
@@ -212,10 +213,21 @@ class User(AbstractBaseUser, PermissionsMixin):
         plot_ids = [ plot.id for plot in self.get_plots().all() ]
         return Order.objects.filter(plot__id__in=plot_ids)
 
+    def get_peers(self):
+        """
+        Return all the Users within every Plot and Garden that you manage,
+        except yourself.
+        """
+        return get_user_model().objects.filter(
+            Q(gardens__id__in=[ garden.id for garden in self.get_gardens() ]) |
+            Q(plots__id__in=[ plot.id for plot in self.get_plots() ])
+        ).distinct().exclude(id=self.id)
+
     def is_garden_manager(self):
         """
-        A garden manager is someone who facilitates renting Plots of a Garden out to
-        Gardeners. Any person who is set as Garden.manager on at least one Garden.
+        A garden manager is someone who facilitates renting Plots of a Garden
+        out to Gardeners. Any person who is set as Garden.manager on at least
+        one Garden.
         """
         return self.get_gardens().count() > 0
 
@@ -235,7 +247,8 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def has_open_orders(self):
         """
-        Determine whether or not a user has any current open harvests for home display.
+        Determine whether or not a user has any current open harvests for home
+        display.
         """
         return self.get_orders().count() > 0
 
@@ -250,8 +263,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     def can_edit_plot(self, plot):
         """
         Can the given user manage this plot?
-        True if the user is listed in Plot.gardeners for that plot, OR the user is
-        listed in Garden.managers for the garden in Plot.garden.
+        True if the user is listed in Plot.gardeners for that plot, OR the user
+        is listed in Garden.managers for the garden in Plot.garden.
         False otherwise.
         """
         return self in plot.gardeners.all() or self in plot.garden.managers.all()

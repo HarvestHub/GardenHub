@@ -1,9 +1,19 @@
 from datetime import date
+from uuid import uuid4
 from django.test import TestCase, RequestFactory
 from django.contrib.auth import get_user_model, authenticate
 from django.http import HttpResponse
 from .models import Garden, Plot, Order
 from gardenhub import decorators
+
+
+def uuid_email():
+    """ Returns a fake unique email address for testing """
+    return "{}@gardenhub.dev".format(str(uuid4()))
+
+def uuid_pass():
+    """ Returns a fake unique password for testing """
+    return str(uuid4())
 
 
 class UserTestCase(TestCase):
@@ -14,36 +24,59 @@ class UserTestCase(TestCase):
     def setUp(self):
         # A garden and plot are first needed
         garden = Garden.objects.create(title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
-        plot = Plot.objects.create(title='Plot 1', garden=garden)
+        plot = Plot.objects.create(title='1', garden=garden)
 
         # Create a gardener of a single plot
-        self.gardener = get_user_model().objects.create_user(email='gardener@gardenhub.dev', password='gardener')
+        self.gardener = get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass())
         plot.gardeners.add(self.gardener)
 
         # Create a garden manager of a single garden and no plots
-        self.garden_manager = get_user_model().objects.create_user(email='garden_manager@gardenhub.dev', password='garden_manager')
+        self.garden_manager = get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass())
         garden.managers.add(self.garden_manager)
 
         # Create a normal user who isn't assigned to anything
-        self.normal_user = get_user_model().objects.create_user(email='normal_user@gardenhub.dev', password='normal_user')
+        self.normal_user = get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass())
 
 
     def test_create_user(self):
         """ Create a user """
 
+        # Save email address
+        email = uuid_email()
+
+        # Create new user with email
+        user = get_user_model().objects.create_user(email=email, password=uuid_pass())
+
+        # Test that the user was saved by its email
+        self.assertEqual(user, get_user_model().objects.get(email=email))
+
+
+    def test_inactivated_user_auth(self):
+        """ Ensure that users can't authenticate by default """
+
+        # Save email and password
+        user_email = uuid_email()
+        user_password = uuid_pass()
+
         # Create new user
-        user = get_user_model().objects.create_user(email='test_create_user@gardenhub.dev', password='test_create_user')
+        user = get_user_model().objects.create_user(
+            email=user_email,
+            password=user_password
+        )
 
-        # Test that the user was saved
-        self.assertEqual(user, get_user_model().objects.get(email='test_create_user@gardenhub.dev'))
+        # Try to authenticate user
+        auth_user = authenticate(email=user_email, password=user_password)
+
+        # Ensure that the user didn't authenticate
+        self.assertEqual(auth_user, None)
 
 
-    def test_user_auth(self):
-        """ Ensure a user can authenticate """
+    def test_activated_user_auth(self):
+        """ Ensure an activated user can authenticate """
 
-        # Set variables
-        user_email = 'test_user_auth@gardenhub.dev'
-        user_password = 'test_user_auth'
+        # Save email and password
+        user_email = uuid_email()
+        user_password = uuid_pass()
 
         # Create new user
         user = get_user_model().objects.create_user(
@@ -63,7 +96,7 @@ class UserTestCase(TestCase):
         """ User.get_gardens() """
 
         # Create new User object
-        user = get_user_model().objects.create_user(email='test_get_gardens@gardenhub.dev', password='test_get_gardens')
+        user = get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass())
 
         # Create test Garden objects
         gardens = [
@@ -89,7 +122,7 @@ class UserTestCase(TestCase):
         """ User.get_plots() """
 
         # Create new User object
-        user = get_user_model().objects.create_user(email='test_get_plots@gardenhub.dev', password='test_get_plots')
+        user = get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass())
 
         # Create test Gardens
         gardens = [
@@ -101,10 +134,10 @@ class UserTestCase(TestCase):
 
         # Create test Plots
         plots = [
-            Plot.objects.create(title='Plot 1', garden=gardens[0]),
-            Plot.objects.create(title='Plot 2', garden=gardens[0]),
-            Plot.objects.create(title='Plot 3', garden=gardens[1]),
-            Plot.objects.create(title='Plot 4', garden=gardens[2])
+            Plot.objects.create(title='1', garden=gardens[0]),
+            Plot.objects.create(title='2', garden=gardens[0]),
+            Plot.objects.create(title='3', garden=gardens[1]),
+            Plot.objects.create(title='4', garden=gardens[2])
         ]
 
         # Assign user to certain gardens and plots
@@ -121,7 +154,7 @@ class UserTestCase(TestCase):
 
         # Create plot
         garden = Garden.objects.create(title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
-        plot = Plot.objects.create(title='Plot 1', garden=garden)
+        plot = Plot.objects.create(title='1', garden=garden)
 
         # Create orders
         orders = [
@@ -133,11 +166,70 @@ class UserTestCase(TestCase):
         ]
 
         # Create user and assign it to the plot
-        user = get_user_model().objects.create_user(email='test_get_orders@gardenhub.dev', password='test_get_orders')
+        user = get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass())
         plot.gardeners.add(user)
 
         # Test orders
         self.assertEqual(list(user.get_orders()), orders)
+
+
+    def test_get_peers(self):
+        """ User.get_peers() """
+
+        # Create test Gardens
+        gardens = [
+            Garden.objects.create(title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776'),
+            Garden.objects.create(title='Garden B', address='1001 Garden Rd, Philadelphia PA, 1776'),
+            Garden.objects.create(title='Garden C', address='1010 Garden Rd, Philadelphia PA, 1776'),
+            Garden.objects.create(title='Garden D', address='1011 Garden Rd, Philadelphia PA, 1776')
+        ]
+
+        # Create test Plots
+        plots = [
+            Plot.objects.create(title='1', garden=gardens[0]),
+            Plot.objects.create(title='2', garden=gardens[2]),
+            Plot.objects.create(title='3', garden=gardens[3]),
+            Plot.objects.create(title='4', garden=gardens[3])
+        ]
+
+        # Create test Users
+        users = [
+            get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass()),
+            get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass()),
+            get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass()),
+            get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass()),
+            get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass()),
+            get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass()),
+            get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass()),
+            get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass()),
+            get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass()),
+            get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass()),
+        ]
+
+        # Garden with 2 managers and 1 plot with 1 gardener
+        gardens[0].managers.add(users[0], users[1])
+        plots[0].gardeners.add(users[2])
+        self.assertEqual(list(users[0].get_peers()), [users[1], users[2]])
+        self.assertEqual(list(users[1].get_peers()), [users[0], users[2]])
+        self.assertEqual(list(users[2].get_peers()), [])
+
+        # Garden with 2 managers and no plots
+        gardens[1].managers.add(users[3], users[4])
+        self.assertEqual(list(users[3].get_peers()), [users[4]])
+        self.assertEqual(list(users[4].get_peers()), [users[3]])
+
+        # Garden with 0 managers and 1 plot with 2 gardeners
+        gardens[2].managers.add(users[5], users[6])
+        self.assertEqual(list(users[5].get_peers()), [users[6]])
+        self.assertEqual(list(users[6].get_peers()), [users[5]])
+
+        # Garden with 1 manager and 2 plots, each with 1 gardener
+        gardens[3].managers.add(users[7])
+        plots[2].gardeners.add(users[8])
+        plots[3].gardeners.add(users[9])
+        self.assertEqual(list(users[7].get_peers()), [users[8], users[9]])
+        self.assertEqual(list(users[8].get_peers()), [])
+        self.assertEqual(list(users[9].get_peers()), [])
 
 
     def test_is_garden_manager(self):
@@ -180,7 +272,7 @@ class UserTestCase(TestCase):
 
         # Create plot
         garden = Garden.objects.create(title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
-        plot = Plot.objects.create(title='Plot 1', garden=garden)
+        plot = Plot.objects.create(title='1', garden=garden)
 
         # Create orders
         orders = [
@@ -192,7 +284,7 @@ class UserTestCase(TestCase):
         ]
 
         # Create user and assign it to the plot
-        user = get_user_model().objects.create_user(email='test_has_open_orders@gardenhub.dev', password='test_has_open_orders')
+        user = get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass())
         plot.gardeners.add(user)
 
         # Test orders
@@ -207,7 +299,7 @@ class UserTestCase(TestCase):
         garden = Garden.objects.create(title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
 
         # Assign garden manager to garden
-        garden_manager = get_user_model().objects.create_user(email='garden_manager2@gardenhub.dev', password='garden_manager2')
+        garden_manager = get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass())
         garden.managers.add(garden_manager)
 
         # Test that the GM can edit the garden
@@ -222,15 +314,15 @@ class UserTestCase(TestCase):
 
         # Create plot
         garden = Garden.objects.create(title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
-        plot = Plot.objects.create(title='Plot 1', garden=garden)
+        plot = Plot.objects.create(title='1', garden=garden)
 
         # Test that the gardener can edit the plot
-        gardener = get_user_model().objects.create_user(email='gardener2@gardenhub.dev', password='gardener2')
+        gardener = get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass())
         plot.gardeners.add(gardener)
         self.assertTrue(gardener.can_edit_plot(plot))
 
         # Test that a garden manager can edit the plot
-        garden_manager = get_user_model().objects.create_user(email='test_can_edit_plot_garden_manager@gardenhub.dev', password='test_can_edit_plot_garden_manager')
+        garden_manager = get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass())
         garden.managers.add(garden_manager)
         self.assertTrue(garden_manager.can_edit_plot(plot))
 
@@ -238,21 +330,21 @@ class UserTestCase(TestCase):
         self.assertFalse(self.normal_user.can_edit_plot(plot))
 
 
-    def can_edit_order(self):
+    def test_can_edit_order(self):
         """ User.can_edit_order() """
 
         # Create order
         garden = Garden.objects.create(title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
-        plot = Plot.objects.create(title='Plot 1', garden=garden)
+        plot = Plot.objects.create(title='1', garden=garden)
         order = Order.objects.create(plot=plot, start_date=date(2017, 1, 1), end_date=date(2017, 1, 5), requester=self.normal_user)
 
         # Test that the gardener can edit the order
-        gardener = get_user_model().objects.create_user(email='can_edit_order_gardener@gardenhub.dev', password='can_edit_order_gardener')
+        gardener = get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass())
         plot.gardeners.add(gardener)
         self.assertTrue(gardener.can_edit_order(order))
 
         # Test that a garden manager can edit the order
-        garden_manager = get_user_model().objects.create_user(email='can_edit_order_garden_manager@gardenhub.dev', password='can_edit_order_garden_manager')
+        garden_manager = get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass())
         garden.managers.add(garden_manager)
         self.assertTrue(garden_manager.can_edit_order(order))
 
@@ -273,7 +365,7 @@ class DecoratorTestCase(TestCase):
         self.generic_view = generic_view
 
         # Create a normal user who isn't assigned to anything
-        self.normal_user = get_user_model().objects.create_user(email='normal_user2@gardenhub.dev', password='normal_user2')
+        self.normal_user = get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass())
 
         # Faking requests
         self.factory = RequestFactory()
@@ -293,8 +385,8 @@ class DecoratorTestCase(TestCase):
 
         # Create an instance of a GET request with a gardener
         garden = Garden.objects.create(title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
-        plot = Plot.objects.create(title='Plot 1', garden=garden)
-        gardener = get_user_model().objects.create_user(email='gardener3@gardenhub.dev', password='gardener3')
+        plot = Plot.objects.create(title='1', garden=garden)
+        gardener = get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass())
         plot.gardeners.add(gardener)
         gardener_request = self.factory.get('/')
         gardener_request.user = gardener
@@ -306,7 +398,7 @@ class DecoratorTestCase(TestCase):
 
         # Create an instance of a GET request with a garden manager
         garden = Garden.objects.create(title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
-        garden_manager = get_user_model().objects.create_user(email='test_is_anything_garden_manager@gardenhub.dev', password='test_is_anything_garden_manager')
+        garden_manager = get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass())
         garden.managers.add(garden_manager)
         garden_manager_request = self.factory.get('/')
         garden_manager_request.user = garden_manager
@@ -327,14 +419,14 @@ class DecoratorTestCase(TestCase):
 
         # Create a plot
         garden = Garden.objects.create(title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
-        plot = Plot.objects.create(title='Plot 1', garden=garden)
+        plot = Plot.objects.create(title='1', garden=garden)
 
         # Test an unauthorized request
         response = plot_view(self.unauthorized_request, plot.id)
         self.assertEqual(response.status_code, 403)
 
         # Test a gardener on the plot
-        gardener = get_user_model().objects.create_user(email='test_can_edit_plot_gardener@gardenhub.dev', password='test_can_edit_plot_gardener')
+        gardener = get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass())
         plot.gardeners.add(gardener)
         gardener_request = self.factory.get('/')
         gardener_request.user = gardener
@@ -342,7 +434,7 @@ class DecoratorTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
         # Test a garden manager on the plot
-        garden_manager = get_user_model().objects.create_user(email='test_can_edit_plot_garden_manager@gardenhub.dev', password='test_can_edit_plot_garden_manager')
+        garden_manager = get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass())
         garden.managers.add(garden_manager)
         garden_manager_request = self.factory.get('/')
         garden_manager_request.user = garden_manager
@@ -360,14 +452,14 @@ class DecoratorTestCase(TestCase):
 
         # Create a plot
         garden = Garden.objects.create(title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
-        plot = Plot.objects.create(title='Plot 1', garden=garden)
+        plot = Plot.objects.create(title='1', garden=garden)
 
         # Test an unauthorized request
         response = garden_view(self.unauthorized_request, garden.id)
         self.assertEqual(response.status_code, 403)
 
         # Test a gardener on the plot
-        gardener = get_user_model().objects.create_user(email='test_can_edit_garden_gardener@gardenhub.dev', password='test_can_edit_garden_gardener')
+        gardener = get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass())
         plot.gardeners.add(gardener)
         gardener_request = self.factory.get('/')
         gardener_request.user = gardener
@@ -375,7 +467,7 @@ class DecoratorTestCase(TestCase):
         self.assertEqual(response.status_code, 403)
 
         # Test a garden manager on the plot
-        garden_manager = get_user_model().objects.create_user(email='test_can_edit_garden_garden_manager@gardenhub.dev', password='test_can_edit_garden_garden_manager')
+        garden_manager = get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass())
         garden.managers.add(garden_manager)
         garden_manager_request = self.factory.get('/')
         garden_manager_request.user = garden_manager
@@ -393,7 +485,7 @@ class DecoratorTestCase(TestCase):
 
         # Create an order
         garden = Garden.objects.create(title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
-        plot = Plot.objects.create(title='Plot 1', garden=garden)
+        plot = Plot.objects.create(title='1', garden=garden)
         order = Order.objects.create(plot=plot, start_date=date(2017, 1, 1), end_date=date(2017, 1, 5), requester=self.normal_user)
 
         # Test an unauthorized request
@@ -401,7 +493,7 @@ class DecoratorTestCase(TestCase):
         self.assertEqual(response.status_code, 403)
 
         # Test a gardener on the order's plot
-        gardener = get_user_model().objects.create_user(email='test_can_edit_order_gardener@gardenhub.dev', password='test_can_edit_order_gardener')
+        gardener = get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass())
         plot.gardeners.add(gardener)
         gardener_request = self.factory.get('/')
         gardener_request.user = gardener
@@ -409,7 +501,7 @@ class DecoratorTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
         # Test a garden manager on the order's plot
-        garden_manager = get_user_model().objects.create_user(email='test_can_edit_order_garden_manager@gardenhub.dev', password='test_can_edit_order_garden_manager')
+        garden_manager = get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass())
         garden.managers.add(garden_manager)
         garden_manager_request = self.factory.get('/')
         garden_manager_request.user = garden_manager

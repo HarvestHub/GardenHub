@@ -1,76 +1,73 @@
 {% extends "gardenhub/_manage_base.html" %}
 
-{% block body_class %}edit_plot{% endblock %}
-
-
 {% block content %}
-<div class="ui container">
-  {% if success %}
-    <div class="ui positive message">
-      <i class="close icon"></i>
-      <div class="header">
-        Plot Updated
-      </div>
-      <p>Plot {{ plot }} has been successfully updated!</p>
-    </div>
-  {% endif %}
-  <form class="ui form" action="" method="post">
-    {% csrf_token %}
-    <div class="field">
-      <label>Name</label>
-      <p class="description">The plot's name is probably a number, like 11. The plot should be clearly labeled with a sign.</p>
-      <div class="ui input">
-        <input type="text" name="title" placeholder="Enter a name..." value="{{ plot.title }}">
-      </div>
-    </div>
-
-    <div class="field">
-      <label>Garden</label>
-      <p class="description">Select the garden the plot is in.</p>
-
-      <div class="ui fluid search selection dropdown">
-        <input name="garden" type="hidden" value="{{ plot.garden.id }}">
-        <i class="dropdown icon"></i>
-        <div class="default text">
-          <i class="map icon"></i>
-          Select a Garden
+  <div class="ui container">
+    {% if success %}
+      <div class="ui positive message">
+        <i class="close icon"></i>
+        <div class="header">
+          Plot Updated
         </div>
-        <div class="menu">
-          {% for garden in request.user.get_gardens %}
-            <div class="item" data-value="{{ garden.id }}">{{ garden }}</div>
+        <p>Plot {{ plot }} has been successfully updated!</p>
+      </div>
+    {% endif %}
+    <form class="ui form" action="" method="post">
+      {% csrf_token %}
+      <div class="field">
+        <label>Name</label>
+        <p class="description">The plot's name is probably a number, like 11. The plot should be clearly labeled with a sign.</p>
+        <div class="ui input">
+          <input type="text" name="title" placeholder="Enter a name..." value="{{ plot.title }}">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Garden</label>
+        <p class="description">Select the garden the plot is in.</p>
+
+        <div class="ui fluid search selection dropdown">
+          <input name="garden" type="hidden" value="{{ plot.garden.id }}">
+          <i class="dropdown icon"></i>
+          <div class="default text">
+            <i class="map icon"></i>
+            Select a Garden
+          </div>
+          <div class="menu">
+            {% for garden in request.user.get_gardens %}
+              <div class="item" data-value="{{ garden.id }}">{{ garden }}</div>
+            {% endfor%}
+          </div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Gardeners</label>
+        <p class="description">List the people who should manage this plot, or enter an email address to invite someone new.</p>
+        <select name="gardeners" class="ui gardeners fluid search dropdown" multiple="">
+          <option value="">Add gardeners...</option>
+          {% for gardener in gardeners %}
+            <option value="{{ gardener.email }}"{% if gardener in plot.gardeners.all %} selected{% endif %}>{% if gardener.get_full_name %}{{ gardener.get_full_name }}{% else %}{{ gardener.email }}{% endif %}</option>
           {% endfor%}
-        </div>
+        </select>
       </div>
-    </div>
 
-    <div class="field">
-      <label>Gardeners</label>
-      <p class="description">List the people who should manage this plot, or enter an email address to invite someone.</p>
-      <select name="gardeners" class="ui gardeners fluid search dropdown" multiple="">
-        <option value="">Add gardeners...</option>
-        {% for gardener in gardeners %}
-          <option value="{{ gardener.email }}"{% if gardener in plot.gardeners.all %} selected{% endif %}>{% if gardener.get_full_name %}{{ gardener.get_full_name }}{% else %}{{ gardener.email }}{% endif %}</option>
-        {% endfor%}
-      </select>
-    </div>
+      <div class="field">
+        <label>Crops</label>
+        <p class="description">List the crops growing on this plot.</p>
+        <select name="crops" class="ui crops fluid search dropdown" multiple="">
+          <option value="">Add plots...</option>
+          {% for crop in crops.all %}
+            <option value="{{ crop.id }}"{% if crop in plot.crops.all %} selected{% endif %}>{{ crop.title }}</option>
+          {% endfor%}
+        </select>
+      </div>
 
-    <div class="field">
-      <label>Crops</label>
-      <p class="description">List the crops growing on this plot.</p>
-      <select name="crops" class="ui crops fluid search dropdown" multiple="">
-        <option value="">Add plots...</option>
-        {% for crop in crops.all %}
-          <option value="{{ crop.id }}"{% if crop in plot.crops.all %} selected{% endif %}>{{ crop.title }}</option>
-        {% endfor%}
-      </select>
-    </div>
-
-    <button class="large purple ui right floated button" type="submit">
-      <i class="checkmark icon"></i>
-      Update Plot
-    </button>
-  </form>
-</div>
+      <button class="large purple ui right floated button" type="submit">
+        <i class="checkmark icon"></i>
+        Update Plot
+      </button>
+    </form>
+  </div>
 {% endblock %}
 
 {% block extra_scripts %}
