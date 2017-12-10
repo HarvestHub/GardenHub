@@ -46,7 +46,11 @@ class UserTestCase(TestCase):
         user_password = 'test_user_auth'
 
         # Create new user
-        user = get_user_model().objects.create_user(email=user_email, password=user_password)
+        user = get_user_model().objects.create_user(
+            email=user_email,
+            password=user_password,
+            is_active=True # Users must be explicitly activated
+        )
 
         # Try to authenticate user
         auth_user = authenticate(email=user_email, password=user_password)
