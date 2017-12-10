@@ -1,5 +1,5 @@
 {% extends "gardenhub/_manage_base.html" %}
-{% load gardenhub %}
+{% load gardenhub thumbnail %}
 
 {% block content %}
   <div class="ui container">
@@ -11,7 +11,13 @@
       {% for garden in gardens %}
         <div class="item">
           <a class="ui tiny image" href="/garden/{{ garden.id }}/">
-            <img src="http://via.placeholder.com/500x500">
+            {% if garden.photo %}
+              {% thumbnail garden.photo "300x300" crop="center" as photo %}
+                <img src="{{ photo.url }}" width="{{ photo.width }}" height="{{ photo.height }}">
+              {% endthumbnail %}
+            {% else %}
+              <img src="{% placeholder 300 garden %}">
+            {% endif %}
           </a>
           <div class="middle aligned content">
             <a class="header" href="/garden/{{ garden.id }}/">{{ garden.title }}</a>

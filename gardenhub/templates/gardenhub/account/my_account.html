@@ -1,56 +1,55 @@
 {% extends "gardenhub/_manage_base.html" %}
-{% load thumbnail %}
+{% load thumbnail gardenhub %}
 
 {% block content %}
-<div class="ui container">
-  {% if request.user.photo %}
-    {% thumbnail request.user.photo "300x300" crop="center" as photo %}
-      <img class="ui centered small circular image" src="{{ photo.url }}" width="{{ photo.width }}" height="{{ photo.height }}">
-    {% endthumbnail %}
-  {% else %}
-    <img class="ui centered small circular image" src="//via.placeholder.com/300/a333c8/ffffff?text={{ request.user.first_name.0 }}">
-  {% endif %}
-  <h2 class="ui center aligned header">
-    {{user.first_name}} {{user.last_name}}
-  </h2>
+  <div class="ui container">
+    {% if request.user.photo %}
+      {% thumbnail request.user.photo "300x300" crop="center" as photo %}
+        <img class="ui centered small circular image" src="{{ photo.url }}" width="{{ photo.width }}" height="{{ photo.height }}">
+      {% endthumbnail %}
+    {% else %}
+      <img class="ui centered small circular image" src="{% placeholder 300 request.user %}">
+    {% endif %}
+    <h2 class="ui center aligned header">
+      {{user.first_name}} {{user.last_name}}
+    </h2>
 
-  <div class="ui basic padded segment">
-    <div class="ui list">
-      <div class="item">
-        <i class="marker icon"></i>
-        <div class="content">
-          Philadelphia, PA
+    <div class="ui basic padded segment">
+      <div class="ui list">
+        <div class="item">
+          <i class="marker icon"></i>
+          <div class="content">
+            Philadelphia, PA
+          </div>
         </div>
-      </div>
-      <div class="item">
-        <i class="map icon"></i>
-        <div class="content">
-          Member of:
-          {% for garden in gardens %}
-            <span class="member-of-list-item"><a href="/garden/{{ garden.id }}/edit/">{{ garden.title }}</a></span>
-          {% endfor %}
+        <div class="item">
+          <i class="map icon"></i>
+          <div class="content">
+            Member of:
+            {% for garden in gardens %}
+              <span class="member-of-list-item"><a href="/garden/{{ garden.id }}/edit/">{{ garden.title }}</a></span>
+            {% endfor %}
+          </div>
         </div>
-      </div>
-      <div class="item">
-        <i class="mail icon"></i>
-        <div class="content">
-          <a href="mailto:mk@candlewaster.co">mk@candlewaster.co</a>
+        <div class="item">
+          <i class="mail icon"></i>
+          <div class="content">
+            <a href="mailto:{{ request.user.email }}">{{ request.user.email }}</a>
+          </div>
         </div>
-      </div>
-      <div class="item">
-        <i class="food icon"></i>
-        <div class="content">
-          You have donated 14lbs of food this year!
+        <div class="item">
+          <i class="food icon"></i>
+          <div class="content">
+            You have donated 14lbs of food this year!
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <div class="ui basic padded segment">
-    <button class="ui right floated negative button">Delete Account</button>
-    <button class="ui left floated button">Edit Profile</button>
-  </div>
+    <div class="ui basic padded segment">
+      <button class="ui right floated negative button">Delete Account</button>
+      <button class="ui left floated button">Edit Profile</button>
+    </div>
 
-
-  </div>
+    </div>
 {% endblock %}

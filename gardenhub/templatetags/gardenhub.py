@@ -23,6 +23,12 @@ def plot_user_orders(context, plot):
     return orders
 
 
+@register.simple_tag
+def placeholder(size, obj):
+    letter = str(obj)[0]
+    return "//via.placeholder.com/{}/a333c8/ffffff?text={}".format(size, letter)
+
+
 @register.filter
 def combine(value, queryset):
     """

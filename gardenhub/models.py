@@ -43,6 +43,7 @@ class Garden(models.Model):
     managers = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='gardens', blank=True)
     address = models.CharField(max_length=255)
     affiliations = models.ManyToManyField(Affiliation, related_name='gardens', blank=True)
+    photo = models.ImageField(blank=True)
 
     def __str__(self):
         return self.title
