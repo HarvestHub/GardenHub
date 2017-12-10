@@ -31,19 +31,20 @@ urlpatterns = [
     url(r'^login/$', views.login_user),
     url(r'^admin/', admin.site.urls),
     url(r'^account/', include(account_patterns)),
+    url(r'^activate/(?P<uuid>[0-9a-z\-]+)/$', views.activate_account),
     # Orders
     url(r'^orders/$', views.orders),
     url(r'^orders/new/$', views.new_order),
-    url(r'^order/(?P<orderId>[0-9])/$', views.view_order),
+    url(r'^order/(?P<orderId>[0-9]+)/$', views.view_order),
     # Plots
     url(r'^plots/$', views.plots),
-    url(r'^plot/(?P<plotId>[0-9])/edit/$', views.edit_plot),
+    url(r'^plot/(?P<plotId>[0-9]+)/edit/$', views.edit_plot),
     # Gardens
     url(r'^gardens/$', views.gardens),
-    url(r'^garden/(?P<gardenId>[0-9])/$', views.view_garden),
-    url(r'^garden/(?P<gardenId>[0-9])/edit/$', views.edit_garden),
+    url(r'^garden/(?P<gardenId>[0-9]+)/$', views.view_garden),
+    url(r'^garden/(?P<gardenId>[0-9]+)/edit/$', views.edit_garden),
     # API
-    url(r'^_api/crops/(?P<plotId>[0-9])/$', views.api_crops),
+    url(r'^_api/crops/(?P<plotId>[0-9]+)/$', views.api_crops),
     # Default auth views https://docs.djangoproject.com/en/1.11/topics/auth/default/#using-the-views
     url('^', include('django.contrib.auth.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

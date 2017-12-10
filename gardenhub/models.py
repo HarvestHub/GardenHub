@@ -49,7 +49,12 @@ class Plot(models.Model):
     """
     Subdivision of a Garden, allocated to a Gardener for growing food.
     """
-    title = models.CharField(max_length=255)
+    title = models.CharField(
+        max_length=255,
+        help_text=_(
+            "The plot's name is probably a number, like 11. "
+            "The plot should be clearly labeled with a sign."
+        ))
     garden = models.ForeignKey('Garden', models.CASCADE, related_name='plots')
     gardeners = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)
     crops = models.ManyToManyField('Crop', blank=True)
@@ -118,6 +123,7 @@ class UserManager(BaseUserManager):
         return self._create_user(email, password, **extra_fields)
 
     def create_superuser(self, email, password, **extra_fields):
+        extra_fields.setdefault('is_active', True)
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
 
@@ -145,13 +151,15 @@ class User(AbstractBaseUser, PermissionsMixin):
     )
     is_active = models.BooleanField(
         _('active'),
-        default=True,
+        default=False, # Users may be created and assigned to Gardens/Plots before they activate their account
         help_text=_(
             'Designates whether this user should be treated as active. '
             'Unselect this instead of deleting accounts.'
         ),
     )
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
+
+    activation_token = models.CharField(max_length=36, unique=True, blank=True, null=True)
 
     objects = UserManager()
 

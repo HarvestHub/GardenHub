@@ -1,14 +1,15 @@
 import math
 import time
+import uuid
 from datetime import datetime, timedelta
 from django.http import (
     HttpResponse, HttpResponseRedirect, HttpResponseForbidden, JsonResponse
 )
 from django.contrib.auth import authenticate, login, get_user_model
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from .models import Crop, Garden, Plot, Harvest, Order, Affiliation
-from .forms import CreateOrderForm
+from .forms import CreateOrderForm, EditPlotForm, ActivateAccountForm
 from .decorators import (
     is_anything,
     can_edit_plot,
@@ -107,7 +108,7 @@ def view_order(request, orderId):
     Review an individual order that's been submitted. Anyone who can edit the
     plot may view or cancel these orders.
     """
-    order = Order.objects.get(id=orderId)
+    order = get_object_or_404(Order, id=orderId)
 
     return render(request, 'gardenhub/order/view.html', {
         "order": order
@@ -132,7 +133,7 @@ def view_garden(request, gardenId):
     """
     View a single garden.
     """
-    garden = Garden.objects.get(id=gardenId)
+    garden = get_object_or_404(Garden, id=gardenId)
 
     return render(request, 'gardenhub/garden/view.html', {
         "garden": garden
@@ -145,7 +146,7 @@ def edit_garden(request, gardenId):
     """
     Edit form for an individual garden.
     """
-    garden = Garden.objects.get(id=gardenId)
+    garden = get_object_or_404(Garden, id=gardenId)
     plots = Plot.objects.filter(garden__id=garden.id)
 
     return render(request, 'gardenhub/garden/edit.html', {
@@ -172,16 +173,76 @@ def edit_plot(request, plotId):
     """
     Edit form for an individual plot.
     """
-    plot = Plot.objects.get(id=plotId)
-    gardens = request.user.get_gardens()
-    # FIXME: This should only pull in gardeners from the selected garden
-    gardeners = get_user_model().objects.all()
+    plot = get_object_or_404(Plot, id=plotId)
 
-    return render(request, 'gardenhub/plot/edit.html', {
-        "plot": plot,
-        "gardens": gardens,
-        "gardeners": gardeners
-    })
+    context = {}
+
+    # A form has been submitted
+    if request.POST:
+        form = EditPlotForm(request.user, request.POST)
+        if form.is_valid():
+            gardeners = form.cleaned_data['gardeners']
+
+            gardener_users = []
+            for gardener in gardeners:
+                user, created = get_user_model().objects.get_or_create(email=gardener)
+                if created:
+                    user.activation_token = str(uuid.uuid4())
+                    user.save()
+                    activate_url = request.build_absolute_uri('/activate/{}/'.format(user.activation_token))
+                    user.email_user(
+                        subject="You've been invited to manage a plot on GardenHub!",
+                        message="Hi there! You've been invited to GardenHub. Click here to activate your account: {}".format(activate_url)
+                    )
+                gardener_users.append(user)
+
+            # FIXME: There has got to be a better way of doing complex forms
+            plot.title = form.cleaned_data['title']
+            plot.garden = form.cleaned_data['garden']
+            plot.gardeners.set(gardener_users)
+            plot.crops.set(form.cleaned_data['crops'])
+            plot.save()
+            context["success"] = True
+    else:
+        form = EditPlotForm(request.user)
+
+    context["form"] = form
+    context["plot"] = plot
+    # FIXME: This should only pull in gardeners from the selected garden
+    context["gardeners"] = get_user_model().objects.all()
+    context["crops"] = Crop.objects.all()
+
+    return render(request, 'gardenhub/plot/edit.html', context)
+
+
+def activate_account(request, uuid):
+    """
+    When a new user is invited, an email call to action will send them to this
+    view so they can fill out their profile and activate their account.
+    """
+    user = get_object_or_404(get_user_model(), activation_token=uuid)
+
+    # The user is already active, this token isn't needed.
+    if user.is_active:
+        user.activation_token = None
+        user.save()
+        return HttpResponseRedirect('/')
+
+    context = {}
+
+    # Form has been submitted
+    if request.POST:
+        form = ActivateAccountForm(request.POST)
+        if form.is_valid() and form.cleaned_data['password1'] == form.cleaned_data['password2']:
+            user.first_name = form.cleaned_data['first_name']
+            user.last_name = form.cleaned_data['last_name']
+            user.is_active = True
+            user.set_password(form.cleaned_data['password1'])
+            user.save()
+            # TODO: Actually authenticate the user
+            return HttpResponseRedirect('/')
+
+    return render(request, 'gardenhub/auth/activate.html')
 
 
 @login_required
@@ -219,7 +280,7 @@ def api_crops(request, plotId):
     Return JSON about crops.
     """
     try:
-        plot = Plot.objects.get(id=plotId)
+        plot = get_object_or_404(Plot, id=plotId)
         crops = plot.crops.all()
         return JsonResponse({
             "crops": [{

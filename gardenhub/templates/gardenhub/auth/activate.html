@@ -1,0 +1,56 @@
+{% extends "gardenhub/_base.html" %}
+
+{% block content %}
+  <div class="ui container">
+    <h1 class="ui huge header">
+      Let's set you up
+      <span class="ui sub header">
+        Enter your details to begin.
+      </span>
+    </h1>
+    <form class="ui form" action="" method="post">
+      {% csrf_token %}
+      <div class="two fields">
+        <div class="field">
+          <label>First Name</label>
+          <div class="ui input">
+            <input type="text" name="first_name" placeholder="Enter your first name">
+          </div>
+        </div>
+        <div class="field">
+          <label>Last Name</label>
+          <div class="ui input">
+            <input type="text" name="last_name" placeholder="Enter your last name">
+          </div>
+        </div>
+      </div>
+      <div class="ui section divider"></div>
+      <div class="two fields">
+        <div class="field">
+          <label>Password</label>
+          <div class="ui input">
+            <input type="password" name="password1" placeholder="Enter a password">
+          </div>
+        </div>
+        <div class="field">
+          <label>Password (again)</label>
+          <div class="ui input">
+            <input type="password" name="password2" placeholder="Re-enter the password">
+          </div>
+        </div>
+      </div>
+      <button class="large purple ui right floated button" type="submit">
+        <i class="checkmark icon"></i>
+        Activate
+      </button>
+    </form>
+  </div>
+{% endblock %}
+
+{% block extra_styles %}
+  <style>
+    body {
+      margin: 60px 0;
+    }
+  </style>
+{% endblock %}
