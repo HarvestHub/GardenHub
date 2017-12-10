@@ -27,12 +27,18 @@ class CreateOrderForm(forms.Form):
 class EditPlotForm(forms.Form):
     title = forms.CharField()
     garden = forms.ModelChoiceField(queryset=None)
-    gardeners = MultipleEmailField()
+    gardener_emails = MultipleEmailField()
     crops = forms.ModelMultipleChoiceField(queryset=Crop.objects.all())
 
     def __init__(self, user, *args, **kwargs):
         super(EditPlotForm, self).__init__(*args, **kwargs)
         self.fields['garden'].queryset = user.get_gardens()
+
+
+class EditGardenForm(forms.Form):
+    title = forms.CharField()
+    address = forms.CharField()
+    manager_emails = MultipleEmailField()
 
 
 class ActivateAccountForm(forms.Form):

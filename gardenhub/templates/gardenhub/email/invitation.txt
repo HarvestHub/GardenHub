@@ -1,0 +1,5 @@
+{{ inviter.get_full_name }} invited you to join GardenHub.
+
+If you're interested, click the link below:
+
+{{ activate_url }}

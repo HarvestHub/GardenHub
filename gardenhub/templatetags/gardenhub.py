@@ -21,3 +21,11 @@ def plot_user_orders(context, plot):
     user = context.request.user
     orders = user.get_orders().filter(plot__id=plot.id)
     return orders
+
+
+@register.filter
+def combine(value, queryset):
+    """
+    Unites two querysets and returns distinct values
+    """
+    return value.union(queryset).distinct()

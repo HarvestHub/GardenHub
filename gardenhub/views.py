@@ -9,7 +9,12 @@ from django.contrib.auth import authenticate, login, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404
 from .models import Crop, Garden, Plot, Harvest, Order, Affiliation
-from .forms import CreateOrderForm, EditPlotForm, ActivateAccountForm
+from .forms import (
+    CreateOrderForm,
+    EditGardenForm,
+    EditPlotForm,
+    ActivateAccountForm
+)
 from .decorators import (
     is_anything,
     can_edit_plot,
@@ -31,7 +36,7 @@ def login_user(request):
         return HttpResponseRedirect('/')
 
     # Login credentials have been submitted via the form.
-    if request.POST:
+    if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
 
@@ -81,7 +86,7 @@ def new_order(request):
     context = {}
 
     # A form has been submitted
-    if request.POST:
+    if request.method == 'POST':
         form = CreateOrderForm(request.user, request.POST)
         if form.is_valid():
             order = Order.objects.create(
@@ -146,13 +151,33 @@ def edit_garden(request, gardenId):
     """
     Edit form for an individual garden.
     """
+    context = {}
     garden = get_object_or_404(Garden, id=gardenId)
-    plots = Plot.objects.filter(garden__id=garden.id)
 
-    return render(request, 'gardenhub/garden/edit.html', {
-        "garden": garden,
-        "plots": plots
-    })
+    # A form has been submitted
+    if request.method == 'POST':
+        # Pass data into the form
+        form = EditGardenForm(request.POST)
+        # Check if the form is valid
+        if form.is_valid():
+            # Get user objects from email addresses and invite everyone else
+            managers = get_user_model().objects.get_or_invite_users(
+                form.cleaned_data['manager_emails'], # Submitted emails
+                request # The email template needs request data
+            )
+            # FIXME: There has got to be a better way of updating objects than this
+            garden.title = form.cleaned_data['title']
+            garden.address = form.cleaned_data['address']
+            garden.managers.set(managers)
+            garden.save()
+            context["success"] = True
+    else:
+        form = EditGardenForm()
+
+    context["garden"] = garden
+    context["form"] = form
+
+    return render(request, 'gardenhub/garden/edit.html', context)
 
 
 @login_required
@@ -178,28 +203,20 @@ def edit_plot(request, plotId):
     context = {}
 
     # A form has been submitted
-    if request.POST:
+    if request.method == 'POST':
+        # Pass data into the form
         form = EditPlotForm(request.user, request.POST)
+        # Check if the form is valid
         if form.is_valid():
-            gardeners = form.cleaned_data['gardeners']
-
-            gardener_users = []
-            for gardener in gardeners:
-                user, created = get_user_model().objects.get_or_create(email=gardener)
-                if created:
-                    user.activation_token = str(uuid.uuid4())
-                    user.save()
-                    activate_url = request.build_absolute_uri('/activate/{}/'.format(user.activation_token))
-                    user.email_user(
-                        subject="You've been invited to manage a plot on GardenHub!",
-                        message="Hi there! You've been invited to GardenHub. Click here to activate your account: {}".format(activate_url)
-                    )
-                gardener_users.append(user)
-
-            # FIXME: There has got to be a better way of doing complex forms
+            # Get user objects from email addresses and invite everyone else
+            gardeners = get_user_model().objects.get_or_invite_users(
+                form.cleaned_data['gardener_emails'], # Submitted emails
+                request # The email template needs request data
+            )
+            # FIXME: There has got to be a better way of updating objects than this
             plot.title = form.cleaned_data['title']
             plot.garden = form.cleaned_data['garden']
-            plot.gardeners.set(gardener_users)
+            plot.gardeners.set(gardeners)
             plot.crops.set(form.cleaned_data['crops'])
             plot.save()
             context["success"] = True
@@ -208,8 +225,6 @@ def edit_plot(request, plotId):
 
     context["form"] = form
     context["plot"] = plot
-    # FIXME: This should only pull in gardeners from the selected garden
-    context["gardeners"] = get_user_model().objects.all()
     context["crops"] = Crop.objects.all()
 
     return render(request, 'gardenhub/plot/edit.html', context)
@@ -231,7 +246,7 @@ def activate_account(request, uuid):
     context = {}
 
     # Form has been submitted
-    if request.POST:
+    if request.method == 'POST':
         form = ActivateAccountForm(request.POST)
         if form.is_valid() and form.cleaned_data['password1'] == form.cleaned_data['password2']:
             user.first_name = form.cleaned_data['first_name']
