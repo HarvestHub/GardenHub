@@ -48,6 +48,7 @@ def login_user(request):
         else:
             context['login_failed'] = True
 
+    # Display a success message if the user just logged out
     try:
         del request.session['loggedout']
         context['loggedout'] = True
@@ -62,6 +63,7 @@ def logout_user(request):
     Logs out the user and redirects them to the login screen.
     """
     logout(request)
+    # Pass a token to the login screen so it can display a success message
     request.session['loggedout'] = True
     return HttpResponseRedirect('/')
 
