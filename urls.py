@@ -29,6 +29,7 @@ account_patterns = [
 urlpatterns = [
     url(r'^$', views.home),
     url(r'^login/$', views.login_user),
+    url(r'^logout/$', views.logout_user),
     url(r'^admin/', admin.site.urls),
     url(r'^account/', include(account_patterns)),
     url(r'^activate/(?P<uuid>[0-9a-z\-]+)/$', views.activate_account),

@@ -7,6 +7,15 @@
   <div class="ui middle aligned center aligned grid">
     <div class="column">
       <h1 class="ui header">GardenHub</h1>
+      {% if loggedout %}
+        <div class="ui success message">
+          <i class="close icon"></i>
+          <div class="header">
+            Logged out
+          </div>
+          <p>You've been successfully logged out. See you next time!</p>
+        </div>
+      {% endif %}
       <form class="ui large form" method="post" action="">
         {% csrf_token %}
         <div class="ui left aligned stacked segment">
@@ -33,4 +42,16 @@
 
     </div>
   </div>
+{% endblock %}
+
+{% block extra_scripts %}
+  <script>
+    // Message close
+    $('.message .close')
+    .on('click', function() {
+      $(this)
+        .closest('.message')
+        .transition('fade');
+    });
+  </script>
 {% endblock %}

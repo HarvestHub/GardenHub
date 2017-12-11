@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 from django.http import (
     HttpResponse, HttpResponseRedirect, HttpResponseForbidden, JsonResponse
 )
-from django.contrib.auth import authenticate, login, get_user_model
+from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404
 from sorl.thumbnail import get_thumbnail
@@ -48,7 +48,22 @@ def login_user(request):
         else:
             context['login_failed'] = True
 
+    try:
+        del request.session['loggedout']
+        context['loggedout'] = True
+    except KeyError:
+        pass
+
     return render(request, 'gardenhub/auth/login.html', context)
+
+
+def logout_user(request):
+    """
+    Logs out the user and redirects them to the login screen.
+    """
+    logout(request)
+    request.session['loggedout'] = True
+    return HttpResponseRedirect('/')
 
 
 @login_required
