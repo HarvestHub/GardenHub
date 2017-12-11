@@ -47,9 +47,15 @@
     </div>
 
     <div class="ui basic padded segment">
-      <button class="ui right floated negative button">Delete Account</button>
-      <button class="ui left floated button">Edit Profile</button>
+      <a class="ui left floated labeled icon button" href="/account/settings/">
+        <i class="edit icon"></i>
+        Edit Profile
+      </a>
+      <a class="ui right floated right labeled negative icon button" href="/account/delete/">
+        <i class="trash icon"></i>
+        Delete Account
+      </a>
     </div>
 
-    </div>
+  </div>
 {% endblock %}

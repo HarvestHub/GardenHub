@@ -45,8 +45,14 @@
     </div>
 
     <div class="ui basic padded segment">
-      <a href="/garden/{{ garden.id }}/delete/" class="ui right floated negative button">Delete Garden</a>
-      <a href="/garden/{{ garden.id }}/edit/" class="ui left floated button">Edit Garden</a>
+      <a class="ui left floated labeled icon button" href="/garden/{{ garden.id }}/edit/">
+        <i class="edit icon"></i>
+        Edit Garden
+      </a>
+      <a class="ui right floated right labeled negative icon button" href="/garden/{{ garden.id }}/delete/">
+        <i class="trash icon"></i>
+        Delete Garden
+      </a>
     </div>
 
   </div>

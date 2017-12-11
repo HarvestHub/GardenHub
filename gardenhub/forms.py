@@ -46,3 +46,11 @@ class ActivateAccountForm(forms.Form):
     last_name = forms.CharField()
     password1 = forms.CharField()
     password2 = forms.CharField()
+
+
+class AccountSettingsForm(forms.Form):
+    first_name = forms.CharField()
+    last_name = forms.CharField()
+    password = forms.CharField(required=False)
+    new_password1 = forms.CharField(required=False)
+    new_password2 = forms.CharField(required=False)
