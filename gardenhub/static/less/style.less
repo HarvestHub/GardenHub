@@ -16,7 +16,23 @@ body {
   min-height: 100vh;
 }
 
-.content {
-  height: 100%;
+body > .content {
+  min-height: 100%;
   padding: 40px 0;
+}
+
+.ui.cards {
+  /* Not sure why Semantic UI does this, cards shouldn't have a negative top/bottom margin */
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.ui.form,
+.ui.container {
+  /* Clearfix */
+  &::after {
+    content: '';
+    display: table;
+    clear: both;
+  }
 }

@@ -1,0 +1,44 @@
+<div class="card">
+  <div class="content">
+    {% if order.is_complete %}
+      <i class="right floated grey check circle icon"></i>
+    {% else %}
+      <i class="right floated green circle icon"></i>
+    {% endif %}
+    <div class="header">Order #{{ order.id }}</div>
+  </div>
+  <div class="content">
+    <h4 class="ui sub header">Location</h4>
+    <p><strong><a href="/garden/{{ order.plot.garden.id }}/">{{ order.plot.garden }}</a></strong>, Plot {{ order.plot.title }}</p>
+    <h4 class="ui sub header">Date Range</h4>
+    <div class="summary">
+      {{ order.start_date }}&ndash;{{ order.end_date }}
+    </div>
+
+    <h4 class="ui sub header">Status</h4>
+    {% if order.is_complete %}
+      This order is <strong>complete</strong>.
+    {% else %}
+      Enrique is harvesting your crops.
+      <div class="ui green progress" data-percent="{{ order.progress }}">
+        <div class="bar"></div>
+      </div>
+    {% endif %}
+
+    <h4 class="ui sub header">Crops to be Harvested</h4>
+    <div class="ui mini horizontal list">
+      {% for crop in order.crops.all %}
+        <div class="item">
+          <img class="ui avatar image" src="{{ crop.image.url }}">
+          <div class="middle aligned content">
+            <div class="description">{{ crop.title }}</div>
+          </div>
+        </div>
+        {% endfor %}
+    </div>
+  </div>
+  <a class="ui bottom attached button" href="/order/{{ order.id }}/">
+    <i class="edit icon"></i>
+    View Order
+  </a>
+</div>

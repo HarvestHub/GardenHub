@@ -8,6 +8,7 @@ from django.http import (
 from django.contrib.auth import authenticate, login, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404
+from sorl.thumbnail import get_thumbnail
 from .models import Crop, Garden, Plot, Harvest, Order, Affiliation
 from .forms import (
     CreateOrderForm,
@@ -72,7 +73,8 @@ def orders(request):
     # Otherwise, display a list of orders
     else:
         return render(request, 'gardenhub/order/list.html', {
-            "orders": request.user.get_orders()
+            "active_orders": request.user.get_orders().intersection(Order.objects.get_active_orders()),
+            "complete_orders": request.user.get_orders().intersection(Order.objects.get_complete_orders())
         })
 
 
@@ -301,7 +303,7 @@ def api_crops(request, plotId):
             "crops": [{
                 "id": crop.id,
                 "title": crop.title,
-                "image": crop.image.url
+                "image": get_thumbnail(crop.image, '125x125', crop='center').url
             } for crop in crops] })
 
     except:

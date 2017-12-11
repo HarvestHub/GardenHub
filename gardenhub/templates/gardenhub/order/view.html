@@ -5,11 +5,11 @@
 
     <!-- FIX ME: Indicate atatus of order with different icons/colors-->
 
-    <h2 class="ui header">{{ order.plot.garden }}, Plot #{{ order.plot.title }}</h2>
+    <h2 class="ui header">Order #{{ order.id }}</h2>
 
     <h4 class="ui sub header">
       <i class="left floated check circle icon"></i>
-      Order #{{ order.id }}
+      {{ order.plot.garden }}, Plot #{{ order.plot.title }}
     </h4>
 
     <h4 class="ui sub header">Date Range</h4>
@@ -18,13 +18,14 @@
     </div>
 
     <h4 class="ui sub header">Status</h4>
+    {% if order.is_complete %}
+      This order is <strong>complete</strong>.
+    {% else %}
       Enrique is harvesting your crops.
-      <!-- FIX ME: Indicate Progess of Order based on recorded Harvests-->
-      <div class="ui olive progress">
+      <div class="ui green progress" data-percent="{{ order.progress }}">
         <div class="bar"></div>
       </div>
-    <div class="summary">
-    </div>
+    {% endif %}
 
     <h4 class="ui sub header">Crops to be Harvested</h4>
     <div class="ui mini horizontal list">
@@ -52,4 +53,12 @@
 
   </div>
 
+{% endblock %}
+
+{% block extra_scripts %}
+  <script>
+    $('.ui.progress').progress({
+      'showActivity': false
+    });
+  </script>
 {% endblock %}

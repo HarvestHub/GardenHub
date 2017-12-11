@@ -1,3 +1,4 @@
+from datetime import date
 import uuid
 from django.db import models
 from django.db.models import Q
@@ -67,6 +68,21 @@ class Plot(models.Model):
         return "{} [{}]".format(self.garden.title, self.title)
 
 
+class OrderManager(models.Manager):
+    """
+    Custom Manager for the Order model.
+    """
+    def get_complete_orders(self):
+        """ Returns a QuerySet of complete orders. """
+        ids = [order.id for order in self.all() if order.is_complete()]
+        return self.filter(id__in=ids)
+
+    def get_active_orders(self):
+        """ Returns a QuerySet of active orders. """
+        ids = [order.id for order in self.all() if not order.is_complete()]
+        return self.filter(id__in=ids)
+
+
 class Order(models.Model):
     """
     A request from a Gardener or Garden Manager to enlist a particular Plot for
@@ -80,8 +96,25 @@ class Order(models.Model):
     canceled_date = models.DateField(null=True, blank=True)
     requester = models.ForeignKey(settings.AUTH_USER_MODEL, models.DO_NOTHING)
 
+    objects = OrderManager()
+
     def __str__(self):
         return str(self.id)
+
+    def progress(self):
+        """ Percentage this order is complete, as a decimal between 0-100. """
+        # Total number of days this order covers
+        duration = (self.end_date - self.start_date).days
+        # Number of days that have already passed through this order's range
+        elapsed = (date.today() - self.start_date).days
+        # Calculate the completeness
+        percentage = (elapsed / duration) * 100
+        # Force bounds
+        return min(100, max(0, percentage))
+
+    def is_complete(self):
+        """ Whether this Order is finished. """
+        return self.progress() == 100
 
 
 class Harvest(models.Model):

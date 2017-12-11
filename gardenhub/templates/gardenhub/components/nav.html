@@ -10,15 +10,21 @@
       </div>
     </div>
     <div class="skinny right menu">
-      <div class="ui dropdown item">
-        <div class="text">Manage</div>
-        <i class="dropdown icon"></i>
-        <div class="menu">
-          <a class="item" href="/gardens/"><i class="grey map icon"></i> Gardens</a>
-          <a class="item" href="/plots/"><i class="grey marker icon"></i> Plots</a>
-          <a class="item" href="/orders/"><i class="grey file icon"></i> Orders</a>
+      {% if request.user.is_anything %}
+        <div class="ui dropdown item">
+          <div class="text">Manage</div>
+          <i class="dropdown icon"></i>
+          <div class="menu">
+            {% if request.user.is_garden_manager %}
+              <a class="item" href="/gardens/"><i class="grey map icon"></i> Gardens</a>
+            {% endif %}
+            {% if request.user.is_gardener %}
+              <a class="item" href="/plots/"><i class="grey marker icon"></i> Plots</a>
+            {% endif %}
+            <a class="item" href="/orders/"><i class="grey file icon"></i> Orders</a>
+          </div>
         </div>
-      </div>
+      {% endif %}
       <div class="ui dropdown item">
         {% if request.user.photo %}
           {% thumbnail request.user.photo "100x100" crop="center" as photo %}

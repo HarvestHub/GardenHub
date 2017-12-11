@@ -1,9 +1,9 @@
 {% extends "gardenhub/_manage_base.html" %}
-{% load gardenhub %}
+{% load gardenhub thumbnail %}
 
 {% block content %}
   <div class="ui container">
-    <h2>Manage Plots</h2>
+    <h2 class="ui header">Manage Plots</h2>
 
     <!-- TODO:  If someone has more than multiple plots and multiple gardens, provide "filter by garden" option?-->
 
@@ -13,7 +13,8 @@
           <div class="content">
             <i class="right floated marker icon"></i>
             <div class="header">{{ plot.garden.title }}, Plot #{{ plot.title }}</div>
-            <div class="ui clearing divider"></div>
+          </div>
+          <div class="content">
             <h4 class="ui sub header">Upcoming Orders</h4>
             <div class="summary">
               {% plot_user_orders plot as orders %}
@@ -24,7 +25,9 @@
             <div class="ui mini horizontal list">
               {% for crop in plot.crops.all %}
                 <div class="item">
-                  <img class="ui avatar image" src="{{ crop.image.url }}">
+                  {% thumbnail crop.image "50x50" crop="center" as photo %}
+                    <img class="ui avatar image" src="{{ photo.url }}" width="{{ photo.width }}" height="{{ photo.height }}">
+                  {% endthumbnail %}
                   <div class="middle aligned content">
                     <div class="description">{{ crop.title }}</div>
                   </div>
