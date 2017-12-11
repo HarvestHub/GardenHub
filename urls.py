@@ -1,7 +1,7 @@
 """gardenhub URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/1.11/topics/http/urls/
+    https://docs.djangoproject.com/en/2.0/topics/http/urls/
 Examples:
 Function views
     1. Add an import:  from my_app import views
@@ -46,6 +46,6 @@ urlpatterns = [
     url(r'^garden/(?P<gardenId>[0-9]+)/edit/$', views.edit_garden),
     # API
     url(r'^_api/crops/(?P<plotId>[0-9]+)/$', views.api_crops),
-    # Default auth views https://docs.djangoproject.com/en/1.11/topics/auth/default/#using-the-views
+    # Default auth views https://docs.djangoproject.com/en/2.0/topics/auth/default/#using-the-views
     url('^', include('django.contrib.auth.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
