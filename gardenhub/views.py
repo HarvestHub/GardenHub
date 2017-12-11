@@ -14,7 +14,8 @@ from .forms import (
     CreateOrderForm,
     EditGardenForm,
     EditPlotForm,
-    ActivateAccountForm
+    ActivateAccountForm,
+    AccountSettingsForm
 )
 from .decorators import (
     is_anything,
@@ -296,7 +297,24 @@ def account_settings(request):
     """
     Account settings screen for the logged-in user.
     """
-    return render(request, 'gardenhub/account/edit_settings.html')
+
+    context = {}
+
+    # Form has been submitted
+    if request.method == 'POST':
+        form = AccountSettingsForm(request.POST)
+        if form.is_valid():
+            request.user.first_name = form.cleaned_data['first_name']
+            request.user.last_name = form.cleaned_data['last_name']
+            # Set password if it's entered
+            if form.cleaned_data['password']:
+                if form.cleaned_data['new_password1'] == form.cleaned_data['new_password2']:
+                    request.user.set_password(form.cleaned_data['new_password1'])
+
+            context['success'] = True
+            request.user.save()
+
+    return render(request, 'gardenhub/account/edit_settings.html', context)
 
 
 @login_required
