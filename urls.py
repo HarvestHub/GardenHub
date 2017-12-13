@@ -21,32 +21,27 @@ from gardenhub import views
 from django.contrib import admin
 
 
-account_patterns = [
-    path('', views.my_account),
-    path('settings/', views.account_settings),
-    path('delete/', views.delete_account),
-]
-
 urlpatterns = [
-    path('', views.home),
-    path('login/', views.login_user),
-    path('logout/', views.logout_user),
-    path('admin/', admin.site.urls),
-    path('account/', include(account_patterns)),
-    path('activate/<uuid:uuid>/', views.activate_account),
+    path('', views.HomePageView.as_view(), name='home'),
+    path('login/', views.login_view, name='login'),
+    path('logout/', views.logout_view, name='logout'),
+    path('admin/', admin.site.urls, name='admin'),
+    # Account
+    path('account/', views.AccountView.as_view(), name='account'),
+    path('account/settings/', views.account_settings_view, name='account-settings'),
+    path('account/delete/', views.DeleteAccountView.as_view(), name='account-delete'),
+    path('activate/<uuid:token>/', views.account_activate_view, name='account-activate'),
     # Orders
-    path('orders/', views.orders),
-    path('orders/new/', views.new_order),
-    path('order/<int:orderId>/', views.view_order),
+    path('orders/', views.order_list_view, name='order-list'),
+    path('orders/new/', views.order_create_view, name='order-create'),
+    path('order/<int:pk>/', views.OrderDetailView.as_view(), name='order-detail'),
     # Plots
-    path('plots/', views.plots),
-    path('plot/<int:plotId>/edit/', views.edit_plot),
+    path('plots/', views.PlotListView.as_view(), name='plot-list'),
+    path('plot/<int:pk>/edit/', views.plot_update_view, name='plot-update'),
     # Gardens
-    path('gardens/', views.gardens),
-    path('garden/<int:gardenId>/', views.view_garden),
-    path('garden/<int:gardenId>/edit/', views.edit_garden),
+    path('gardens/', views.GardenListView.as_view(), name='garden-list'),
+    path('garden/<int:pk>/', views.GardenDetailView.as_view(), name='garden-detail'),
+    path('garden/<int:pk>/edit/', views.garden_update_view, name='garden-update'),
     # API
-    path('_api/crops/<int:plotId>/', views.api_crops),
-    # Default auth views https://docs.djangoproject.com/en/2.0/topics/auth/default/#using-the-views
-    path('', include('django.contrib.auth.urls')),
+    path('_api/crops/<int:pk>/', views.api_crops),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

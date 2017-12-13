@@ -22,15 +22,15 @@ def can_edit_plot(func):
     """
     Only a user who can edit this Plot may access this.
     """
-    def func_wrapper(request, plotId, *args, **kwargs):
-        plot = get_object_or_404(Plot, id=plotId)
+    def func_wrapper(request, pk, *args, **kwargs):
+        plot = get_object_or_404(Plot, id=pk)
 
         # If user isn't allowed to edit this plot...
         if not request.user.can_edit_plot(plot):
             return HttpResponseForbidden("You do not have permission to edit this plot.")
         # Otherwise, carry on
         else:
-            return func(request, plotId, *args, **kwargs)
+            return func(request, pk, *args, **kwargs)
 
     return func_wrapper
 
@@ -39,15 +39,15 @@ def can_edit_garden(func):
     """
     Only a user who can edit this Garden may access this.
     """
-    def func_wrapper(request, gardenId, *args, **kwargs):
-        garden = get_object_or_404(Garden, id=gardenId)
+    def func_wrapper(request, pk, *args, **kwargs):
+        garden = get_object_or_404(Garden, id=pk)
 
         # If the user isn't allowed to edit this garden...
         if not request.user.can_edit_garden(garden):
             return HttpResponseForbidden("You do not have permission to edit this garden.")
         # Otherwise, carry on
         else:
-            return func(request, gardenId, *args, **kwargs)
+            return func(request, pk, *args, **kwargs)
 
     return func_wrapper
 
@@ -56,14 +56,14 @@ def can_edit_order(func):
     """
     Only a user who can edit this Order may access this.
     """
-    def func_wrapper(request, orderId, *args, **kwargs):
-        order = get_object_or_404(Order, id=orderId)
+    def func_wrapper(request, pk, *args, **kwargs):
+        order = get_object_or_404(Order, id=pk)
 
         # If user isn't allowed to view this order...
         if not request.user.can_edit_order(order):
             return HttpResponseForbidden("You do not have permission to manage this order.")
         # Otherwise, carry on
         else:
-            return func(request, orderId, *args, **kwargs)
+            return func(request, pk, *args, **kwargs)
 
     return func_wrapper

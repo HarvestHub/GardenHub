@@ -8,7 +8,7 @@
     </h2>
     <div class="ui three stackable cards">
       {% for order in active_orders %}
-        {% include "gardenhub/order/_order_card.html" %}
+        {% include "gardenhub/partials/order_card.html" %}
       {% endfor %}
     </div>
     <div>
@@ -26,7 +26,7 @@
     </h2>
     <div class="ui three stackable cards">
       {% for order in complete_orders %}
-        {% include "gardenhub/order/_order_card.html" %}
+        {% include "gardenhub/partials/order_card.html" %}
       {% endfor %}
     </div>
   </div>

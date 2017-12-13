@@ -7,7 +7,11 @@ from django.http import (
 )
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import LoginView
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import render, get_object_or_404
+from django.views.generic import ListView, DetailView, DeleteView
+from django.views.generic.base import TemplateView
 from sorl.thumbnail import get_thumbnail
 from .models import Crop, Garden, Plot, Harvest, Order, Affiliation
 from .forms import (
@@ -18,14 +22,13 @@ from .forms import (
     AccountSettingsForm
 )
 from .decorators import (
-    is_anything,
     can_edit_plot,
     can_edit_garden,
     can_edit_order
 )
 
 
-def login_user(request):
+def login_view(request):
     """
     The main login form that gives people access into the site. It's common
     for people to be redirected here if they don't have permission to view
@@ -56,10 +59,10 @@ def login_user(request):
     except KeyError:
         pass
 
-    return render(request, 'gardenhub/auth/login.html', context)
+    return render(request, 'gardenhub/login.html', context)
 
 
-def logout_user(request):
+def logout_view(request):
     """
     Logs out the user and redirects them to the login screen.
     """
@@ -69,36 +72,26 @@ def logout_user(request):
     return HttpResponseRedirect('/')
 
 
-@login_required
-@is_anything
-def home(request):
+class HomePageView(LoginRequiredMixin, TemplateView):
     """
     Welcome screen with calls to action.
     """
-    return render(request, 'gardenhub/home/welcome.html')
+    template_name = 'gardenhub/homepage.html'
 
 
 @login_required
-@is_anything
-def orders(request):
+def order_list_view(request):
     """
     Manage orders page to view all upcoming orders.
     """
-    # Display a "welcome screen" if the user hasn't placed any orders
-    if not request.user.has_open_orders():
-        return render(request, 'gardenhub/order/list.html')
-
-    # Otherwise, display a list of orders
-    else:
-        return render(request, 'gardenhub/order/list.html', {
-            "active_orders": request.user.get_orders().intersection(Order.objects.get_active_orders()),
-            "complete_orders": request.user.get_orders().intersection(Order.objects.get_complete_orders())
-        })
+    return render(request, 'gardenhub/order_list.html', {
+        "active_orders": request.user.get_orders().intersection(Order.objects.get_active_orders()),
+        "complete_orders": request.user.get_orders().intersection(Order.objects.get_complete_orders())
+    })
 
 
 @login_required
-@is_anything
-def new_order(request):
+def order_create_view(request):
     """
     This is a form used to submit a new order. It's used by gardeners, garden
     managers, or anyone who has the ability to edit a plot.
@@ -123,56 +116,50 @@ def new_order(request):
         form = CreateOrderForm(request.user)
 
     context["form"] = form
-    return render(request, 'gardenhub/order/create.html', context)
+    return render(request, 'gardenhub/order_create.html', context)
 
 
-@login_required
-@can_edit_order
-def view_order(request, orderId):
+class OrderDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     """
     Review an individual order that's been submitted. Anyone who can edit the
     plot may view or cancel these orders.
     """
-    order = get_object_or_404(Order, id=orderId)
+    model = Order
 
-    return render(request, 'gardenhub/order/view.html', {
-        "order": order
-    })
+    def test_func(self):
+        # Test that the user can edit this order
+        return self.request.user.can_edit_order(self.get_object())
 
 
-@login_required
-def gardens(request):
+class GardenListView(LoginRequiredMixin, ListView):
     """
     A list of all gardens the logged-in user can edit.
     """
-    gardens = request.user.get_gardens()
+    context_object_name = 'gardens'
 
-    return render(request, 'gardenhub/garden/list.html', {
-        "gardens": gardens
-    })
+    def get_queryset(self):
+        return self.request.user.get_gardens()
 
 
-@login_required
-@can_edit_garden
-def view_garden(request, gardenId):
+class GardenDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     """
     View a single garden.
     """
-    garden = get_object_or_404(Garden, id=gardenId)
+    model = Garden
 
-    return render(request, 'gardenhub/garden/view.html', {
-        "garden": garden
-    })
+    def test_func(self):
+        # Test that the user can edit this garden
+        return self.request.user.can_edit_garden(self.get_object())
 
 
 @login_required
 @can_edit_garden
-def edit_garden(request, gardenId):
+def garden_update_view(request, pk):
     """
     Edit form for an individual garden.
     """
     context = {}
-    garden = get_object_or_404(Garden, id=gardenId)
+    garden = get_object_or_404(Garden, id=pk)
 
     # A form has been submitted
     if request.method == 'POST':
@@ -197,28 +184,26 @@ def edit_garden(request, gardenId):
     context["garden"] = garden
     context["form"] = form
 
-    return render(request, 'gardenhub/garden/edit.html', context)
+    return render(request, 'gardenhub/garden_update.html', context)
 
 
-@login_required
-def plots(request):
+class PlotListView(LoginRequiredMixin, ListView):
     """
     A list of all plots the logged-in user can edit.
     """
-    plots = request.user.get_plots()
+    context_object_name = 'plots'
 
-    return render(request, 'gardenhub/plot/list.html', {
-        "plots": plots
-    })
+    def get_queryset(self):
+        return self.request.user.get_plots()
 
 
 @login_required
 @can_edit_plot
-def edit_plot(request, plotId):
+def plot_update_view(request, pk):
     """
     Edit form for an individual plot.
     """
-    plot = get_object_or_404(Plot, id=plotId)
+    plot = get_object_or_404(Plot, id=pk)
 
     context = {}
 
@@ -247,15 +232,15 @@ def edit_plot(request, plotId):
     context["plot"] = plot
     context["crops"] = Crop.objects.all()
 
-    return render(request, 'gardenhub/plot/edit.html', context)
+    return render(request, 'gardenhub/plot_update.html', context)
 
 
-def activate_account(request, uuid):
+def account_activate_view(request, token):
     """
     When a new user is invited, an email call to action will send them to this
     view so they can fill out their profile and activate their account.
     """
-    user = get_object_or_404(get_user_model(), activation_token=uuid)
+    user = get_object_or_404(get_user_model(), activation_token=token)
 
     # The user is already active, this token isn't needed.
     if user.is_active:
@@ -277,23 +262,18 @@ def activate_account(request, uuid):
             # TODO: Actually authenticate the user
             return HttpResponseRedirect('/')
 
-    return render(request, 'gardenhub/auth/activate.html')
+    return render(request, 'gardenhub/account_activate.html')
 
 
-@login_required
-def my_account(request):
+class AccountView(LoginRequiredMixin, TemplateView):
     """
     Profile edit screen for the logged-in user.
     """
-    gardens = request.user.get_gardens()
-
-    return render(request, 'gardenhub/account/my_account.html', {
-        "gardens": gardens
-})
+    template_name = 'gardenhub/account.html'
 
 
 @login_required
-def account_settings(request):
+def account_settings_view(request):
     """
     Account settings screen for the logged-in user.
     """
@@ -314,25 +294,25 @@ def account_settings(request):
             context['success'] = True
             request.user.save()
 
-    return render(request, 'gardenhub/account/edit_settings.html', context)
+    return render(request, 'gardenhub/account_settings.html', context)
 
 
-@login_required
-def delete_account(request):
+# TODO: Make this actually deactivate the user's account
+class DeleteAccountView(LoginRequiredMixin, TemplateView):
     """
     Delete the logged-in user's GardenHub account.
     """
-    return render(request, 'gardenhub/account/delete_account.html')
+    template_name = 'gardenhub/account_delete.html'
 
 
 @login_required
 @can_edit_plot
-def api_crops(request, plotId):
+def api_crops(request, pk):
     """
     Return JSON about crops.
     """
     try:
-        plot = get_object_or_404(Plot, id=plotId)
+        plot = get_object_or_404(Plot, id=pk)
         crops = plot.crops.all()
         return JsonResponse({
             "crops": [{

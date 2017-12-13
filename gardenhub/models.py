@@ -200,7 +200,7 @@ class UserManager(BaseUserManager):
                 user.email_user(
                     subject="{} invited you to join GardenHub".format(inviter.get_full_name()),
                     message=render_to_string(
-                        'gardenhub/email/invitation.txt', {
+                        'gardenhub/email_invitation.txt', {
                             'inviter': inviter,
                             'activate_url': activate_url
                         }

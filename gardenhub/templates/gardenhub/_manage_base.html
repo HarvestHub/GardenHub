@@ -1,9 +1,52 @@
 {% extends "gardenhub/_base.html" %}
+{% load static thumbnail gardenhub %}
 
 {% block primary_body_class %}has-top-menu{% endblock %}
 
 {% block header %}
-  {% include "gardenhub/components/nav.html" %}
+  <div class="ui large fixed borderless top menu">
+    <div class="ui container">
+      <div class="left menu">
+        <div class="borderless ui item">
+          <a href="/">
+            <i class="large grey home icon"></i>
+          </a>
+        </div>
+      </div>
+      <div class="skinny right menu">
+        {% if request.user.is_anything %}
+          <div class="ui dropdown item">
+            <div class="text">Manage</div>
+            <i class="dropdown icon"></i>
+            <div class="menu">
+              {% if request.user.is_garden_manager %}
+                <a class="item" href="/gardens/"><i class="grey map icon"></i> Gardens</a>
+              {% endif %}
+              {% if request.user.is_gardener %}
+                <a class="item" href="/plots/"><i class="grey marker icon"></i> Plots</a>
+              {% endif %}
+              <a class="item" href="/orders/"><i class="grey file icon"></i> Orders</a>
+            </div>
+          </div>
+        {% endif %}
+        <div class="ui dropdown item">
+          {% if request.user.photo %}
+            {% thumbnail request.user.photo "100x100" crop="center" as photo %}
+              <img class="ui avatar image" src="{{ photo.url }}" width="{{ photo.width }}" height="{{ photo.height }}">
+            {% endthumbnail %}
+          {% else %}
+            <img class="ui avatar image" src="{% placeholder 300 request.user.get_full_name %}">
+          {% endif %}
+          <div class="text">{{ request.user.first_name }}</div>
+          <i class="dropdown icon"></i>
+          <div class="menu">
+            <a class="item" href="/account/"><i class="grey user icon"></i> Profile</a>
+            <a class="item" href="/logout/"><i class="grey sign out icon"></i> Sign out</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 {% endblock %}
 
 {% block wrap %}
