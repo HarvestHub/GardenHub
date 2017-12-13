@@ -1,5 +1,6 @@
 from datetime import date, timedelta
 from uuid import uuid4
+from django.core import mail
 from django.test import TestCase, RequestFactory
 from django.contrib.auth import get_user_model, authenticate
 from django.http import HttpResponse
@@ -16,11 +17,47 @@ def uuid_pass():
     return str(uuid4())
 
 
+
 class UserManagerTestCase(TestCase):
     """
     Test UserManager methods.
     """
-    # TODO: Create these tests
+
+    def test_get_or_invite_users(self):
+        """ User.objects.test_get_or_invite_users() """
+
+        # 4 email addresses
+        emails = [uuid_email(), uuid_email(), uuid_email(), uuid_email()]
+
+        # Turn the first 2 into real users to test the "get" functionality
+        existing = [
+            get_user_model().objects.create_user(email=emails[0], password=uuid_pass()),
+            get_user_model().objects.create_user(email=emails[1], password=uuid_pass())
+        ]
+
+        # Create fake request
+        inviter = get_user_model().objects.create_user(
+            email=uuid_email(),
+            password=uuid_pass(),
+            first_name='Test',
+            last_name='Test'
+        )
+        request = RequestFactory().get('/')
+        request.user = inviter
+
+        # Call function
+        users = get_user_model().objects.get_or_invite_users(emails, request)
+
+        # Test that each user is in the results
+        for user in users:
+            self.assertIn(user.email, emails)
+
+        # Ensure that 2 emails were sent
+        self.assertEqual(len(mail.outbox), 2)
+
+        # Test the subject line of the first email
+        self.assertEqual(mail.outbox[0].subject, 'Test Test invited you to join GardenHub')
+
 
 
 class UserTestCase(TestCase):
