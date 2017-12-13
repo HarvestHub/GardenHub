@@ -45,6 +45,7 @@ class Garden(models.Model):
     address = models.CharField(max_length=255)
     affiliations = models.ManyToManyField(Affiliation, related_name='gardens', blank=True)
     photo = models.ImageField(blank=True)
+    pickers = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='+')
 
     def __str__(self):
         return self.title
@@ -74,12 +75,18 @@ class OrderManager(models.Manager):
     """
     def get_complete_orders(self):
         """ Returns a QuerySet of complete orders. """
+        # FIXME: This is inefficient. Can we cache it?
         ids = [order.id for order in self.all() if order.is_complete()]
         return self.filter(id__in=ids)
 
     def get_active_orders(self):
         """ Returns a QuerySet of active orders. """
-        ids = [order.id for order in self.all() if not order.is_complete()]
+        # FIXME: This is inefficient. Can we cache it?
+        ids = [
+            order.id for order in self.all()
+            if not order.is_complete()
+            and order.start_date <= date.today()
+        ]
         return self.filter(id__in=ids)
 
 
@@ -284,6 +291,12 @@ class User(AbstractBaseUser, PermissionsMixin):
         plot_ids = [ plot.id for plot in self.get_plots().all() ]
         return Order.objects.filter(plot__id__in=plot_ids)
 
+    def get_picker_orders(self):
+        """
+        Return all Orders this user is assigned to fulfill.
+        """
+        return Order.objects.get_active_orders().filter(plot__garden__pickers__id=self.id)
+
     def get_peers(self):
         """
         Return all the Users within every Plot and Garden that you manage,
@@ -309,12 +322,20 @@ class User(AbstractBaseUser, PermissionsMixin):
         """
         return self.get_plots().count() > 0
 
+    # FIXME: Reassess the need for this.
     def is_anything(self):
         """
         GardenHub is only useful if the logged-in user can manage any garden or
         plot. If not, that is very sad. :(
         """
         return self.is_gardener() or self.is_garden_manager()
+
+    def is_picker(self):
+        """
+        A picker is someone who is assigned to fulfill Orders on a Garden. They
+        will submit Harvests over the duration of the Orders.
+        """
+        return Garden.objects.filter(pickers__id=self.id).count() > 0
 
     def has_open_orders(self):
         """

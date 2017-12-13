@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, timedelta
 from uuid import uuid4
 from django.test import TestCase, RequestFactory
 from django.contrib.auth import get_user_model, authenticate
@@ -232,6 +232,30 @@ class UserTestCase(TestCase):
         self.assertEqual(list(users[9].get_peers()), [])
 
 
+    def test_get_picker_orders(self):
+        """ User.get_picker_orders() """
+
+        # Create garden, plot, and picker
+        garden = Garden.objects.create(title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
+        plot = Plot.objects.create(title='1', garden=garden)
+        picker = get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass())
+        garden.pickers.add(picker)
+
+        # Create active orders
+        start_date = date.today() - timedelta(days=1)
+        end_date = date.today() + timedelta(days=5)
+        orders = [
+            Order.objects.create(plot=plot, start_date=start_date, end_date=end_date, requester=picker),
+            Order.objects.create(plot=plot, start_date=start_date, end_date=end_date, requester=picker),
+            Order.objects.create(plot=plot, start_date=start_date, end_date=end_date, requester=picker)
+        ]
+        # Inactive orders, for good measure
+        Order.objects.create(plot=plot, start_date=date.today()+timedelta(days=5), end_date=date.today()+timedelta(days=10), requester=picker)
+        Order.objects.create(plot=plot, start_date=date.today()-timedelta(days=10), end_date=date.today()-timedelta(days=5), requester=picker)
+
+        self.assertEqual(list(picker.get_picker_orders()), orders)
+
+
     def test_is_garden_manager(self):
         """ User.is_garden_manager() """
 
@@ -265,6 +289,21 @@ class UserTestCase(TestCase):
         # Test a gardener and garden manager
         self.assertTrue(self.gardener.is_anything())
         self.assertTrue(self.garden_manager.is_anything())
+
+
+    def test_is_picker(self):
+        """ User.is_picker() """
+
+        # Test a normal user
+        self.assertFalse(self.normal_user.is_anything())
+
+        # Create garden and assign a picker
+        garden = Garden.objects.create(title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
+        picker = get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass())
+        garden.pickers.add(picker)
+
+        # Test that the user is a picker
+        self.assertTrue(picker.is_picker())
 
 
     def test_has_open_orders(self):
