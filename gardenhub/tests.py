@@ -16,6 +16,13 @@ def uuid_pass():
     return str(uuid4())
 
 
+class UserManagerTestCase(TestCase):
+    """
+    Test UserManager methods.
+    """
+    # TODO: Create these tests
+
+
 class UserTestCase(TestCase):
     """
     Test User model methods.
@@ -390,6 +397,79 @@ class UserTestCase(TestCase):
         # Test that a normal user can't edit the order
         self.assertFalse(self.normal_user.can_edit_order(order))
 
+
+
+class OrderManagerTestCase(TestCase):
+    """
+    Tests for the custom OrderManager
+    """
+
+    def test_get_complete_orders(self):
+        """ Order.objects.get_complete_orders() """
+
+        # Create garden, plot, and picker
+        garden = Garden.objects.create(title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
+        plot = Plot.objects.create(title='1', garden=garden)
+        picker = get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass())
+        garden.pickers.add(picker)
+
+        # Completed orders
+        start_date = date.today() - timedelta(days=10)
+        end_date = date.today() - timedelta(days=1)
+        completed_orders = [
+            Order.objects.create(plot=plot, start_date=start_date, end_date=end_date, requester=picker),
+            Order.objects.create(plot=plot, start_date=start_date, end_date=end_date, requester=picker),
+            Order.objects.create(plot=plot, start_date=start_date, end_date=end_date, requester=picker),
+        ]
+
+        # Incomplete orders
+        incomplete_orders = [
+            # Start date is greater than today
+            Order.objects.create(plot=plot, start_date=date.today()+timedelta(days=5), end_date=date.today()+timedelta(days=10), requester=picker),
+            # End date is greater than today
+            Order.objects.create(plot=plot, start_date=date.today()-timedelta(days=10), end_date=date.today()+timedelta(days=5), requester=picker),
+        ]
+
+        # Test it
+        result = Order.objects.get_complete_orders()
+        for order in completed_orders:
+            self.assertIn(order, list(result))
+        for order in incomplete_orders:
+            self.assertNotIn(order, list(result))
+
+
+    def test_get_active_orders(self):
+        """ Order.objects.get_active_orders() """
+
+        # Create garden, plot, and picker
+        garden = Garden.objects.create(title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
+        plot = Plot.objects.create(title='1', garden=garden)
+        picker = get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass())
+        garden.pickers.add(picker)
+
+        # Active orders
+        start_date = date.today() - timedelta(days=10)
+        end_date = date.today() + timedelta(days=1)
+        active_orders = [
+            Order.objects.create(plot=plot, start_date=start_date, end_date=end_date, requester=picker),
+            Order.objects.create(plot=plot, start_date=start_date, end_date=end_date, requester=picker),
+            Order.objects.create(plot=plot, start_date=start_date, end_date=end_date, requester=picker),
+        ]
+
+        # Inactive orders
+        inactive_orders = [
+            # Start date is greater than today
+            Order.objects.create(plot=plot, start_date=date.today()+timedelta(days=5), end_date=date.today()+timedelta(days=10), requester=picker),
+            # End date is greater than today
+            Order.objects.create(plot=plot, start_date=date.today()-timedelta(days=10), end_date=date.today()-timedelta(days=5), requester=picker),
+        ]
+
+        # Test it
+        result = Order.objects.get_active_orders()
+        for order in active_orders:
+            self.assertIn(order, list(result))
+        for order in inactive_orders:
+            self.assertNotIn(order, list(result))
 
 
 class DecoratorTestCase(TestCase):
