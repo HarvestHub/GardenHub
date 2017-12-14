@@ -75,19 +75,14 @@ class OrderManager(models.Manager):
     """
     def get_complete_orders(self):
         """ Returns a QuerySet of complete orders. """
-        # FIXME: This is inefficient. Can we cache it?
-        ids = [order.id for order in self.all() if order.is_complete()]
-        return self.filter(id__in=ids)
+        return self.filter(end_date__lt=date.today())
 
     def get_active_orders(self):
         """ Returns a QuerySet of active orders. """
-        # FIXME: This is inefficient. Can we cache it?
-        ids = [
-            order.id for order in self.all()
-            if not order.is_complete()
-            and order.start_date <= date.today()
-        ]
-        return self.filter(id__in=ids)
+        return self.filter(
+            Q(end_date__gte=date.today()) &
+            Q(start_date__lte=date.today())
+        )
 
 
 class Order(models.Model):
