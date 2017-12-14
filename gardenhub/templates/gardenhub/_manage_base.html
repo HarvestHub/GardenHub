@@ -20,12 +20,12 @@
             <i class="dropdown icon"></i>
             <div class="menu">
               {% if request.user.is_garden_manager %}
-                <a class="item" href="/gardens/"><i class="grey map icon"></i> Gardens</a>
+                <a class="item" href="/gardens/"><i class="grey garden icon"></i> Gardens</a>
               {% endif %}
               {% if request.user.is_gardener %}
-                <a class="item" href="/plots/"><i class="grey marker icon"></i> Plots</a>
+                <a class="item" href="/plots/"><i class="grey plot icon"></i> Plots</a>
               {% endif %}
-              <a class="item" href="/orders/"><i class="grey file icon"></i> Orders</a>
+              <a class="item" href="/orders/"><i class="grey order icon"></i> Orders</a>
             </div>
           </div>
         {% endif %}

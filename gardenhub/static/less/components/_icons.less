@@ -1,0 +1,35 @@
+@font-face {
+  font-family: 'gardenhub';
+  src:  url('../fonts/gardenhub.eot?tqt8fz');
+  src:  url('../fonts/gardenhub.eot?tqt8fz#iefix') format('embedded-opentype'),
+    url('../fonts/gardenhub.ttf?tqt8fz') format('truetype'),
+    url('../fonts/gardenhub.woff?tqt8fz') format('woff'),
+    url('../fonts/gardenhub.svg?tqt8fz#gardenhub') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.plot,
+.garden,
+.order,
+.gardenhub {
+  &.icon {
+    font-family: 'gardenhub' !important;
+  }
+}
+
+.plot.icon::before {
+  content: "\e900";
+}
+
+.garden.icon::before {
+  content: "\e901";
+}
+
+.order.icon::before {
+  content: "\e902";
+}
+
+.gardenhub.icon::before {
+  content: "\e903";
+}
