@@ -45,7 +45,7 @@ class Garden(models.Model):
     address = models.CharField(max_length=255)
     affiliations = models.ManyToManyField(Affiliation, related_name='gardens', blank=True)
     photo = models.ImageField(blank=True)
-    pickers = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='+')
+    pickers = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='+', blank=True)
 
     def __str__(self):
         return self.title
