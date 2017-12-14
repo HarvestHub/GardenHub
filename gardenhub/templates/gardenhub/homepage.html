@@ -3,14 +3,30 @@
 
 {% block content %}
   <div class=" ui container">
-    <h1 class ="left aligned">Welcome, {{user.first_name}}!</h1>
-    <!-- FIX ME: what sort of info would be useful here -->
+
+    {# Display active orders to the picker #}
+    {% if request.user.is_picker %}
+      <h1 class="ui header">
+        Orders to Fulfill
+        <span class="sub header">Let's get to work on the following orders.</span>
+      </h1>
+      <div class="ui cards">
+        {% for order in request.user.get_picker_orders %}
+          {% include "gardenhub/partials/order_card.html" %}
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {# Welcome the user with a nice message #}
+    <h1 class="left aligned">Welcome, {{user.first_name}}!</h1>
+    {# FIXME: what sort of info would be useful here? #}
     <span class="sub header">You have donated 12 lbs of food this year.</span>
   </div>
 
   <div class="ui center aligned container">
     <div class="welcome-screen">
 
+      {# Guide a new user to create an order #}
       {% if not request.user.has_open_orders %}
         <div class="ui container">
           <h2 class="ui header">
@@ -20,6 +36,7 @@
           <a class="big purple ui button" href="/orders/new/"><i class="plus icon"></i> New Order</a>
         </div>
 
+      {# If the user already has open orders, give them some other calls to action #}
       {% else %}
         <div class="ui items">
           <div class="item">
