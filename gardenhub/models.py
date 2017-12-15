@@ -363,3 +363,11 @@ class User(AbstractBaseUser, PermissionsMixin):
         False otherwise.
         """
         return self.can_edit_plot(order.plot)
+
+    def is_order_picker(self, order):
+        """
+        Is the user assigned as a picker on this order?
+        True if the user is listed in Order.plot.garden.pickers.
+        False otherwise.
+        """
+        return self in order.plot.garden.pickers.all()

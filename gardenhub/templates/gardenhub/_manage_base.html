@@ -8,7 +8,7 @@
     <div class="ui container">
       <div class="left menu">
         <div class="borderless ui item">
-          <a href="/">
+          <a href="{% url "home" %}">
             <i class="large grey home icon"></i>
           </a>
         </div>
@@ -20,12 +20,12 @@
             <i class="dropdown icon"></i>
             <div class="menu">
               {% if request.user.is_garden_manager %}
-                <a class="item" href="/gardens/"><i class="grey garden icon"></i> Gardens</a>
+                <a class="item" href="{% url "garden-list" %}"><i class="grey garden icon"></i> Gardens</a>
               {% endif %}
               {% if request.user.is_gardener %}
-                <a class="item" href="/plots/"><i class="grey plot icon"></i> Plots</a>
+                <a class="item" href="{% url "plot-list" %}"><i class="grey plot icon"></i> Plots</a>
               {% endif %}
-              <a class="item" href="/orders/"><i class="grey order icon"></i> Orders</a>
+              <a class="item" href="{% url "order-list" %}"><i class="grey order icon"></i> Orders</a>
             </div>
           </div>
         {% endif %}
@@ -40,8 +40,11 @@
           <div class="text">{{ request.user.first_name }}</div>
           <i class="dropdown icon"></i>
           <div class="menu">
-            <a class="item" href="/account/"><i class="grey user icon"></i> Profile</a>
-            <a class="item" href="/logout/"><i class="grey sign out icon"></i> Sign out</a>
+            <a class="item" href="{% url "account" %}"><i class="grey user icon"></i> Profile</a>
+            {% if request.user.is_superuser %}
+              <a class="item" href="{% url "admin:index" %}"><i class="grey lock icon"></i> Admin</a>
+            {% endif %}
+            <a class="item" href="{% url "logout" %}"><i class="grey sign out icon"></i> Sign out</a>
           </div>
         </div>
       </div>

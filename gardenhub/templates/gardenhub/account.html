@@ -8,7 +8,7 @@
         <img class="ui centered small circular image" src="{{ photo.url }}" width="{{ photo.width }}" height="{{ photo.height }}">
       {% endthumbnail %}
     {% else %}
-      <img class="ui centered small circular image" src="{% placeholder 300 request.user %}">
+      <img class="ui centered small circular image" src="{% placeholder 300 request.user.get_full_name %}">
     {% endif %}
     <h2 class="ui center aligned header">
       {{user.first_name}} {{user.last_name}}

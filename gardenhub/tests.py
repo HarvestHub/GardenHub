@@ -435,6 +435,23 @@ class UserTestCase(TestCase):
         self.assertFalse(self.normal_user.can_edit_order(order))
 
 
+    def test_is_order_picker(self):
+        """ User.is_order_picker() """
+
+        # Create order
+        garden = Garden.objects.create(title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
+        plot = Plot.objects.create(title='1', garden=garden)
+        order = Order.objects.create(plot=plot, start_date=date(2017, 1, 1), end_date=date(2017, 1, 5), requester=self.normal_user)
+
+        # Create picker
+        picker = get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass())
+        garden.pickers.add(picker)
+        self.assertTrue(picker.is_order_picker(order))
+
+        # Test that a normal user can't edit the order
+        self.assertFalse(self.normal_user.is_order_picker(order))
+
+
 
 class OrderManagerTestCase(TestCase):
     """

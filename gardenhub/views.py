@@ -127,8 +127,12 @@ class OrderDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     model = Order
 
     def test_func(self):
-        # Test that the user can edit this order
-        return self.request.user.can_edit_order(self.get_object())
+        # Can the user manage this order?
+        is_manager = self.request.user.can_edit_order(self.get_object())
+        # Should the user pick this order?
+        is_picker = self.request.user.is_order_picker(self.get_object())
+        # Is the user a manager or picker of this order?
+        return is_manager or is_picker
 
 
 class GardenListView(LoginRequiredMixin, ListView):

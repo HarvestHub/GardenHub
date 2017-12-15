@@ -12,45 +12,95 @@
       </h1>
       <div class="ui cards">
         {% for order in request.user.get_picker_orders %}
-          {% include "gardenhub/partials/order_card.html" %}
+          <div class="card">
+            <div class="content">
+              {% if order.is_complete %}
+                <i class="right floated grey check circle icon"></i>
+              {% else %}
+                <i class="right floated green circle icon"></i>
+              {% endif %}
+              <div class="header">Order #{{ order.id }}</div>
+            </div>
+            <div class="content">
+              <h4 class="ui sub header">Location</h4>
+              <p><strong><a href="/garden/{{ order.plot.garden.id }}/">{{ order.plot.garden }}</a></strong>, Plot {{ order.plot.title }}</p>
+              <h4 class="ui sub header">Date Range</h4>
+              <div class="summary">
+                {{ order.start_date }}&ndash;{{ order.end_date }}
+              </div>
+
+              <h4 class="ui sub header">Status</h4>
+              {% if order.is_complete %}
+                This order is <strong>complete</strong>.
+              {% else %}
+                Enrique is harvesting your crops.
+                <div class="ui green progress" data-percent="{{ order.progress }}">
+                  <div class="bar"></div>
+                </div>
+              {% endif %}
+
+              <h4 class="ui sub header">Crops to be Harvested</h4>
+              <div class="ui mini horizontal list">
+                {% for crop in order.crops.all %}
+                  <div class="item">
+                    <img class="ui avatar image" src="{{ crop.image.url }}">
+                    <div class="middle aligned content">
+                      <div class="description">{{ crop.title }}</div>
+                    </div>
+                  </div>
+                  {% endfor %}
+              </div>
+            </div>
+            <div class="ui bottom attached buttons">
+              <a class="ui button" href="#">
+                <i class="plus icon"></i>
+                Harvest
+              </a>
+              <a class="ui button" href="{% url "order-detail" order.id %}">
+                <i class="eye icon"></i>
+                View Order
+              </a>
+            </div>
+          </div>
         {% endfor %}
       </div>
+    {% else %}
+
+      {# Welcome the user with a nice message #}
+      <h1 class="left aligned">Welcome, {{user.first_name}}!</h1>
+      {# FIXME: what sort of info would be useful here? #}
+      <span class="sub header">You have donated 12 lbs of food this year.</span>
+
+      <div class="ui center aligned container">
+        <div class="welcome-screen">
+
+          {# Guide a new user to create an order #}
+          {% if not request.user.has_open_orders %}
+            <div class="ui container">
+              <h2 class="ui header">
+                No Orders Placed
+                <span class="sub header">Create an order to get started.</span>
+              </h2>
+              <a class="big purple ui button" href="/orders/new/"><i class="plus icon"></i> New Order</a>
+            </div>
+
+          {# If the user already has open orders, give them some other calls to action #}
+          {% else %}
+            <div class="ui items">
+              <div class="item">
+                <a class="huge fluid purple ui button" href="/orders/new/"><i class="plus icon"></i> New Order</a>
+              </div>
+              <div class="item">
+                <a class="huge fluid purple ui button" href="/orders"><i class="edit icon"></i> View My Orders</a>
+              </div>
+              <div class="item">
+                <a class="huge fluid purple ui button" href="/plots"><i class="plot icon"></i> View My Plots</a>
+              </div>
+            </div>
+          {% endif %}
+
+        </div>
+      </div>
     {% endif %}
-
-    {# Welcome the user with a nice message #}
-    <h1 class="left aligned">Welcome, {{user.first_name}}!</h1>
-    {# FIXME: what sort of info would be useful here? #}
-    <span class="sub header">You have donated 12 lbs of food this year.</span>
-  </div>
-
-  <div class="ui center aligned container">
-    <div class="welcome-screen">
-
-      {# Guide a new user to create an order #}
-      {% if not request.user.has_open_orders %}
-        <div class="ui container">
-          <h2 class="ui header">
-            No Orders Placed
-            <span class="sub header">Create an order to get started.</span>
-          </h2>
-          <a class="big purple ui button" href="/orders/new/"><i class="plus icon"></i> New Order</a>
-        </div>
-
-      {# If the user already has open orders, give them some other calls to action #}
-      {% else %}
-        <div class="ui items">
-          <div class="item">
-            <a class="huge fluid purple ui button" href="/orders/new/"><i class="plus icon"></i> New Order</a>
-          </div>
-          <div class="item">
-            <a class="huge fluid purple ui button" href="/orders"><i class="edit icon"></i> View My Orders</a>
-          </div>
-          <div class="item">
-            <a class="huge fluid purple ui button" href="/plots"><i class="plot icon"></i> View My Plots</a>
-          </div>
-        </div>
-      {% endif %}
-
-    </div>
   </div>
 {% endblock %}
