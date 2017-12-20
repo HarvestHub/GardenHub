@@ -1,69 +1,83 @@
 {% extends "gardenhub/_manage_base.html" %}
-{% load static %}
+{% load static gardenhub %}
 
 {% block content %}
   <div class=" ui container">
 
     {# Display active orders to the picker #}
     {% if request.user.is_picker %}
-      <h1 class="ui header">
-        Orders to Fulfill
-        <span class="sub header">Let's get to work on the following orders.</span>
+      <h1 class="ui header center aligned">
+        <span class="ui sub header">{% now "l, N j" %}</span>
+        {{ request.user.first_name}}'s Assignments
+        <span class="sub header">Let's go to work on these orders!</span>
       </h1>
-      <div class="ui cards">
-        {% for order in request.user.get_picker_orders %}
-          <div class="card">
-            <div class="content">
-              {% if order.is_complete %}
-                <i class="right floated grey check circle icon"></i>
-              {% else %}
-                <i class="right floated green circle icon"></i>
-              {% endif %}
-              <div class="header">Order #{{ order.id }}</div>
-            </div>
-            <div class="content">
-              <h4 class="ui sub header">Location</h4>
-              <p><strong><a href="/garden/{{ order.plot.garden.id }}/">{{ order.plot.garden }}</a></strong>, Plot {{ order.plot.title }}</p>
-              <h4 class="ui sub header">Date Range</h4>
-              <div class="summary">
-                {{ order.start_date }}&ndash;{{ order.end_date }}
-              </div>
+      {% for garden in request.user.get_picker_gardens %}
+        {% with orders=request.user.get_picker_orders|picker_format:garden %}
+          <h2 class="ui header">
+            {{ garden.title }}
+            <span class="sub header">{{ orders|length }} open order{{ orders|pluralize }}</span>
+          </h2>
+          {% if orders %}
+            <div class="ui cards">
+              {% for order in orders %}
+                <div class="card">
+                  <div class="content">
+                    {% if order.is_complete or order.was_picked_today %}
+                      <i class="right floated grey check circle icon"></i>
+                    {% else %}
+                      <i class="right floated green circle icon"></i>
+                    {% endif %}
+                    <div class="header">Order #{{ order.id }}</div>
+                  </div>
+                  <div class="content">
+                    <h4 class="ui sub header">Location</h4>
+                    <p><strong><a href="/garden/{{ order.plot.garden.id }}/">{{ order.plot.garden }}</a></strong>, Plot {{ order.plot.title }}</p>
+                    <h4 class="ui sub header">Date Range</h4>
+                    <div class="summary">
+                      {{ order.start_date }}&ndash;{{ order.end_date }}
+                    </div>
 
-              <h4 class="ui sub header">Status</h4>
-              {% if order.is_complete %}
-                This order is <strong>complete</strong>.
-              {% else %}
-                Enrique is harvesting your crops.
-                <div class="ui green progress" data-percent="{{ order.progress }}">
-                  <div class="bar"></div>
-                </div>
-              {% endif %}
+                    <h4 class="ui sub header">Status</h4>
+                    {% if order.is_complete %}
+                      This order is <strong>complete</strong>.
+                    {% else %}
+                      Enrique is harvesting your crops.
+                      <div class="ui green progress" data-percent="{{ order.progress }}">
+                        <div class="bar"></div>
+                      </div>
+                    {% endif %}
 
-              <h4 class="ui sub header">Crops to be Harvested</h4>
-              <div class="ui mini horizontal list">
-                {% for crop in order.crops.all %}
-                  <div class="item">
-                    <img class="ui avatar image" src="{{ crop.image.url }}">
-                    <div class="middle aligned content">
-                      <div class="description">{{ crop.title }}</div>
+                    <h4 class="ui sub header">Crops to be Harvested</h4>
+                    <div class="ui mini horizontal list">
+                      {% for crop in order.crops.all %}
+                        <div class="item">
+                          <img class="ui avatar image" src="{{ crop.image.url }}">
+                          <div class="middle aligned content">
+                            <div class="description">{{ crop.title }}</div>
+                          </div>
+                        </div>
+                        {% endfor %}
                     </div>
                   </div>
-                  {% endfor %}
-              </div>
+                  <div class="ui bottom attached buttons">
+                    <a class="ui button" href="#">
+                      <i class="plus icon"></i>
+                      Harvest
+                    </a>
+                    <a class="ui button" href="{% url "order-detail" order.id %}">
+                      <i class="eye icon"></i>
+                      View Order
+                    </a>
+                  </div>
+                </div>
+              {% endfor %}
             </div>
-            <div class="ui bottom attached buttons">
-              <a class="ui button" href="#">
-                <i class="plus icon"></i>
-                Harvest
-              </a>
-              <a class="ui button" href="{% url "order-detail" order.id %}">
-                <i class="eye icon"></i>
-                View Order
-              </a>
-            </div>
-          </div>
-        {% endfor %}
-      </div>
+          {% else %}
+            <p>No orders for this garden!</p>
+          {% endif %}
+        {% endwith %}
+      {% endfor %}
+
     {% else %}
 
       {# Welcome the user with a nice message #}

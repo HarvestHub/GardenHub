@@ -79,15 +79,14 @@ class HomePageView(LoginRequiredMixin, TemplateView):
     template_name = 'gardenhub/homepage.html'
 
 
-@login_required
-def order_list_view(request):
+class OrderListView(LoginRequiredMixin, ListView):
     """
     Manage orders page to view all upcoming orders.
     """
-    return render(request, 'gardenhub/order_list.html', {
-        "active_orders": request.user.get_orders().intersection(Order.objects.get_active_orders()),
-        "complete_orders": request.user.get_orders().intersection(Order.objects.get_complete_orders())
-    })
+    context_object_name = 'orders'
+
+    def get_queryset(self):
+        return self.request.user.get_orders()
 
 
 @login_required

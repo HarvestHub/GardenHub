@@ -69,20 +69,65 @@ class Plot(models.Model):
         return "{} [{}]".format(self.garden.title, self.title)
 
 
-class OrderManager(models.Manager):
+class OrderQuerySet(models.QuerySet):
     """
-    Custom Manager for the Order model.
+    Custom QuerySet for advanced filtering of orders.
     """
-    def get_complete_orders(self):
-        """ Returns a QuerySet of complete orders. """
+    def completed(self):
+        """ Orders that have finished. """
         return self.filter(end_date__lt=date.today())
 
-    def get_active_orders(self):
-        """ Returns a QuerySet of active orders. """
+    def upcoming(self):
+        """ Orders that have not yet begun. """
+        return self.filter(start_date__gt=date.today())
+
+    def active(self):
+        """ All active orders. """
         return self.filter(
             Q(end_date__gte=date.today()) &
             Q(start_date__lte=date.today())
         )
+
+    def inactive(self):
+        """ All inactive orders. """
+        return self.filter(
+            Q(end_date__lt=date.today()) |
+            Q(start_date__gt=date.today())
+        )
+
+    def picked_today(self):
+        """ Orders that have at least one Harvest from today. """
+        return self.filter(plot__picks__datetime__gte=date.today())
+
+    def unpicked_today(self):
+        """ Orders that have no Harvests from today. """
+        return self.exclude(plot__picks__datetime__gte=date.today())
+
+
+class OrderManager(models.Manager):
+    """
+    Custom Manager for the Order model.
+    """
+    def get_queryset(self):
+        return OrderQuerySet(self.model, using=self._db)
+
+    def completed(self):
+        return self.get_queryset().completed()
+
+    def upcoming(self):
+        return self.get_queryset().upcoming()
+
+    def active(self):
+        return self.get_queryset().active()
+
+    def inactive(self):
+        return self.get_queryset().inactive()
+
+    def picked_today(self):
+        return self.get_queryset().picked_today()
+
+    def unpicked_today(self):
+        return self.get_queryset().unpicked_today()
 
 
 class Order(models.Model):
@@ -118,13 +163,19 @@ class Order(models.Model):
         """ Whether this Order is finished. """
         return self.progress() == 100
 
+    def was_picked_today(self):
+        """
+        True if at least one Harvest was submitted today for the Order's Plot.
+        """
+        return self in Order.objects.picked_today()
+
 
 class Harvest(models.Model):
     """
     A submission by an Employee signifying that Crops have been picked from a
     particular Plot on a particular day.
     """
-    harvest_date = models.DateField()
+    datetime = models.DateTimeField(auto_now=True)
     status = models.CharField(
         max_length=255,
         choices=(
@@ -132,7 +183,8 @@ class Harvest(models.Model):
             ('finished', 'Finished'),
         ),
     )
-    employee = models.ForeignKey(settings.AUTH_USER_MODEL, models.DO_NOTHING)
+    picker = models.ForeignKey(settings.AUTH_USER_MODEL, models.DO_NOTHING)
+    plot = models.ForeignKey(Plot, models.DO_NOTHING, related_name='picks')
 
     def __str__(self):
         return str(self.id)
@@ -286,11 +338,17 @@ class User(AbstractBaseUser, PermissionsMixin):
         plot_ids = [ plot.id for plot in self.get_plots().all() ]
         return Order.objects.filter(plot__id__in=plot_ids)
 
+    def get_picker_gardens(self):
+        """
+        Return all Gardens where the user is in Garden.picker.
+        """
+        return Garden.objects.filter(pickers__id=self.id)
+
     def get_picker_orders(self):
         """
         Return all Orders this user is assigned to fulfill.
         """
-        return Order.objects.get_active_orders().filter(plot__garden__pickers__id=self.id)
+        return Order.objects.filter(plot__garden__pickers__id=self.id)
 
     def get_peers(self):
         """

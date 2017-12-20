@@ -6,6 +6,7 @@ from django.contrib.auth import get_user_model, authenticate
 from django.http import HttpResponse
 from .models import Garden, Plot, Order
 from gardenhub import decorators
+from gardenhub.templatetags import gardenhub as templatetags
 
 
 def uuid_email():
@@ -276,6 +277,30 @@ class UserTestCase(TestCase):
         self.assertEqual(list(users[9].get_peers()), [])
 
 
+    def test_get_picker_gardens(self):
+        """ User.get_picker_gardens() """
+
+        # Create gardens
+        gardens = [
+            Garden.objects.create(title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776'),
+            Garden.objects.create(title='Garden B', address='1001 Garden Rd, Philadelphia PA, 1776'),
+            Garden.objects.create(title='Garden C', address='1010 Garden Rd, Philadelphia PA, 1776'),
+            Garden.objects.create(title='Garden D', address='1011 Garden Rd, Philadelphia PA, 1776')
+        ]
+        Garden.objects.create(title='Garden E', address='1100 Garden Rd, Philadelphia PA, 1776')
+        Garden.objects.create(title='Garden F', address='1101 Garden Rd, Philadelphia PA, 1776')
+        Garden.objects.create(title='Garden G', address='1110 Garden Rd, Philadelphia PA, 1776')
+
+        # Create picker
+        picker = get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass())
+
+        for garden in gardens:
+            garden.pickers.add(picker)
+
+        # Test!
+        self.assertEqual(list(picker.get_picker_gardens()), gardens)
+
+
     def test_get_picker_orders(self):
         """ User.get_picker_orders() """
 
@@ -285,17 +310,13 @@ class UserTestCase(TestCase):
         picker = get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass())
         garden.pickers.add(picker)
 
-        # Create active orders
-        start_date = date.today() - timedelta(days=1)
-        end_date = date.today() + timedelta(days=5)
+        # Create orders
+        requester = get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass())
         orders = [
-            Order.objects.create(plot=plot, start_date=start_date, end_date=end_date, requester=picker),
-            Order.objects.create(plot=plot, start_date=start_date, end_date=end_date, requester=picker),
-            Order.objects.create(plot=plot, start_date=start_date, end_date=end_date, requester=picker)
+            Order.objects.create(plot=plot, start_date=date(2017, 1, 1), end_date=date(2017, 1, 5), requester=requester),
+            Order.objects.create(plot=plot, start_date=date(2017, 2, 1), end_date=date(2017, 2, 5), requester=requester),
+            Order.objects.create(plot=plot, start_date=date(2017, 3, 1), end_date=date(2017, 3, 5), requester=requester)
         ]
-        # Inactive orders, for good measure
-        Order.objects.create(plot=plot, start_date=date.today()+timedelta(days=5), end_date=date.today()+timedelta(days=10), requester=picker)
-        Order.objects.create(plot=plot, start_date=date.today()-timedelta(days=10), end_date=date.today()-timedelta(days=5), requester=picker)
 
         self.assertEqual(list(picker.get_picker_orders()), orders)
 
@@ -358,12 +379,13 @@ class UserTestCase(TestCase):
         plot = Plot.objects.create(title='1', garden=garden)
 
         # Create orders
+        requester = get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass())
         orders = [
-            Order.objects.create(plot=plot, start_date=date(2017, 1, 1), end_date=date(2017, 1, 5), requester=self.normal_user),
-            Order.objects.create(plot=plot, start_date=date(2017, 2, 1), end_date=date(2017, 2, 5), requester=self.normal_user),
-            Order.objects.create(plot=plot, start_date=date(2017, 3, 1), end_date=date(2017, 3, 5), requester=self.normal_user),
-            Order.objects.create(plot=plot, start_date=date(2017, 4, 1), end_date=date(2017, 4, 5), requester=self.normal_user),
-            Order.objects.create(plot=plot, start_date=date(2017, 5, 1), end_date=date(2017, 5, 5), requester=self.normal_user)
+            Order.objects.create(plot=plot, start_date=date(2017, 1, 1), end_date=date(2017, 1, 5), requester=requester),
+            Order.objects.create(plot=plot, start_date=date(2017, 2, 1), end_date=date(2017, 2, 5), requester=requester),
+            Order.objects.create(plot=plot, start_date=date(2017, 3, 1), end_date=date(2017, 3, 5), requester=requester),
+            Order.objects.create(plot=plot, start_date=date(2017, 4, 1), end_date=date(2017, 4, 5), requester=requester),
+            Order.objects.create(plot=plot, start_date=date(2017, 5, 1), end_date=date(2017, 5, 5), requester=requester)
         ]
 
         # Create user and assign it to the plot
@@ -458,8 +480,8 @@ class OrderManagerTestCase(TestCase):
     Tests for the custom OrderManager
     """
 
-    def test_get_complete_orders(self):
-        """ Order.objects.get_complete_orders() """
+    def test_completed(self):
+        """ Order.objects.completed() """
 
         # Create garden, plot, and picker
         garden = Garden.objects.create(title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
@@ -485,15 +507,15 @@ class OrderManagerTestCase(TestCase):
         ]
 
         # Test it
-        result = Order.objects.get_complete_orders()
+        result = Order.objects.completed()
         for order in completed_orders:
             self.assertIn(order, list(result))
         for order in incomplete_orders:
             self.assertNotIn(order, list(result))
 
 
-    def test_get_active_orders(self):
-        """ Order.objects.get_active_orders() """
+    def test_active(self):
+        """ Order.objects.active() """
 
         # Create garden, plot, and picker
         garden = Garden.objects.create(title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
@@ -519,7 +541,7 @@ class OrderManagerTestCase(TestCase):
         ]
 
         # Test it
-        result = Order.objects.get_active_orders()
+        result = Order.objects.active()
         for order in active_orders:
             self.assertIn(order, list(result))
         for order in inactive_orders:

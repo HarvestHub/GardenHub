@@ -32,7 +32,7 @@ urlpatterns = [
     path('account/delete/', views.DeleteAccountView.as_view(), name='account-delete'),
     path('activate/<uuid:token>/', views.account_activate_view, name='account-activate'),
     # Orders
-    path('orders/', views.order_list_view, name='order-list'),
+    path('orders/', views.OrderListView.as_view(), name='order-list'),
     path('orders/new/', views.order_create_view, name='order-create'),
     path('order/<int:pk>/', views.OrderDetailView.as_view(), name='order-detail'),
     # Plots

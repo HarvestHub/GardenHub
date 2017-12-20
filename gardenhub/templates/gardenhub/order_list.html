@@ -7,7 +7,7 @@
       <span class="sub header">These orders are ongoing.</span>
     </h2>
     <div class="ui three stackable cards">
-      {% for order in active_orders %}
+      {% for order in orders.active %}
         {% include "gardenhub/partials/order_card.html" %}
       {% endfor %}
     </div>
@@ -25,7 +25,7 @@
       <span class="sub header">Review orders that have passed.</span>
     </h2>
     <div class="ui three stackable cards">
-      {% for order in complete_orders %}
+      {% for order in orders.completed %}
         {% include "gardenhub/partials/order_card.html" %}
       {% endfor %}
     </div>
