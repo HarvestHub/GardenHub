@@ -19,7 +19,7 @@
     {% if order.is_complete %}
       This order is <strong>complete</strong>.
     {% else %}
-      Enrique is harvesting your crops.
+      Your crops are being harvested by {{ order.plot.garden.pickers.all|join:", " }}.
       <div class="ui green progress" data-percent="{{ order.progress }}">
         <div class="bar"></div>
       </div>
