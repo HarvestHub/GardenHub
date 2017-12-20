@@ -56,8 +56,8 @@
         <label>Crops</label>
         <p class="description">List the crops growing on this plot.</p>
         <select name="crops" class="ui crops fluid search dropdown" multiple="">
-          <option value="">Add plots&hellip;</option>
-          {% for crop in crops.all %}
+          <option value="">Add crops&hellip;</option>
+          {% for crop in crops %}
             <option value="{{ crop.id }}"{% if crop in plot.crops.all %} selected{% endif %}>{{ crop.title }}</option>
           {% endfor%}
         </select>

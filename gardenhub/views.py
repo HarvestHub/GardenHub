@@ -118,6 +118,20 @@ def order_create_view(request):
     return render(request, 'gardenhub/order_create.html', context)
 
 
+@login_required
+# FIXME: Only a picker should be able to access this
+def pick_create_view(request, plotId):
+    """
+    Form enabling a picker to submit a Pick for a given plot.
+    """
+    plot = get_object_or_404(Plot, id=plotId)
+
+    return render(request, 'gardenhub/pick_create.html', {
+        'plot': plot,
+        'crops': Crop.objects.all()
+    })
+
+
 class OrderDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     """
     Review an individual order that's been submitted. Anyone who can edit the

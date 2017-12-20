@@ -35,6 +35,7 @@ urlpatterns = [
     path('orders/', views.OrderListView.as_view(), name='order-list'),
     path('orders/new/', views.order_create_view, name='order-create'),
     path('order/<int:pk>/', views.OrderDetailView.as_view(), name='order-detail'),
+    path('pick/<int:plotId>/', views.pick_create_view, name='pick-create'),
     # Plots
     path('plots/', views.PlotListView.as_view(), name='plot-list'),
     path('plot/<int:pk>/edit/', views.plot_update_view, name='plot-update'),
