@@ -13,7 +13,7 @@ from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView, DetailView, DeleteView
 from django.views.generic.base import TemplateView
 from sorl.thumbnail import get_thumbnail
-from .models import Crop, Garden, Plot, Harvest, Order, Affiliation
+from .models import Crop, Garden, Plot, Pick, Order, Affiliation
 from .forms import (
     CreateOrderForm,
     EditGardenForm,

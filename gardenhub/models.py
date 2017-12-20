@@ -14,9 +14,9 @@ from django.utils.translation import ugettext_lazy as _
 
 class Crop(models.Model):
     """
-    A crop represents an item that may be harvested, such as a zuchini or an
+    A crop represents an item that may be picked, such as a zuchini or an
     orange. Crops are stored in a master list, managed by the site admin, and
-    may be listed on Orders or Harvests.
+    may be listed on Orders or Picks.
     """
     title = models.CharField(max_length=255)
     image = models.ImageField()
@@ -96,11 +96,11 @@ class OrderQuerySet(models.QuerySet):
         )
 
     def picked_today(self):
-        """ Orders that have at least one Harvest from today. """
+        """ Orders that have at least one Pick from today. """
         return self.filter(plot__picks__datetime__gte=date.today())
 
     def unpicked_today(self):
-        """ Orders that have no Harvests from today. """
+        """ Orders that have no Picks from today. """
         return self.exclude(plot__picks__datetime__gte=date.today())
 
 
@@ -133,7 +133,7 @@ class OrderManager(models.Manager):
 class Order(models.Model):
     """
     A request from a Gardener or Garden Manager to enlist a particular Plot for
-    Harvest over a specified number of days.
+    picking over a specified number of days.
     """
     plot = models.ForeignKey('Plot', models.DO_NOTHING)
     crops = models.ManyToManyField('Crop')
@@ -165,24 +165,17 @@ class Order(models.Model):
 
     def was_picked_today(self):
         """
-        True if at least one Harvest was submitted today for the Order's Plot.
+        True if at least one Pick was submitted today for the Order's Plot.
         """
         return self in Order.objects.picked_today()
 
 
-class Harvest(models.Model):
+class Pick(models.Model):
     """
-    A submission by an Employee signifying that Crops have been picked from a
-    particular Plot on a particular day.
+    A submission by a picker signifying that certain Crops have been picked from
+    a particular Plot at a particular time.
     """
     datetime = models.DateTimeField(auto_now=True)
-    status = models.CharField(
-        max_length=255,
-        choices=(
-            ('incomplete', 'Incomplete'),
-            ('finished', 'Finished'),
-        ),
-    )
     picker = models.ForeignKey(settings.AUTH_USER_MODEL, models.DO_NOTHING)
     plot = models.ForeignKey(Plot, models.DO_NOTHING, related_name='picks')
 
@@ -386,13 +379,13 @@ class User(AbstractBaseUser, PermissionsMixin):
     def is_picker(self):
         """
         A picker is someone who is assigned to fulfill Orders on a Garden. They
-        will submit Harvests over the duration of the Orders.
+        will submit Picks over the duration of the Orders.
         """
         return Garden.objects.filter(pickers__id=self.id).count() > 0
 
     def has_open_orders(self):
         """
-        Determine whether or not a user has any current open harvests for home
+        Determine whether or not a user has any current open picks for home
         display.
         """
         return self.get_orders().count() > 0

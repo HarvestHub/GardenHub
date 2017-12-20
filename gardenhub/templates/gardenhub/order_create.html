@@ -17,7 +17,7 @@
       {{ form.non_field_errors }}
       <div class="field">
         <label>Plot</label>
-        <p class="description">Select the plot you'd like harvested.</p>
+        <p class="description">Select the plot you'd like picked.</p>
         <div class="ui fluid search selection dropdown">
           <input name="{{ form.plot.name }}" type="hidden">
           <i class="dropdown icon"></i>
@@ -35,7 +35,7 @@
       <div class="two fields">
         <div class="field">
           <label>Start Date</label>
-          <p class="description">When we should start harvesting.</p>
+          <p class="description">When we should start picking.</p>
           <div class="ui calendar" id="start_date">
             <div class="ui left icon input">
               <input placeholder="Start Date" type="text" name="{{ form.start_date.name }}" required>
@@ -45,7 +45,7 @@
         </div>
         <div class="field">
           <label>End Date</label>
-          <p class="description">When we should stop harvesting.</p>
+          <p class="description">When we should stop picking.</p>
           <div class="ui calendar" id="end_date">
             <div class="ui left icon input">
               <input placeholder="End Date" type="text" name="{{ form.end_date.name }}" required>
@@ -56,7 +56,7 @@
       </div>
       <div class="field">
         <label>Crops</label>
-        <p class="description">Select the crops you'd like harvested. Tap the icons to select them.</p>
+        <p class="description">Select the crops you'd like picked. Tap the icons to select them.</p>
         <select class="crops" name="{{ form.crops.name }}" style="display:none" multiple></select>
         <p class="ui crop message">You must select a plot before you can choose any crops.</p>
         <div class="crop tapicons" style="display:none"></div>

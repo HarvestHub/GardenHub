@@ -21,13 +21,13 @@
     {% if order.is_complete %}
       This order is <strong>complete</strong>.
     {% else %}
-      Enrique is harvesting your crops.
+      Enrique is picking your crops.
       <div class="ui green progress" data-percent="{{ order.progress }}">
         <div class="bar"></div>
       </div>
     {% endif %}
 
-    <h4 class="ui sub header">Crops to be Harvested</h4>
+    <h4 class="ui sub header">Crops to be Picked</h4>
     <div class="ui mini horizontal list">
       {% for crop in order.crops.all %}
         <div class="item">

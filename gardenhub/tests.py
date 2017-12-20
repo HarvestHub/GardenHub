@@ -259,19 +259,19 @@ class OrderTestCase(TestCase):
 
 
 
-class HarvestTestCase(TestCase):
+class PickTestCase(TestCase):
     """
-    Test Harvest model.
+    Test Pick model.
     """
-    def test_create_harvest(self):
+    def test_create_pick(self):
         """
-        Ensure that a Harvest can be created and retrieved.
+        Ensure that a Pick can be created and retrieved.
         """
         self.fail("Needs a test!")
 
-    def test_harvest_str(self):
+    def test_pick_str(self):
         """
-        Test the __str__ method of Harvest.
+        Test the __str__ method of Pick.
         """
         self.fail("Needs a test!")
 

@@ -3,12 +3,12 @@ from django.contrib import admin
 from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
-from .models import Crop, Garden, Plot, Harvest, Order, Affiliation, User
+from .models import Crop, Garden, Plot, Pick, Order, Affiliation, User
 
 admin.site.register(Crop)
 admin.site.register(Garden)
 admin.site.register(Plot)
-admin.site.register(Harvest)
+admin.site.register(Pick)
 admin.site.register(Order)
 admin.site.register(Affiliation)
 
