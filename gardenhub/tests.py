@@ -4,7 +4,7 @@ from django.core import mail
 from django.test import TestCase, RequestFactory
 from django.contrib.auth import get_user_model, authenticate
 from django.http import HttpResponse
-from .models import Garden, Plot, Order
+from .models import Crop, Affiliation, Garden, Plot, Order
 from gardenhub import decorators
 from gardenhub.templatetags import gardenhub as templatetags
 
@@ -19,10 +19,278 @@ def uuid_pass():
 
 
 
+class CropTestCase(TestCase):
+    """
+    Test Crop model.
+    """
+    def test_create_crop(self):
+        """
+        Ensure that a Crop can be created and retrieved.
+        """
+        crop = Crop.objects.create(title="tomato")
+        self.assertIn(crop, list(Crop.objects.all()))
+
+    def test_crop_str(self):
+        """
+        Test the __str__ method of Crop.
+        """
+        title = str(uuid4())
+        crop = Crop.objects.create(title=title)
+        self.assertEqual(str(crop), title)
+
+
+
+class AffiliationTestCase(TestCase):
+    """
+    Test Affiliation model.
+    """
+    def test_create_affiliation(self):
+        """
+        Ensure that an Affiliation can be created and retrieved.
+        """
+        affiliation = Affiliation.objects.create(title="Special Association")
+        self.assertIn(affiliation, list(Affiliation.objects.all()))
+
+    def test_affiliation_str(self):
+        """
+        Test the __str__ method of Affiliation.
+        """
+        title = str(uuid4())
+        affiliation = Affiliation.objects.create(title=title)
+        self.assertEqual(str(affiliation), title)
+
+
+
+class GardenTestCase(TestCase):
+    """
+    Test Garden model.
+    """
+    def test_create_garden(self):
+        """
+        Ensure that an Garden can be created and retrieved.
+        """
+        garden = Garden.objects.create(title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
+        self.assertIn(garden, list(Garden.objects.all()))
+
+    def test_garden_str(self):
+        """
+        Test the __str__ method of Garden.
+        """
+        title = str(uuid4())
+        garden = Garden.objects.create(title=title, address='1000 Garden Rd, Philadelphia PA, 1776')
+        self.assertEqual(str(garden), title)
+
+
+
+class PlotTestCase(TestCase):
+    """
+    Test Plot model.
+    """
+    def test_create_plot(self):
+        """
+        Ensure that a Plot can be created and retrieved.
+        """
+        garden = Garden.objects.create(title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
+        plot = Plot.objects.create(title='1', garden=garden)
+        self.assertIn(plot, list(Plot.objects.all()))
+
+    def test_plot_str(self):
+        """
+        Test the __str__ method of Plot.
+        """
+        garden = Garden.objects.create(title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
+        title = str(uuid4())
+        plot = Plot.objects.create(title=title, garden=garden)
+        self.assertEqual(str(plot), "Garden A [{}]".format(title))
+
+
+
+class OrderManagerTestCase(TestCase):
+    """
+    Tests for the custom OrderManager.
+    """
+
+    def test_completed(self):
+        """ Order.objects.completed() """
+
+        # Create garden, plot, and picker
+        garden = Garden.objects.create(title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
+        plot = Plot.objects.create(title='1', garden=garden)
+        picker = get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass())
+        garden.pickers.add(picker)
+
+        # Completed orders
+        start_date = date.today() - timedelta(days=10)
+        end_date = date.today() - timedelta(days=1)
+        completed_orders = [
+            Order.objects.create(plot=plot, start_date=start_date, end_date=end_date, requester=picker),
+            Order.objects.create(plot=plot, start_date=start_date, end_date=end_date, requester=picker),
+            Order.objects.create(plot=plot, start_date=start_date, end_date=end_date, requester=picker),
+        ]
+
+        # Incomplete orders
+        incomplete_orders = [
+            # Start date is greater than today
+            Order.objects.create(plot=plot, start_date=date.today()+timedelta(days=5), end_date=date.today()+timedelta(days=10), requester=picker),
+            # End date is greater than today
+            Order.objects.create(plot=plot, start_date=date.today()-timedelta(days=10), end_date=date.today()+timedelta(days=5), requester=picker),
+        ]
+
+        # Test it
+        result = Order.objects.completed()
+        for order in completed_orders:
+            self.assertIn(order, list(result))
+        for order in incomplete_orders:
+            self.assertNotIn(order, list(result))
+
+
+    def test_active(self):
+        """ Order.objects.active() """
+
+        # Create garden, plot, and picker
+        garden = Garden.objects.create(title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
+        plot = Plot.objects.create(title='1', garden=garden)
+        picker = get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass())
+        garden.pickers.add(picker)
+
+        # Active orders
+        start_date = date.today() - timedelta(days=10)
+        end_date = date.today() + timedelta(days=1)
+        active_orders = [
+            Order.objects.create(plot=plot, start_date=start_date, end_date=end_date, requester=picker),
+            Order.objects.create(plot=plot, start_date=start_date, end_date=end_date, requester=picker),
+            Order.objects.create(plot=plot, start_date=start_date, end_date=end_date, requester=picker),
+        ]
+
+        # Inactive orders
+        inactive_orders = [
+            # Start date is greater than today
+            Order.objects.create(plot=plot, start_date=date.today()+timedelta(days=5), end_date=date.today()+timedelta(days=10), requester=picker),
+            # End date is greater than today
+            Order.objects.create(plot=plot, start_date=date.today()-timedelta(days=10), end_date=date.today()-timedelta(days=5), requester=picker),
+        ]
+
+        # Test it
+        result = Order.objects.active()
+        for order in active_orders:
+            self.assertIn(order, list(result))
+        for order in inactive_orders:
+            self.assertNotIn(order, list(result))
+
+
+    def test_inactive(self):
+        """ Order.objects.inactive() """
+
+        # Create garden, plot, and picker
+        garden = Garden.objects.create(title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
+        plot = Plot.objects.create(title='1', garden=garden)
+        picker = get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass())
+        garden.pickers.add(picker)
+
+        # Active orders
+        start_date = date.today() - timedelta(days=10)
+        end_date = date.today() + timedelta(days=1)
+        active_orders = [
+            Order.objects.create(plot=plot, start_date=start_date, end_date=end_date, requester=picker),
+            Order.objects.create(plot=plot, start_date=start_date, end_date=end_date, requester=picker),
+            Order.objects.create(plot=plot, start_date=start_date, end_date=end_date, requester=picker),
+        ]
+
+        # Inactive orders
+        inactive_orders = [
+            # Start date is greater than today
+            Order.objects.create(plot=plot, start_date=date.today()+timedelta(days=5), end_date=date.today()+timedelta(days=10), requester=picker),
+            # End date is greater than today
+            Order.objects.create(plot=plot, start_date=date.today()-timedelta(days=10), end_date=date.today()-timedelta(days=5), requester=picker),
+        ]
+
+        # Test it
+        result = Order.objects.inactive()
+        for order in inactive_orders:
+            self.assertIn(order, list(result))
+        for order in active_orders:
+            self.assertNotIn(order, list(result))
+
+
+    def test_picked_today(self):
+        """ Order.objects.picked_today() """
+        self.fail("Needs a test!")
+
+
+    def test_unpicked_today(self):
+        """ Order.objects.unpicked_today() """
+        self.fail("Needs a test!")
+
+
+
+class OrderTestCase(TestCase):
+    """
+    Test Order model.
+    """
+    def test_create_order(self):
+        """
+        Ensure that an Order can be created and retrieved.
+        """
+        self.fail("Needs a test!")
+
+    def test_order_str(self):
+        """
+        Test the __str__ method of Order.
+        """
+        self.fail("Needs a test!")
+
+    def test_progress(self):
+        """
+        order.progress()
+        """
+        self.fail("Needs a test!")
+
+    def test_is_complete(self):
+        """
+        order.is_complete()
+        """
+        self.fail("Needs a test!")
+
+    def test_was_picked_today(self):
+        """
+        order.was_picked_today()
+        """
+        self.fail("Needs a test!")
+
+
+
+class HarvestTestCase(TestCase):
+    """
+    Test Harvest model.
+    """
+    def test_create_harvest(self):
+        """
+        Ensure that a Harvest can be created and retrieved.
+        """
+        self.fail("Needs a test!")
+
+    def test_harvest_str(self):
+        """
+        Test the __str__ method of Harvest.
+        """
+        self.fail("Needs a test!")
+
+
+
 class UserManagerTestCase(TestCase):
     """
     Test UserManager methods.
     """
+
+    def test_create_user(self):
+        """ User.objects.create_user() """
+        self.fail("Needs a test!")
+
+
+    def test_create_superuser(self):
+        """ User.objects.create_superuser() """
+        self.fail("Needs a test!")
+
 
     def test_get_or_invite_users(self):
         """ User.objects.test_get_or_invite_users() """
@@ -137,8 +405,28 @@ class UserTestCase(TestCase):
         self.assertEqual(user, auth_user)
 
 
+    def test_clean(self):
+        """ user.clean() """
+        self.fail("Needs a test!")
+
+
+    def test_get_full_name(self):
+        """ user.get_full_name() """
+        self.fail("Needs a test!")
+
+
+    def test_get_short_name(self):
+        """ user.get_short_name() """
+        self.fail("Needs a test!")
+
+
+    def test_email_user(self):
+        """ user.email_user() """
+        self.fail("Needs a test!")
+
+
     def test_get_gardens(self):
-        """ User.get_gardens() """
+        """ user.get_gardens() """
 
         # Create new User object
         user = get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass())
@@ -164,7 +452,7 @@ class UserTestCase(TestCase):
 
 
     def test_get_plots(self):
-        """ User.get_plots() """
+        """ user.get_plots() """
 
         # Create new User object
         user = get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass())
@@ -195,7 +483,7 @@ class UserTestCase(TestCase):
 
 
     def test_get_orders(self):
-        """ User.get_orders() """
+        """ user.get_orders() """
 
         # Create plot
         garden = Garden.objects.create(title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
@@ -219,7 +507,7 @@ class UserTestCase(TestCase):
 
 
     def test_get_peers(self):
-        """ User.get_peers() """
+        """ user.get_peers() """
 
         # Create test Gardens
         gardens = [
@@ -278,7 +566,7 @@ class UserTestCase(TestCase):
 
 
     def test_get_picker_gardens(self):
-        """ User.get_picker_gardens() """
+        """ user.get_picker_gardens() """
 
         # Create gardens
         gardens = [
@@ -302,7 +590,7 @@ class UserTestCase(TestCase):
 
 
     def test_get_picker_orders(self):
-        """ User.get_picker_orders() """
+        """ user.get_picker_orders() """
 
         # Create garden, plot, and picker
         garden = Garden.objects.create(title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
@@ -322,7 +610,7 @@ class UserTestCase(TestCase):
 
 
     def test_is_garden_manager(self):
-        """ User.is_garden_manager() """
+        """ user.is_garden_manager() """
 
         # Test a garden manager
         self.assertTrue(self.garden_manager.is_garden_manager())
@@ -333,7 +621,7 @@ class UserTestCase(TestCase):
 
 
     def test_is_gardener(self):
-        """ User.is_gardener() """
+        """ user.is_gardener() """
 
         # Test a gardener of a single plot
         self.assertTrue(self.gardener.is_gardener())
@@ -346,7 +634,7 @@ class UserTestCase(TestCase):
 
 
     def test_is_anything(self):
-        """ User.is_anything() """
+        """ user.is_anything() """
 
         # Test a normal user
         self.assertFalse(self.normal_user.is_anything())
@@ -357,7 +645,7 @@ class UserTestCase(TestCase):
 
 
     def test_is_picker(self):
-        """ User.is_picker() """
+        """ user.is_picker() """
 
         # Test a normal user
         self.assertFalse(self.normal_user.is_anything())
@@ -372,7 +660,7 @@ class UserTestCase(TestCase):
 
 
     def test_has_open_orders(self):
-        """ User.has_open_orders() """
+        """ user.has_open_orders() """
 
         # Create plot
         garden = Garden.objects.create(title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
@@ -398,7 +686,7 @@ class UserTestCase(TestCase):
 
 
     def test_can_edit_garden(self):
-        """ User.can_edit_garden() """
+        """ user.can_edit_garden() """
 
         # Create garden
         garden = Garden.objects.create(title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
@@ -415,7 +703,7 @@ class UserTestCase(TestCase):
 
 
     def test_can_edit_plot(self):
-        """ User.can_edit_plot() """
+        """ user.can_edit_plot() """
 
         # Create plot
         garden = Garden.objects.create(title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
@@ -436,7 +724,7 @@ class UserTestCase(TestCase):
 
 
     def test_can_edit_order(self):
-        """ User.can_edit_order() """
+        """ user.can_edit_order() """
 
         # Create order
         garden = Garden.objects.create(title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
@@ -458,7 +746,7 @@ class UserTestCase(TestCase):
 
 
     def test_is_order_picker(self):
-        """ User.is_order_picker() """
+        """ user.is_order_picker() """
 
         # Create order
         garden = Garden.objects.create(title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
@@ -473,79 +761,6 @@ class UserTestCase(TestCase):
         # Test that a normal user can't edit the order
         self.assertFalse(self.normal_user.is_order_picker(order))
 
-
-
-class OrderManagerTestCase(TestCase):
-    """
-    Tests for the custom OrderManager
-    """
-
-    def test_completed(self):
-        """ Order.objects.completed() """
-
-        # Create garden, plot, and picker
-        garden = Garden.objects.create(title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
-        plot = Plot.objects.create(title='1', garden=garden)
-        picker = get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass())
-        garden.pickers.add(picker)
-
-        # Completed orders
-        start_date = date.today() - timedelta(days=10)
-        end_date = date.today() - timedelta(days=1)
-        completed_orders = [
-            Order.objects.create(plot=plot, start_date=start_date, end_date=end_date, requester=picker),
-            Order.objects.create(plot=plot, start_date=start_date, end_date=end_date, requester=picker),
-            Order.objects.create(plot=plot, start_date=start_date, end_date=end_date, requester=picker),
-        ]
-
-        # Incomplete orders
-        incomplete_orders = [
-            # Start date is greater than today
-            Order.objects.create(plot=plot, start_date=date.today()+timedelta(days=5), end_date=date.today()+timedelta(days=10), requester=picker),
-            # End date is greater than today
-            Order.objects.create(plot=plot, start_date=date.today()-timedelta(days=10), end_date=date.today()+timedelta(days=5), requester=picker),
-        ]
-
-        # Test it
-        result = Order.objects.completed()
-        for order in completed_orders:
-            self.assertIn(order, list(result))
-        for order in incomplete_orders:
-            self.assertNotIn(order, list(result))
-
-
-    def test_active(self):
-        """ Order.objects.active() """
-
-        # Create garden, plot, and picker
-        garden = Garden.objects.create(title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
-        plot = Plot.objects.create(title='1', garden=garden)
-        picker = get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass())
-        garden.pickers.add(picker)
-
-        # Active orders
-        start_date = date.today() - timedelta(days=10)
-        end_date = date.today() + timedelta(days=1)
-        active_orders = [
-            Order.objects.create(plot=plot, start_date=start_date, end_date=end_date, requester=picker),
-            Order.objects.create(plot=plot, start_date=start_date, end_date=end_date, requester=picker),
-            Order.objects.create(plot=plot, start_date=start_date, end_date=end_date, requester=picker),
-        ]
-
-        # Inactive orders
-        inactive_orders = [
-            # Start date is greater than today
-            Order.objects.create(plot=plot, start_date=date.today()+timedelta(days=5), end_date=date.today()+timedelta(days=10), requester=picker),
-            # End date is greater than today
-            Order.objects.create(plot=plot, start_date=date.today()-timedelta(days=10), end_date=date.today()-timedelta(days=5), requester=picker),
-        ]
-
-        # Test it
-        result = Order.objects.active()
-        for order in active_orders:
-            self.assertIn(order, list(result))
-        for order in inactive_orders:
-            self.assertNotIn(order, list(result))
 
 
 class DecoratorTestCase(TestCase):
