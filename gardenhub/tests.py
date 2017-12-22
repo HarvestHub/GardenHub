@@ -4,7 +4,7 @@ from django.core import mail
 from django.test import TestCase, RequestFactory
 from django.contrib.auth import get_user_model, authenticate
 from django.http import HttpResponse
-from .models import Crop, Affiliation, Garden, Plot, Order
+from .models import Crop, Affiliation, Garden, Plot, Order, Pick
 from gardenhub import decorators
 from gardenhub.templatetags import gardenhub as templatetags
 
@@ -214,12 +214,23 @@ class OrderManagerTestCase(TestCase):
 
     def test_picked_today(self):
         """ Order.objects.picked_today() """
-        self.fail("Needs a test!")
+        picker = get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass())
+        requester = get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass())
+        garden = Garden.objects.create(title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
+        plot = Plot.objects.create(title='1', garden=garden)
+        order = Order.objects.create(plot=plot, start_date=date(2017, 1, 1), end_date=date(2017, 1, 5), requester=requester)
+        pick = Pick.objects.create(picker=picker, plot=plot)
+        self.assertIn(order, Order.objects.picked_today())
 
 
     def test_unpicked_today(self):
         """ Order.objects.unpicked_today() """
-        self.fail("Needs a test!")
+        picker = get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass())
+        requester = get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass())
+        garden = Garden.objects.create(title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
+        plot = Plot.objects.create(title='1', garden=garden)
+        order = Order.objects.create(plot=plot, start_date=date(2017, 1, 1), end_date=date(2017, 1, 5), requester=requester)
+        self.assertIn(order, Order.objects.unpicked_today())
 
 
 
@@ -231,13 +242,12 @@ class OrderTestCase(TestCase):
         """
         Ensure that an Order can be created and retrieved.
         """
-        self.fail("Needs a test!")
-
-    def test_order_str(self):
-        """
-        Test the __str__ method of Order.
-        """
-        self.fail("Needs a test!")
+        # Create order
+        requester = get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass())
+        garden = Garden.objects.create(title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
+        plot = Plot.objects.create(title='1', garden=garden)
+        order = Order.objects.create(plot=plot, start_date=date(2017, 1, 1), end_date=date(2017, 1, 5), requester=requester)
+        self.assertIn(order, list(Order.objects.all()))
 
     def test_progress(self):
         """
@@ -267,13 +277,11 @@ class PickTestCase(TestCase):
         """
         Ensure that a Pick can be created and retrieved.
         """
-        self.fail("Needs a test!")
-
-    def test_pick_str(self):
-        """
-        Test the __str__ method of Pick.
-        """
-        self.fail("Needs a test!")
+        picker = get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass())
+        garden = Garden.objects.create(title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
+        plot = Plot.objects.create(title='1', garden=garden)
+        pick = Pick.objects.create(picker=picker, plot=plot)
+        self.assertIn(pick, Pick.objects.all())
 
 
 
@@ -284,12 +292,15 @@ class UserManagerTestCase(TestCase):
 
     def test_create_user(self):
         """ User.objects.create_user() """
-        self.fail("Needs a test!")
+        user = get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass())
+        self.assertIn(user, get_user_model().objects.all())
 
 
     def test_create_superuser(self):
         """ User.objects.create_superuser() """
-        self.fail("Needs a test!")
+        user = get_user_model().objects.create_superuser(email=uuid_email(), password=uuid_pass())
+        self.assertIn(user, get_user_model().objects.all())
+        self.assertTrue(user.is_superuser)
 
 
     def test_get_or_invite_users(self):
@@ -405,24 +416,37 @@ class UserTestCase(TestCase):
         self.assertEqual(user, auth_user)
 
 
-    def test_clean(self):
-        """ user.clean() """
-        self.fail("Needs a test!")
-
-
     def test_get_full_name(self):
         """ user.get_full_name() """
-        self.fail("Needs a test!")
+        user = get_user_model().objects.create_user(
+            first_name="Ada",
+            last_name="Lovelace",
+            email=uuid_email(), password=uuid_pass()
+        )
+        self.assertEqual(user.get_full_name(), "Ada Lovelace")
 
 
     def test_get_short_name(self):
         """ user.get_short_name() """
-        self.fail("Needs a test!")
+        user = get_user_model().objects.create_user(
+            first_name="Ada",
+            last_name="Lovelace",
+            email=uuid_email(), password=uuid_pass()
+        )
+        self.assertEqual(user.get_short_name(), "Ada")
 
 
     def test_email_user(self):
         """ user.email_user() """
-        self.fail("Needs a test!")
+
+        user = get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass())
+        user.email_user("Hello, user!", "This is a beautiful test. The best test.")
+
+        # Ensure that 1 email was sent
+        self.assertEqual(len(mail.outbox), 1)
+
+        # Test the subject line of the email
+        self.assertEqual(mail.outbox[0].subject, 'Hello, user!')
 
 
     def test_get_gardens(self):
