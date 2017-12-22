@@ -30,9 +30,7 @@
                     <div class="header">Plot {{ order.plot.title }}</div>
                   </div>
                   <div class="content">
-                    <h4 class="ui sub header">Order</h4>
                     <p>Order #{{ order.id }}</p>
-
                     <h4 class="ui sub header">Crops to be Picked</h4>
                     <div class="ui mini horizontal list">
                       {% for crop in order.crops.all %}
