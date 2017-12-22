@@ -253,20 +253,57 @@ class OrderTestCase(TestCase):
         """
         order.progress()
         """
-        self.fail("Needs a test!")
+        requester = get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass())
+        garden = Garden.objects.create(title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
+        plot = Plot.objects.create(title='1', garden=garden)
+
+        orders = [
+            # Ended 5 days ago - 100%
+            Order.objects.create(plot=plot, start_date=date.today() - timedelta(days=10), end_date=date.today() - timedelta(days=5), requester=requester),
+            # Started 5 days ago, ends in 5 days - 50%
+            Order.objects.create(plot=plot, start_date=date.today() - timedelta(days=5), end_date=date.today() + timedelta(days=5), requester=requester),
+            # Not yet started - 0%
+            Order.objects.create(plot=plot, start_date=date.today() + timedelta(days=5), end_date=date.today() + timedelta(days=10), requester=requester),
+        ]
+
+        self.assertEqual(orders[0].progress(), 100)
+        self.assertEqual(orders[1].progress(), 50)
+        self.assertEqual(orders[2].progress(), 0)
+
 
     def test_is_complete(self):
         """
         order.is_complete()
         """
-        self.fail("Needs a test!")
+        requester = get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass())
+        garden = Garden.objects.create(title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
+        plot = Plot.objects.create(title='1', garden=garden)
+
+        orders = [
+            # Ended 5 days ago - 100%
+            Order.objects.create(plot=plot, start_date=date.today() - timedelta(days=10), end_date=date.today() - timedelta(days=5), requester=requester),
+            # Started 5 days ago, ends in 5 days - 50%
+            Order.objects.create(plot=plot, start_date=date.today() - timedelta(days=5), end_date=date.today() + timedelta(days=5), requester=requester),
+            # Not yet started - 0%
+            Order.objects.create(plot=plot, start_date=date.today() + timedelta(days=5), end_date=date.today() + timedelta(days=10), requester=requester),
+        ]
+
+        self.assertTrue(orders[0].is_complete())
+        self.assertFalse(orders[1].is_complete())
+        self.assertFalse(orders[2].is_complete())
+
 
     def test_was_picked_today(self):
         """
         order.was_picked_today()
         """
-        self.fail("Needs a test!")
-
+        picker = get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass())
+        requester = get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass())
+        garden = Garden.objects.create(title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
+        plot = Plot.objects.create(title='1', garden=garden)
+        order = Order.objects.create(plot=plot, start_date=date(2017, 1, 1), end_date=date(2017, 1, 5), requester=requester)
+        pick = Pick.objects.create(picker=picker, plot=plot)
+        self.assertTrue(order.was_picked_today())
 
 
 class PickTestCase(TestCase):
