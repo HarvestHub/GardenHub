@@ -1,6 +1,7 @@
 ![GardenHub Promo Banner](gardenhub-promo.png)
 
 [![Build Status](https://travis-ci.org/HarvestHub/GardenHub.svg?branch=master)](https://travis-ci.org/HarvestHub/GardenHub)
+[![Coverage Status](https://coveralls.io/repos/github/HarvestHub/GardenHub/badge.svg)](https://coveralls.io/github/HarvestHub/GardenHub)
 [![Known Vulnerabilities](https://snyk.io/test/github/harvesthub/gardenhub/badge.svg)](https://snyk.io/test/github/harvesthub/gardenhub)
 [![License: GPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 
