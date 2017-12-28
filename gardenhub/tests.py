@@ -212,6 +212,46 @@ class OrderManagerTestCase(TestCase):
             self.assertNotIn(order, list(result))
 
 
+    def test_upcoming(self):
+        """ Order.objects.upcoming() """
+
+        # Create garden, plot, and picker
+        garden = Garden.objects.create(title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
+        plot = Plot.objects.create(title='1', garden=garden)
+        picker = get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass())
+        garden.pickers.add(picker)
+
+        # Active orders
+        start_date = date.today() - timedelta(days=10)
+        end_date = date.today() + timedelta(days=1)
+        active_orders = [
+            Order.objects.create(plot=plot, start_date=start_date, end_date=end_date, requester=picker),
+            Order.objects.create(plot=plot, start_date=start_date, end_date=end_date, requester=picker),
+            Order.objects.create(plot=plot, start_date=start_date, end_date=end_date, requester=picker),
+        ]
+
+        # Past orders
+        past_orders = [
+            # End date is greater than today
+            Order.objects.create(plot=plot, start_date=date.today()-timedelta(days=10), end_date=date.today()-timedelta(days=5), requester=picker),
+        ]
+
+        # Upcoming orders
+        upcoming_orders = [
+            # Start date is greater than today
+            Order.objects.create(plot=plot, start_date=date.today()+timedelta(days=5), end_date=date.today()+timedelta(days=10), requester=picker),
+        ]
+
+        # Test it
+        result = Order.objects.upcoming()
+        for order in upcoming_orders:
+            self.assertIn(order, list(result))
+        for order in active_orders:
+            self.assertNotIn(order, list(result))
+        for order in past_orders:
+            self.assertNotIn(order, list(result))
+
+
     def test_picked_today(self):
         """ Order.objects.picked_today() """
         picker = get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass())

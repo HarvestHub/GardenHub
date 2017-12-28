@@ -4,18 +4,24 @@
   <div class="ui container">
     <h2 class="ui header">
       Active Orders
-      <span class="sub header">These orders are ongoing.</span>
+      <span class="sub header">These orders are currently happening.</span>
     </h2>
     <div class="ui three stackable cards">
       {% for order in orders.active %}
         {% include "gardenhub/partials/order_card.html" %}
       {% endfor %}
     </div>
-    <div>
-      <a href="/orders/new/" class="right floated large purple ui button">
-        <i class="plus icon"></i>
-        New Order
-      </a>
+  </div>
+
+  <div class="ui container">
+    <h2 class="ui header">
+      Upcoming Orders
+      <span class="sub header">Review future orders.</span>
+    </h2>
+    <div class="ui three stackable cards">
+      {% for order in orders.upcoming %}
+        {% include "gardenhub/partials/order_card.html" %}
+      {% endfor %}
     </div>
   </div>
 
@@ -28,6 +34,12 @@
       {% for order in orders.completed %}
         {% include "gardenhub/partials/order_card.html" %}
       {% endfor %}
+    </div>
+    <div>
+      <a href="/orders/new/" class="right floated large purple ui button">
+        <i class="plus icon"></i>
+        New Order
+      </a>
     </div>
   </div>
 {% endblock %}
