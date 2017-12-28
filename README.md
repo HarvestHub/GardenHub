@@ -1,6 +1,7 @@
 ![GardenHub Promo Banner](gardenhub-promo.png)
 
 [![Build Status](https://travis-ci.org/HarvestHub/GardenHub.svg?branch=master)](https://travis-ci.org/HarvestHub/GardenHub)
+[![Coverage Status](https://coveralls.io/repos/github/HarvestHub/GardenHub/badge.svg)](https://coveralls.io/github/HarvestHub/GardenHub)
 [![Known Vulnerabilities](https://snyk.io/test/github/harvesthub/gardenhub/badge.svg)](https://snyk.io/test/github/harvesthub/gardenhub)
 [![License: GPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 
@@ -10,7 +11,7 @@ Formed around the simple idea that food should not go to waste, GardenHub is the
 
 GardenHub is building technology to enable gardeners to collaborate and act upon what's growing, ripening, and available for harvest in their gardens. Using this information, GardenHub notifies gardeners, local charities, restaurants, and other stakeholders of the availability of this food.
 
-<img src="gardenhub-screenshot.png" alt="GardenHub Mobile Screenshot" height="640">
+<img src="gardenhub-screenshot.png" alt="GardenHub Mobile Screenshot" style="max-height: 640px">
 
 ## WIP
 
