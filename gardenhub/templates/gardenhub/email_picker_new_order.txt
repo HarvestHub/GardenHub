@@ -1,0 +1,7 @@
+Hey {{ picker.first_name }}! A new order has been submitted for plot {{ order.plot.title }} in {{ order.plot.garden }}.
+
+Start date: {{ order.start_date }}
+End date: {{ order.end_date }}
+
+Order ID: {{ order.id }}
+Requester: {{ order.requester }}

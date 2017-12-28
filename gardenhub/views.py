@@ -12,6 +12,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView, DetailView, DeleteView
 from django.views.generic.base import TemplateView
+from django.template.loader import render_to_string
 from sorl.thumbnail import get_thumbnail
 from .models import Crop, Garden, Plot, Pick, Order, Affiliation
 from .forms import (
@@ -102,15 +103,28 @@ def order_create_view(request):
     if request.method == 'POST':
         form = CreateOrderForm(request.user, request.POST)
         if form.is_valid():
+            requester = request.user
             order = Order.objects.create(
                 plot=form.cleaned_data['plot'],
                 start_date=form.cleaned_data['start_date'],
                 end_date=form.cleaned_data['end_date'],
                 canceled=False,
-                requester=request.user
+                requester=requester
             )
             order.crops.set(form.cleaned_data['crops'])
             order.save()
+            # Notify pickers on this order's garden that there's a new order to fulfill
+            pickers = order.plot.garden.pickers.all()
+            for picker in pickers:
+                picker.email_user(
+                    subject="New order on plot {} in {}".format(order.plot.title, order.plot.garden.title),
+                    message=render_to_string(
+                        'gardenhub/email_picker_new_order.txt', {
+                            'picker': picker,
+                            'order': order
+                        }
+                    )
+                )
             context["success"] = True
     else:
         form = CreateOrderForm(request.user)
