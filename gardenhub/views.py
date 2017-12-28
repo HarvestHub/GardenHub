@@ -19,7 +19,8 @@ from .forms import (
     EditGardenForm,
     EditPlotForm,
     ActivateAccountForm,
-    AccountSettingsForm
+    AccountSettingsForm,
+    CreatePickForm
 )
 from .decorators import (
     can_edit_plot,
@@ -126,10 +127,28 @@ def pick_create_view(request, plotId):
     """
     plot = get_object_or_404(Plot, id=plotId)
 
-    return render(request, 'gardenhub/pick_create.html', {
+    context = {
         'plot': plot,
         'crops': Crop.objects.all()
-    })
+    }
+
+    # A form has been submitted
+    if request.method == 'POST':
+        form = CreatePickForm(request.POST)
+        if form.is_valid():
+            pick = Pick.objects.create(
+                picker=request.user,
+                plot=plot,
+            )
+            pick.crops.set(form.cleaned_data['crops'])
+            pick.save()
+            context["success"] = True
+    else:
+        form = CreatePickForm()
+
+    context["form"] = form
+
+    return render(request, 'gardenhub/pick_create.html', context)
 
 
 class OrderDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):

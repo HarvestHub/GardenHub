@@ -178,6 +178,7 @@ class Pick(models.Model):
     datetime = models.DateTimeField(auto_now=True)
     picker = models.ForeignKey(settings.AUTH_USER_MODEL, models.DO_NOTHING)
     plot = models.ForeignKey(Plot, models.DO_NOTHING, related_name='picks')
+    crops = models.ManyToManyField(Crop)
 
     def __str__(self):
         return str(self.id)
