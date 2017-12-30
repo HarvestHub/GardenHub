@@ -360,6 +360,24 @@ class PickTestCase(TestCase):
         pick = Pick.objects.create(picker=picker, plot=plot)
         self.assertIn(pick, Pick.objects.all())
 
+    def test_inquirers(self):
+        """ pick.inquirers() """
+        picker = get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass())
+        requester = get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass())
+        gardeners = [
+            get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass()),
+            get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass())
+        ]
+        garden = Garden.objects.create(title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
+        plot = Plot.objects.create(title='1', garden=garden)
+        plot.gardeners.add(gardeners[0])
+        plot.gardeners.add(gardeners[1])
+        order = Order.objects.create(plot=plot, start_date=date.today()-timedelta(days=5), end_date=date.today()+timedelta(days=5), requester=requester)
+        pick = Pick.objects.create(picker=picker, plot=plot)
+
+        self.assertIn(gardeners[0], list(pick.inquirers()))
+        self.assertIn(gardeners[1], list(pick.inquirers()))
+        self.assertIn(requester, list(pick.inquirers()))
 
 
 class UserManagerTestCase(TestCase):

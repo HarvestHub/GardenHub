@@ -156,6 +156,17 @@ def pick_create_view(request, plotId):
             )
             pick.crops.set(form.cleaned_data['crops'])
             pick.save()
+            # Notify Pick inquirers,
+            for inquirer in pick.inquirers():
+                inquirer.email_user(
+                    subject="Plot {} in {} has been picked!".format(pick.plot.title, pick.plot.garden.title),
+                    message=render_to_string(
+                        'gardenhub/email_inquirer_new_pick.txt', {
+                            'inquirer': inquirer,
+                            'pick': pick
+                        }
+                    )
+                )
             context["success"] = True
     else:
         form = CreatePickForm()

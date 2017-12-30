@@ -183,6 +183,17 @@ class Pick(models.Model):
     def __str__(self):
         return str(self.id)
 
+    def inquirers(self):
+        """ People to notify about this pick. """
+        gardeners = self.plot.gardeners.all()
+        requesters = [
+            order.requester
+            for order
+            in Order.objects.active().filter(plot__id=self.plot.id)
+        ]
+        # Coerce to set to get distinct values
+        return list(set(list(gardeners) + requesters))
+
 
 class UserManager(BaseUserManager):
     """

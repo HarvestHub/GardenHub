@@ -1,0 +1,3 @@
+Hi {{ inquirer.first_name }}! {{ pick.picker.first_name }} has picked your crops from plot {{ pick.plot.title }} in {{ pick.plot.garden.title }}.
+
+Crops picked: {{ pick.crops.all|join:", " }}
