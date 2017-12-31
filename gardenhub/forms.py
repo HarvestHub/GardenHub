@@ -1,3 +1,4 @@
+from datetime import date
 from django import forms
 from django.core import validators
 from django.core.exceptions import ValidationError
@@ -22,6 +23,12 @@ class CreateOrderForm(forms.Form):
     def __init__(self, user, *args, **kwargs):
         super(CreateOrderForm, self).__init__(*args, **kwargs)
         self.fields['plot'].queryset = user.get_plots()
+
+    def clean_start_date(self):
+        start_date = self.cleaned_data['start_date']
+        if start_date < date.today():
+            raise ValidationError("You cannot create a backdated order")
+        return start_date
 
 
 class EditPlotForm(forms.Form):
