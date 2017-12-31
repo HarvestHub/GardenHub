@@ -43,4 +43,4 @@ def picker_format(value, garden):
     """
     Format Orders for the Picker view.
     """
-    return value.filter(plot__garden__id=garden.id).active().order_by('-plot__picks__datetime', 'plot__title')
+    return value.filter(plot__garden__id=garden.id).active()

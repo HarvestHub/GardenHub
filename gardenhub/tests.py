@@ -726,6 +726,7 @@ class UserTestCase(TestCase):
         ]
 
         self.assertEqual(list(picker.get_picker_orders()), orders)
+        self.assertEqual(picker.get_picker_orders().count(), 3)
 
 
     def test_is_garden_manager(self):
@@ -1036,3 +1037,36 @@ class DecoratorTestCase(TestCase):
         garden_manager_request.user = garden_manager
         response = order_view(garden_manager_request, order.id)
         self.assertEqual(response.status_code, 200)
+
+
+class TemplateTagsTestCase(TestCase):
+    def test_picker_format(self):
+        requester = get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass())
+
+        garden = Garden.objects.create(title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
+        plots = [
+            Plot.objects.create(title='1', garden=garden),
+            Plot.objects.create(title='2', garden=garden),
+            Plot.objects.create(title='3', garden=garden),
+            Plot.objects.create(title='4', garden=garden)
+        ]
+        orders = [
+            Order.objects.create(plot=plots[0], start_date=date.today()+timedelta(days=5), end_date=date.today()+timedelta(days=10), requester=requester),
+            Order.objects.create(plot=plots[1], start_date=date.today()-timedelta(days=10), end_date=date.today()-timedelta(days=5), requester=requester),
+            Order.objects.create(plot=plots[3], start_date=date.today()-timedelta(days=5), end_date=date.today()+timedelta(days=5), requester=requester),
+            Order.objects.create(plot=plots[2], start_date=date.today()-timedelta(days=5), end_date=date.today()+timedelta(days=5), requester=requester),
+            Order.objects.create(plot=plots[0], start_date=date.today()-timedelta(days=5), end_date=date.today()+timedelta(days=5), requester=requester),        ]
+
+        # Create picker
+        picker = get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass())
+        garden.pickers.add(picker)
+
+        formatted = templatetags.picker_format(picker.get_picker_orders(), garden)
+
+        self.assertNotIn(orders[0], formatted)
+        self.assertNotIn(orders[1], formatted)
+        self.assertIn(orders[2], formatted)
+        self.assertIn(orders[3], formatted)
+        self.assertIn(orders[4], formatted)
+
+        self.assertEqual(len(formatted), 3)
