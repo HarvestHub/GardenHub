@@ -1,13 +1,13 @@
 import os
 
-from .base import * # noqa
+from .base import *  # noqa
 
 # Do not set SECRET_KEY, Postgres or LDAP password or any sensitive data here.
 # Instead, use environment variables or create a local.py file on the server.
 
 # Disable debug mode
 DEBUG = False
-TEMPLATES[0]['OPTIONS']['debug'] = False # noqa
+TEMPLATES[0]['OPTIONS']['debug'] = False  # noqa
 
 env = os.environ.copy()
 
@@ -39,6 +39,6 @@ LOGGING = {
 COMPRESS_OFFLINE = True
 
 try:
-    from .local import * # noqa
+    from .local import *  # noqa
 except ImportError:
     pass
