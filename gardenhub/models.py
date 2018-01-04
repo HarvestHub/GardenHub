@@ -135,6 +135,7 @@ class Order(models.Model):
     A request from a Gardener or Garden Manager to enlist a particular Plot for
     picking over a specified number of days.
     """
+    timestamp = models.DateTimeField(auto_now_add=True)
     plot = models.ForeignKey('Plot', models.DO_NOTHING)
     crops = models.ManyToManyField('Crop')
     start_date = models.DateField()
@@ -175,7 +176,7 @@ class Pick(models.Model):
     A submission by a picker signifying that certain Crops have been picked from
     a particular Plot at a particular time.
     """
-    datetime = models.DateTimeField(auto_now=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
     picker = models.ForeignKey(settings.AUTH_USER_MODEL, models.DO_NOTHING)
     plot = models.ForeignKey(Plot, models.DO_NOTHING, related_name='picks')
     crops = models.ManyToManyField(Crop)
