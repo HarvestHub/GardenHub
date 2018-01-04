@@ -115,11 +115,11 @@ class OrderQuerySet(models.QuerySet):
 
     def picked_today(self):
         """ Orders that have at least one Pick from today. """
-        return self.filter(plot__picks__datetime__gte=date.today())
+        return self.filter(plot__picks__timestamp__gte=date.today())
 
     def unpicked_today(self):
         """ Orders that have no Picks from today. """
-        return self.exclude(plot__picks__datetime__gte=date.today())
+        return self.exclude(plot__picks__timestamp__gte=date.today())
 
 
 class OrderManager(models.Manager):
