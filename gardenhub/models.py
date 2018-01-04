@@ -1,15 +1,15 @@
 from datetime import date
-import uuid
 from django.db import models
 from django.db.models import Q
 from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import PermissionsMixin
-from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.base_user import AbstractBaseUser
 from django.utils import timezone
-from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
+
+from .managers import OrderQuerySet, UserManager
 
 
 class Crop(models.Model):
@@ -87,67 +87,6 @@ class Plot(models.Model):
         return "{} [{}]".format(self.garden.title, self.title)
 
 
-class OrderQuerySet(models.QuerySet):
-    """
-    Custom QuerySet for advanced filtering of orders.
-    """
-    def completed(self):
-        """ Orders that have finished. """
-        return self.filter(end_date__lt=date.today())
-
-    def upcoming(self):
-        """ Orders that have not yet begun. """
-        return self.filter(start_date__gt=date.today())
-
-    def active(self):
-        """ All active orders. """
-        return self.filter(
-            Q(end_date__gte=date.today()) &
-            Q(start_date__lte=date.today())
-        )
-
-    def inactive(self):
-        """ All inactive orders. """
-        return self.filter(
-            Q(end_date__lt=date.today()) |
-            Q(start_date__gt=date.today())
-        )
-
-    def picked_today(self):
-        """ Orders that have at least one Pick from today. """
-        return self.filter(plot__picks__timestamp__gte=date.today())
-
-    def unpicked_today(self):
-        """ Orders that have no Picks from today. """
-        return self.exclude(plot__picks__timestamp__gte=date.today())
-
-
-class OrderManager(models.Manager):
-    """
-    Custom Manager for the Order model.
-    """
-    def get_queryset(self):
-        return OrderQuerySet(self.model, using=self._db)
-
-    def completed(self):
-        return self.get_queryset().completed()
-
-    def upcoming(self):
-        return self.get_queryset().upcoming()
-
-    def active(self):
-        return self.get_queryset().active()
-
-    def inactive(self):
-        return self.get_queryset().inactive()
-
-    def picked_today(self):
-        return self.get_queryset().picked_today()
-
-    def unpicked_today(self):
-        return self.get_queryset().unpicked_today()
-
-
 class Order(models.Model):
     """
     A request from a Gardener or Garden Manager to enlist a particular Plot for
@@ -162,7 +101,7 @@ class Order(models.Model):
     canceled_date = models.DateField(null=True, blank=True)
     requester = models.ForeignKey(settings.AUTH_USER_MODEL, models.DO_NOTHING)
 
-    objects = OrderManager()
+    objects = OrderQuerySet.as_manager()
 
     def __str__(self):
         return str(self.id)
@@ -212,78 +151,6 @@ class Pick(models.Model):
         ]
         # Coerce to set to get distinct values
         return list(set(list(gardeners) + requesters))
-
-
-class UserManager(BaseUserManager):
-    """
-    Custom User manager because the custom User model only does auth by email.
-    """
-    use_in_migrations = True
-
-    def _create_user(self, email, password, **extra_fields):
-        """
-        Create and save a user with the given email and password.
-        """
-        if not email:
-            raise ValueError('The given email must be set')
-        email = self.normalize_email(email)
-        user = self.model(email=email, **extra_fields)
-        user.set_password(password)
-        user.save(using=self._db)
-        return user
-
-    def create_user(self, email=None, password=None, **extra_fields):
-        extra_fields.setdefault('is_staff', False)
-        extra_fields.setdefault('is_superuser', False)
-        return self._create_user(email, password, **extra_fields)
-
-    def create_superuser(self, email, password, **extra_fields):
-        extra_fields.setdefault('is_active', True)
-        extra_fields.setdefault('is_staff', True)
-        extra_fields.setdefault('is_superuser', True)
-
-        if extra_fields.get('is_staff') is not True:
-            raise ValueError('Superuser must have is_staff=True.')
-        if extra_fields.get('is_superuser') is not True:
-            raise ValueError('Superuser must have is_superuser=True.')
-
-        return self._create_user(email, password, **extra_fields)
-
-    def get_or_invite_users(self, emails, request):
-        """
-        Gets or creates users from the list of emails. When a user is created
-        they are sent an invitation email.
-        """
-        users = []
-
-        # Loop through the list of emails
-        for email in emails:
-            # Get or create a user from the email
-            user, created = get_user_model().objects.get_or_create(email=email)
-            # If the user was just newly created...
-            if created:
-                # Generate a random token for account activation
-                user.activation_token = str(uuid.uuid4())
-                user.save()
-                # Send the user an invitation email with their activation token
-                inviter = request.user
-                activate_url = request.build_absolute_uri(
-                    '/activate/{}/'.format(user.activation_token)
-                )
-                user.email_user(
-                    subject="{} invited you to join GardenHub".format(
-                        inviter.get_full_name()),
-                    message=render_to_string(
-                        'gardenhub/email_invitation.txt', {
-                            'inviter': inviter,
-                            'activate_url': activate_url
-                        }
-                    )
-                )
-
-            users.append(user)
-
-        return users
 
 
 class User(AbstractBaseUser, PermissionsMixin):
