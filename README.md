@@ -19,7 +19,10 @@ Eventually, the inner-workings of this project will be documented in detail. We'
 
 ## Local development
 
-You will need [virtualenvwrapper](http://virtualenvwrapper.readthedocs.io/en/latest/), git, lessc, and Python 3 installed.
+You will need [virtualenvwrapper](http://virtualenvwrapper.readthedocs.io/en/latest/), git, lessc, and Python 3 installed. Then, follow the instructions below.
+
+[![asciicast](https://asciinema.org/a/155550.png)](https://asciinema.org/a/155550)
+
 
 ```
 # Clone the repo
@@ -29,7 +32,7 @@ git clone https://github.com/HarvestHub/GardenHub.git
 cd GardenHub
 
 # Create the Python virtual environment
-mkvirtualenv gardenhub --python=python3
+mkvirtualenv gh --python=python3
 
 # Install project dependencies
 pip install -r requirements.txt
