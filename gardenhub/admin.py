@@ -1,6 +1,5 @@
 from django import forms
 from django.contrib import admin
-from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from .models import Crop, Garden, Plot, Pick, Order, Affiliation, User
@@ -17,7 +16,8 @@ class UserCreationForm(forms.ModelForm):
     """A form for creating new users. Includes all the required
     fields, plus a repeated password."""
     password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
-    password2 = forms.CharField(label='Password confirmation', widget=forms.PasswordInput)
+    password2 = forms.CharField(
+        label='Password confirmation', widget=forms.PasswordInput)
 
     class Meta:
         model = User
@@ -49,7 +49,8 @@ class UserChangeForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ['email', 'password', 'first_name', 'last_name', 'is_staff', 'is_active']
+        fields = ['email', 'password', 'first_name',
+                  'last_name', 'is_staff', 'is_active']
 
     def clean_password(self):
         # Regardless of what the user provides, return the initial value.
@@ -78,10 +79,11 @@ class UserAdmin(BaseUserAdmin):
         (None, {
             'classes': ('wide',),
             'fields': ('email', 'password1', 'password2')}
-        ),
+         ),
     )
     search_fields = ('email', 'first_name', 'last_name')
     ordering = ('email', 'first_name', 'last_name')
     filter_horizontal = ()
+
 
 admin.site.register(User, UserAdmin)

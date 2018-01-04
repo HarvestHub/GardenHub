@@ -2,7 +2,7 @@ from datetime import date
 from django import forms
 from django.core import validators
 from django.core.exceptions import ValidationError
-from .models import Order, Plot, Garden, Crop
+from .models import Crop
 
 
 class MultipleEmailField(forms.MultipleChoiceField):
@@ -10,7 +10,7 @@ class MultipleEmailField(forms.MultipleChoiceField):
         try:
             validators.validate_email(value)
             return True
-        except exceptions.ValidationError as e:
+        except ValidationError:
             return False
 
 

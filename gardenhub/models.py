@@ -41,11 +41,24 @@ class Garden(models.Model):
     A whole landscape, divided into many plots. Managed by Garden Managers.
     """
     title = models.CharField(max_length=255)
-    managers = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='gardens', blank=True)
+
+    managers = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        related_name='gardens',
+        blank=True
+    )
+
     address = models.CharField(max_length=255)
-    affiliations = models.ManyToManyField(Affiliation, related_name='gardens', blank=True)
+
+    affiliations = models.ManyToManyField(
+        Affiliation, related_name='gardens', blank=True
+    )
+
     photo = models.ImageField(blank=True)
-    pickers = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='+', blank=True)
+
+    pickers = models.ManyToManyField(
+        settings.AUTH_USER_MODEL, related_name='+', blank=True
+    )
 
     def __str__(self):
         return self.title
@@ -61,8 +74,13 @@ class Plot(models.Model):
             "The plot's name is probably a number, like 11. "
             "The plot should be clearly labeled with a sign."
         ))
+
     garden = models.ForeignKey('Garden', models.CASCADE, related_name='plots')
-    gardeners = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='plots', blank=True)
+
+    gardeners = models.ManyToManyField(
+        settings.AUTH_USER_MODEL, related_name='plots', blank=True
+    )
+
     crops = models.ManyToManyField('Crop', related_name='+', blank=True)
 
     def __str__(self):
@@ -173,8 +191,8 @@ class Order(models.Model):
 
 class Pick(models.Model):
     """
-    A submission by a picker signifying that certain Crops have been picked from
-    a particular Plot at a particular time.
+    A submission by a picker signifying that certain Crops have been picked
+    from a particular Plot at a particular time.
     """
     timestamp = models.DateTimeField(auto_now_add=True)
     picker = models.ForeignKey(settings.AUTH_USER_MODEL, models.DO_NOTHING)
@@ -244,14 +262,17 @@ class UserManager(BaseUserManager):
             user, created = get_user_model().objects.get_or_create(email=email)
             # If the user was just newly created...
             if created:
-                # Generate a random token this user can activate their account with
+                # Generate a random token for account activation
                 user.activation_token = str(uuid.uuid4())
                 user.save()
                 # Send the user an invitation email with their activation token
                 inviter = request.user
-                activate_url = request.build_absolute_uri('/activate/{}/'.format(user.activation_token))
+                activate_url = request.build_absolute_uri(
+                    '/activate/{}/'.format(user.activation_token)
+                )
                 user.email_user(
-                    subject="{} invited you to join GardenHub".format(inviter.get_full_name()),
+                    subject="{} invited you to join GardenHub".format(
+                        inviter.get_full_name()),
                     message=render_to_string(
                         'gardenhub/email_invitation.txt', {
                             'inviter': inviter,
@@ -277,11 +298,14 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(
         _('staff status'),
         default=False,
-        help_text=_('Designates whether the user can log into this admin site.'),
+        help_text=_(
+            'Designates whether the user can log into this admin site.'
+        ),
     )
     is_active = models.BooleanField(
         _('active'),
-        default=False, # Users may be created and assigned to Gardens/Plots before they activate their account
+        default=False,  # Users may be created and assigned to Gardens/Plots
+                        # before they activate their account
         help_text=_(
             'Designates whether this user should be treated as active. '
             'Unselect this instead of deleting accounts.'
@@ -344,7 +368,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         """
         Return all Orders for the given user's Plots and Gardens.
         """
-        plot_ids = [ plot.id for plot in self.get_plots().all() ]
+        plot_ids = [plot.id for plot in self.get_plots().all()]
         return Order.objects.filter(plot__id__in=plot_ids)
 
     def get_picker_gardens(self):
@@ -365,8 +389,8 @@ class User(AbstractBaseUser, PermissionsMixin):
         except yourself.
         """
         return get_user_model().objects.filter(
-            Q(gardens__id__in=[ garden.id for garden in self.get_gardens() ]) |
-            Q(plots__id__in=[ plot.id for plot in self.get_plots() ])
+            Q(gardens__id__in=[garden.id for garden in self.get_gardens()]) |
+            Q(plots__id__in=[plot.id for plot in self.get_plots()])
         ).distinct().exclude(id=self.id)
 
     def is_garden_manager(self):
@@ -421,7 +445,8 @@ class User(AbstractBaseUser, PermissionsMixin):
         is listed in Garden.managers for the garden in Plot.garden.
         False otherwise.
         """
-        return self in plot.gardeners.all() or self in plot.garden.managers.all()
+        return self in plot.gardeners.all() \
+            or self in plot.garden.managers.all()
 
     def can_edit_order(self, order):
         """

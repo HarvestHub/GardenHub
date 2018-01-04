@@ -1,20 +1,13 @@
-import math
-import time
-import uuid
-from datetime import datetime, timedelta
-from django.http import (
-    HttpResponse, HttpResponseRedirect, HttpResponseForbidden, JsonResponse
-)
+from django.http import HttpResponseRedirect, JsonResponse
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.views import LoginView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import render, get_object_or_404
-from django.views.generic import ListView, DetailView, DeleteView
+from django.views.generic import ListView, DetailView
 from django.views.generic.base import TemplateView
 from django.template.loader import render_to_string
 from sorl.thumbnail import get_thumbnail
-from .models import Crop, Garden, Plot, Pick, Order, Affiliation
+from .models import Crop, Garden, Plot, Pick, Order
 from .forms import (
     CreateOrderForm,
     EditGardenForm,
@@ -25,8 +18,7 @@ from .forms import (
 )
 from .decorators import (
     can_edit_plot,
-    can_edit_garden,
-    can_edit_order
+    can_edit_garden
 )
 
 
@@ -113,11 +105,12 @@ def order_create_view(request):
             )
             order.crops.set(form.cleaned_data['crops'])
             order.save()
-            # Notify pickers on this order's garden that there's a new order to fulfill
+            # Notify pickers on this order's garden that there's a new order
             pickers = order.plot.garden.pickers.all()
             for picker in pickers:
                 picker.email_user(
-                    subject="New order on plot {} in {}".format(order.plot.title, order.plot.garden.title),
+                    subject="New order on plot {} in {}".format(
+                        order.plot.title, order.plot.garden.title),
                     message=render_to_string(
                         'gardenhub/email_picker_new_order.txt', {
                             'picker': picker,
@@ -159,7 +152,8 @@ def pick_create_view(request, plotId):
             # Notify Pick inquirers,
             for inquirer in pick.inquirers():
                 inquirer.email_user(
-                    subject="Plot {} in {} has been picked!".format(pick.plot.title, pick.plot.garden.title),
+                    subject="Plot {} in {} has been picked!".format(
+                        pick.plot.title, pick.plot.garden.title),
                     message=render_to_string(
                         'gardenhub/email_inquirer_new_pick.txt', {
                             'inquirer': inquirer,
@@ -230,10 +224,10 @@ def garden_update_view(request, pk):
         if form.is_valid():
             # Get user objects from email addresses and invite everyone else
             managers = get_user_model().objects.get_or_invite_users(
-                form.cleaned_data['manager_emails'], # Submitted emails
-                request # The email template needs request data
+                form.cleaned_data['manager_emails'],  # Submitted emails
+                request  # The email template needs request data
             )
-            # FIXME: There has got to be a better way of updating objects than this
+            # FIXME: There has got to be a better way of updating objects
             garden.title = form.cleaned_data['title']
             garden.address = form.cleaned_data['address']
             garden.managers.set(managers)
@@ -276,10 +270,10 @@ def plot_update_view(request, pk):
         if form.is_valid():
             # Get user objects from email addresses and invite everyone else
             gardeners = get_user_model().objects.get_or_invite_users(
-                form.cleaned_data['gardener_emails'], # Submitted emails
-                request # The email template needs request data
+                form.cleaned_data['gardener_emails'],  # Submitted emails
+                request  # The email template needs request data
             )
-            # FIXME: There has got to be a better way of updating objects than this
+            # FIXME: There has got to be a better way of updating objects
             plot.title = form.cleaned_data['title']
             plot.garden = form.cleaned_data['garden']
             plot.gardeners.set(gardeners)
@@ -309,12 +303,15 @@ def account_activate_view(request, token):
         user.save()
         return HttpResponseRedirect('/')
 
-    context = {}
-
     # Form has been submitted
     if request.method == 'POST':
         form = ActivateAccountForm(request.POST)
-        if form.is_valid() and form.cleaned_data['password1'] == form.cleaned_data['password2']:
+
+        # TODO: Bake this into form.is_valid()?
+        passwords_match = form.cleaned_data['password1'] \
+            == form.cleaned_data['password2']
+
+        if form.is_valid() and passwords_match:
             user.first_name = form.cleaned_data['first_name']
             user.last_name = form.cleaned_data['last_name']
             user.is_active = True
@@ -349,8 +346,10 @@ def account_settings_view(request):
             request.user.last_name = form.cleaned_data['last_name']
             # Set password if it's entered
             if form.cleaned_data['password']:
-                if form.cleaned_data['new_password1'] == form.cleaned_data['new_password2']:
-                    request.user.set_password(form.cleaned_data['new_password1'])
+                if form.cleaned_data['new_password1'] == \
+                        form.cleaned_data['new_password2']:
+                    request.user.set_password(
+                        form.cleaned_data['new_password1'])
 
             context['success'] = True
             request.user.save()
@@ -379,8 +378,9 @@ def api_crops(request, pk):
             "crops": [{
                 "id": crop.id,
                 "title": crop.title,
-                "image": get_thumbnail(crop.image, '125x125', crop='center').url
-            } for crop in crops] })
+                "image": get_thumbnail(
+                    crop.image, '125x125', crop='center').url
+            } for crop in crops]})
 
-    except:
+    except Exception:
         return JsonResponse({})

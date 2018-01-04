@@ -1,9 +1,9 @@
-from .base import *
+from .base import * # noqa
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-TEMPLATES[0]['OPTIONS']['debug'] = True
+TEMPLATES[0]['OPTIONS']['debug'] = True # noqa
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'CHANGEME!!!'
@@ -16,6 +16,6 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 
 try:
-    from .local import *
+    from .local import * # noqa
 except ImportError:
     pass

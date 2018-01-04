@@ -1,5 +1,4 @@
 from django import template
-from collections import defaultdict
 
 register = template.Library()
 
@@ -27,7 +26,8 @@ def plot_user_orders(context, plot):
 @register.simple_tag
 def placeholder(size, obj):
     letter = str(obj)[0]
-    return "//via.placeholder.com/{}/a333c8/ffffff?text={}".format(size, letter)
+    url = "//via.placeholder.com/{}/a333c8/ffffff?text={}"
+    return url.format(size, letter)
 
 
 @register.filter
