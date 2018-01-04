@@ -122,20 +122,31 @@ class OrderManagerTestCase(TestCase):
         garden.pickers.add(picker)
 
         # Completed orders
-        start_date = date.today() - timedelta(days=10)
-        end_date = date.today() - timedelta(days=1)
         completed_orders = [
-            Order.objects.create(plot=plot, start_date=start_date, end_date=end_date, requester=picker),
-            Order.objects.create(plot=plot, start_date=start_date, end_date=end_date, requester=picker),
-            Order.objects.create(plot=plot, start_date=start_date, end_date=end_date, requester=picker),
+            Order.objects.create(
+                plot=plot,
+                start_date=date.today()-timedelta(days=10),
+                end_date=date.today()-timedelta(days=1),
+                requester=picker
+            ) for _ in range(3)
         ]
 
         # Incomplete orders
         incomplete_orders = [
             # Start date is greater than today
-            Order.objects.create(plot=plot, start_date=date.today()+timedelta(days=5), end_date=date.today()+timedelta(days=10), requester=picker),
+            Order.objects.create(
+                plot=plot,
+                start_date=date.today()+timedelta(days=5),
+                end_date=date.today()+timedelta(days=10),
+                requester=picker
+            ),
             # End date is greater than today
-            Order.objects.create(plot=plot, start_date=date.today()-timedelta(days=10), end_date=date.today()+timedelta(days=5), requester=picker),
+            Order.objects.create(
+                plot=plot,
+                start_date=date.today()-timedelta(days=10),
+                end_date=date.today()+timedelta(days=5),
+                requester=picker
+            ),
         ]
 
         # Test it
@@ -157,20 +168,31 @@ class OrderManagerTestCase(TestCase):
         garden.pickers.add(picker)
 
         # Active orders
-        start_date = date.today() - timedelta(days=10)
-        end_date = date.today() + timedelta(days=1)
         active_orders = [
-            Order.objects.create(plot=plot, start_date=start_date, end_date=end_date, requester=picker),
-            Order.objects.create(plot=plot, start_date=start_date, end_date=end_date, requester=picker),
-            Order.objects.create(plot=plot, start_date=start_date, end_date=end_date, requester=picker),
+            Order.objects.create(
+                plot=plot,
+                start_date=date.today()-timedelta(days=10),
+                end_date=date.today()+timedelta(days=1),
+                requester=picker
+            ) for _ in range(3)
         ]
 
         # Inactive orders
         inactive_orders = [
             # Start date is greater than today
-            Order.objects.create(plot=plot, start_date=date.today()+timedelta(days=5), end_date=date.today()+timedelta(days=10), requester=picker),
+            Order.objects.create(
+                plot=plot,
+                start_date=date.today()+timedelta(days=5),
+                end_date=date.today()+timedelta(days=10),
+                requester=picker
+            ),
             # End date is greater than today
-            Order.objects.create(plot=plot, start_date=date.today()-timedelta(days=10), end_date=date.today()-timedelta(days=5), requester=picker),
+            Order.objects.create(
+                plot=plot,
+                start_date=date.today()-timedelta(days=10),
+                end_date=date.today()-timedelta(days=5),
+                requester=picker
+            ),
         ]
 
         # Test it
@@ -179,7 +201,6 @@ class OrderManagerTestCase(TestCase):
             self.assertIn(order, list(result))
         for order in inactive_orders:
             self.assertNotIn(order, list(result))
-
 
     def test_inactive(self):
         """ Order.objects.inactive() """
@@ -193,20 +214,31 @@ class OrderManagerTestCase(TestCase):
         garden.pickers.add(picker)
 
         # Active orders
-        start_date = date.today() - timedelta(days=10)
-        end_date = date.today() + timedelta(days=1)
         active_orders = [
-            Order.objects.create(plot=plot, start_date=start_date, end_date=end_date, requester=picker),
-            Order.objects.create(plot=plot, start_date=start_date, end_date=end_date, requester=picker),
-            Order.objects.create(plot=plot, start_date=start_date, end_date=end_date, requester=picker),
+            Order.objects.create(
+                plot=plot,
+                start_date=date.today()-timedelta(days=10),
+                end_date=date.today()+timedelta(days=1),
+                requester=picker
+            ) for _ in range(3)
         ]
 
         # Inactive orders
         inactive_orders = [
             # Start date is greater than today
-            Order.objects.create(plot=plot, start_date=date.today()+timedelta(days=5), end_date=date.today()+timedelta(days=10), requester=picker),
+            Order.objects.create(
+                plot=plot,
+                start_date=date.today()+timedelta(days=5),
+                end_date=date.today()+timedelta(days=10),
+                requester=picker
+            ),
             # End date is greater than today
-            Order.objects.create(plot=plot, start_date=date.today()-timedelta(days=10), end_date=date.today()-timedelta(days=5), requester=picker),
+            Order.objects.create(
+                plot=plot,
+                start_date=date.today()-timedelta(days=10),
+                end_date=date.today()-timedelta(days=5),
+                requester=picker
+            ),
         ]
 
         # Test it
@@ -228,24 +260,35 @@ class OrderManagerTestCase(TestCase):
         garden.pickers.add(picker)
 
         # Active orders
-        start_date = date.today() - timedelta(days=10)
-        end_date = date.today() + timedelta(days=1)
         active_orders = [
-            Order.objects.create(plot=plot, start_date=start_date, end_date=end_date, requester=picker),
-            Order.objects.create(plot=plot, start_date=start_date, end_date=end_date, requester=picker),
-            Order.objects.create(plot=plot, start_date=start_date, end_date=end_date, requester=picker),
+            Order.objects.create(
+                plot=plot,
+                start_date=date.today()-timedelta(days=10),
+                end_date=date.today()+timedelta(days=1),
+                requester=picker
+            ) for _ in range(3)
         ]
 
         # Past orders
         past_orders = [
             # End date is greater than today
-            Order.objects.create(plot=plot, start_date=date.today()-timedelta(days=10), end_date=date.today()-timedelta(days=5), requester=picker),
+            Order.objects.create(
+                plot=plot,
+                start_date=date.today()-timedelta(days=10),
+                end_date=date.today()-timedelta(days=5),
+                requester=picker
+            ),
         ]
 
         # Upcoming orders
         upcoming_orders = [
             # Start date is greater than today
-            Order.objects.create(plot=plot, start_date=date.today()+timedelta(days=5), end_date=date.today()+timedelta(days=10), requester=picker),
+            Order.objects.create(
+                plot=plot,
+                start_date=date.today()+timedelta(days=5),
+                end_date=date.today()+timedelta(days=10),
+                requester=picker
+            ),
         ]
 
         # Test it
@@ -259,11 +302,19 @@ class OrderManagerTestCase(TestCase):
 
     def test_picked_today(self):
         """ Order.objects.picked_today() """
-        picker = get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass())
-        requester = get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass())
-        garden = Garden.objects.create(title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
+        picker = get_user_model().objects.create_user(
+            email=uuid_email(), password=uuid_pass())
+        requester = get_user_model().objects.create_user(
+            email=uuid_email(), password=uuid_pass())
+        garden = Garden.objects.create(
+            title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
         plot = Plot.objects.create(title='1', garden=garden)
-        order = Order.objects.create(plot=plot, start_date=date(2017, 1, 1), end_date=date(2017, 1, 5), requester=requester)
+        order = Order.objects.create(
+            plot=plot,
+            start_date=date(2017, 1, 1),
+            end_date=date(2017, 1, 5),
+            requester=requester
+        )
         Pick.objects.create(picker=picker, plot=plot)
         self.assertIn(order, Order.objects.picked_today())
 
@@ -271,9 +322,14 @@ class OrderManagerTestCase(TestCase):
         """ Order.objects.unpicked_today() """
         requester = get_user_model().objects.create_user(
             email=uuid_email(), password=uuid_pass())
-        garden = Garden.objects.create(title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
+        garden = Garden.objects.create(
+            title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
         plot = Plot.objects.create(title='1', garden=garden)
-        order = Order.objects.create(plot=plot, start_date=date(2017, 1, 1), end_date=date(2017, 1, 5), requester=requester)
+        order = Order.objects.create(
+            plot=plot,
+            start_date=date(2017, 1, 1),
+            end_date=date(2017, 1, 5),
+            requester=requester)
         self.assertIn(order, Order.objects.unpicked_today())
 
 
@@ -310,11 +366,26 @@ class OrderTestCase(TestCase):
 
         orders = [
             # Ended 5 days ago - 100%
-            Order.objects.create(plot=plot, start_date=date.today() - timedelta(days=10), end_date=date.today() - timedelta(days=5), requester=requester),
+            Order.objects.create(
+                plot=plot,
+                start_date=date.today()-timedelta(days=10),
+                end_date=date.today()-timedelta(days=5),
+                requester=requester
+            ),
             # Started 5 days ago, ends in 5 days - 50%
-            Order.objects.create(plot=plot, start_date=date.today() - timedelta(days=5), end_date=date.today() + timedelta(days=5), requester=requester),
+            Order.objects.create(
+                plot=plot,
+                start_date=date.today()-timedelta(days=5),
+                end_date=date.today()+timedelta(days=5),
+                requester=requester
+            ),
             # Not yet started - 0%
-            Order.objects.create(plot=plot, start_date=date.today() + timedelta(days=5), end_date=date.today() + timedelta(days=10), requester=requester),
+            Order.objects.create(
+                plot=plot,
+                start_date=date.today()+timedelta(days=5),
+                end_date=date.today()+timedelta(days=10),
+                requester=requester
+            ),
         ]
 
         self.assertEqual(orders[0].progress(), 100)
@@ -333,11 +404,26 @@ class OrderTestCase(TestCase):
 
         orders = [
             # Ended 5 days ago - 100%
-            Order.objects.create(plot=plot, start_date=date.today() - timedelta(days=10), end_date=date.today() - timedelta(days=5), requester=requester),
+            Order.objects.create(
+                plot=plot,
+                start_date=date.today()-timedelta(days=10),
+                end_date=date.today()-timedelta(days=5),
+                requester=requester
+            ),
             # Started 5 days ago, ends in 5 days - 50%
-            Order.objects.create(plot=plot, start_date=date.today() - timedelta(days=5), end_date=date.today() + timedelta(days=5), requester=requester),
+            Order.objects.create(
+                plot=plot,
+                start_date=date.today()-timedelta(days=5),
+                end_date=date.today()+timedelta(days=5),
+                requester=requester
+            ),
             # Not yet started - 0%
-            Order.objects.create(plot=plot, start_date=date.today() + timedelta(days=5), end_date=date.today() + timedelta(days=10), requester=requester),
+            Order.objects.create(
+                plot=plot,
+                start_date=date.today()+timedelta(days=5),
+                end_date=date.today()+timedelta(days=10),
+                requester=requester
+            ),
         ]
 
         self.assertTrue(orders[0].is_complete())
@@ -355,7 +441,12 @@ class OrderTestCase(TestCase):
         garden = Garden.objects.create(
             title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
         plot = Plot.objects.create(title='1', garden=garden)
-        order = Order.objects.create(plot=plot, start_date=date(2017, 1, 1), end_date=date(2017, 1, 5), requester=requester)
+        order = Order.objects.create(
+            plot=plot,
+            start_date=date(2017, 1, 1),
+            end_date=date(2017, 1, 5),
+            requester=requester
+        )
         Pick.objects.create(picker=picker, plot=plot)
         self.assertTrue(order.was_picked_today())
 
@@ -383,14 +474,21 @@ class PickTestCase(TestCase):
         requester = get_user_model().objects.create_user(
             email=uuid_email(), password=uuid_pass())
         gardeners = [
-            get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass()),
-            get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass())
+            get_user_model().objects.create_user(
+                email=uuid_email(), password=uuid_pass())
+            for _ in range(2)
         ]
-        garden = Garden.objects.create(title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
+        garden = Garden.objects.create(
+            title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
         plot = Plot.objects.create(title='1', garden=garden)
         plot.gardeners.add(gardeners[0])
         plot.gardeners.add(gardeners[1])
-        Order.objects.create(plot=plot, start_date=date.today()-timedelta(days=5), end_date=date.today()+timedelta(days=5), requester=requester)
+        Order.objects.create(
+            plot=plot,
+            start_date=date.today()-timedelta(days=5),
+            end_date=date.today()+timedelta(days=5),
+            requester=requester
+        )
         pick = Pick.objects.create(picker=picker, plot=plot)
 
         self.assertIn(gardeners[0], list(pick.inquirers()))
@@ -575,15 +673,18 @@ class UserTestCase(TestCase):
 
         # Create test Garden objects
         gardens = [
-            Garden.objects.create(title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776'),
-            Garden.objects.create(title='Garden B', address='1001 Garden Rd, Philadelphia PA, 1776'),
-            Garden.objects.create(title='Garden C', address='1010 Garden Rd, Philadelphia PA, 1776'),
-            Garden.objects.create(title='Garden D', address='1011 Garden Rd, Philadelphia PA, 1776')
+            Garden.objects.create(
+                title='Good Garden',
+                address='1000 Garden Rd, Philadelphia PA, 1776'
+            ) for _ in range(4)
         ]
 
-        # Create additional Gardens to make sure they *aren't* included in the results
-        Garden.objects.create(title='Garden E', address='1100 Garden Rd, Philadelphia PA, 1776'),
-        Garden.objects.create(title='Garden F', address='1101 Garden Rd, Philadelphia PA, 1776')
+        # Create additional Gardens to make sure they *aren't* included
+        # in the results
+        [Garden.objects.create(
+            title='Bad Garden',
+            address='1100 Garden Rd, Philadelphia PA, 1776'
+        ) for _ in range(4)]
 
         # Assign user to gardens
         for garden in gardens:
@@ -601,10 +702,10 @@ class UserTestCase(TestCase):
 
         # Create test Gardens
         gardens = [
-            Garden.objects.create(title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776'),
-            Garden.objects.create(title='Garden B', address='1001 Garden Rd, Philadelphia PA, 1776'),
-            Garden.objects.create(title='Garden C', address='1010 Garden Rd, Philadelphia PA, 1776'),
-            Garden.objects.create(title='Garden D', address='1011 Garden Rd, Philadelphia PA, 1776')
+            Garden.objects.create(
+                title='Special Garden',
+                address='1000 Garden Rd, Philadelphia PA, 1776'
+            ) for _ in range(4)
         ]
 
         # Create test Plots
@@ -633,11 +734,12 @@ class UserTestCase(TestCase):
 
         # Create orders
         orders = [
-            Order.objects.create(plot=plot, start_date=date(2017, 1, 1), end_date=date(2017, 1, 5), requester=self.normal_user),
-            Order.objects.create(plot=plot, start_date=date(2017, 2, 1), end_date=date(2017, 2, 5), requester=self.normal_user),
-            Order.objects.create(plot=plot, start_date=date(2017, 3, 1), end_date=date(2017, 3, 5), requester=self.normal_user),
-            Order.objects.create(plot=plot, start_date=date(2017, 4, 1), end_date=date(2017, 4, 5), requester=self.normal_user),
-            Order.objects.create(plot=plot, start_date=date(2017, 5, 1), end_date=date(2017, 5, 5), requester=self.normal_user)
+            Order.objects.create(
+                plot=plot,
+                start_date=date(2017, 1, 1),
+                end_date=date(2017, 1, 5),
+                requester=self.normal_user
+            ) for _ in range(5)
         ]
 
         # Create user and assign it to the plot
@@ -653,10 +755,10 @@ class UserTestCase(TestCase):
 
         # Create test Gardens
         gardens = [
-            Garden.objects.create(title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776'),
-            Garden.objects.create(title='Garden B', address='1001 Garden Rd, Philadelphia PA, 1776'),
-            Garden.objects.create(title='Garden C', address='1010 Garden Rd, Philadelphia PA, 1776'),
-            Garden.objects.create(title='Garden D', address='1011 Garden Rd, Philadelphia PA, 1776')
+            Garden.objects.create(
+                title='Special Garden',
+                address='1000 Garden Rd, Philadelphia PA, 1776'
+            ) for _ in range(4)
         ]
 
         # Create test Plots
@@ -669,16 +771,10 @@ class UserTestCase(TestCase):
 
         # Create test Users
         users = [
-            get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass()),
-            get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass()),
-            get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass()),
-            get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass()),
-            get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass()),
-            get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass()),
-            get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass()),
-            get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass()),
-            get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass()),
-            get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass()),
+            get_user_model().objects.create_user(
+                email=uuid_email(),
+                password=uuid_pass()
+            ) for _ in range(10)
         ]
 
         # Garden with 2 managers and 1 plot with 1 gardener
@@ -711,14 +807,16 @@ class UserTestCase(TestCase):
 
         # Create gardens
         gardens = [
-            Garden.objects.create(title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776'),
-            Garden.objects.create(title='Garden B', address='1001 Garden Rd, Philadelphia PA, 1776'),
-            Garden.objects.create(title='Garden C', address='1010 Garden Rd, Philadelphia PA, 1776'),
-            Garden.objects.create(title='Garden D', address='1011 Garden Rd, Philadelphia PA, 1776')
+            Garden.objects.create(
+                title='Special Garden',
+                address='1000 Garden Rd, Philadelphia PA, 1776'
+            ) for _ in range(4)
         ]
-        Garden.objects.create(title='Garden E', address='1100 Garden Rd, Philadelphia PA, 1776')
-        Garden.objects.create(title='Garden F', address='1101 Garden Rd, Philadelphia PA, 1776')
-        Garden.objects.create(title='Garden G', address='1110 Garden Rd, Philadelphia PA, 1776')
+
+        [Garden.objects.create(
+            title='Unspecial Garden',
+            address='1000 Garden Rd, Philadelphia PA, 1776'
+        ) for _ in range(3)]
 
         # Create picker
         picker = get_user_model().objects.create_user(
@@ -745,9 +843,12 @@ class UserTestCase(TestCase):
         requester = get_user_model().objects.create_user(
             email=uuid_email(), password=uuid_pass())
         orders = [
-            Order.objects.create(plot=plot, start_date=date(2017, 1, 1), end_date=date(2017, 1, 5), requester=requester),
-            Order.objects.create(plot=plot, start_date=date(2017, 2, 1), end_date=date(2017, 2, 5), requester=requester),
-            Order.objects.create(plot=plot, start_date=date(2017, 3, 1), end_date=date(2017, 3, 5), requester=requester)
+            Order.objects.create(
+                plot=plot,
+                start_date=date(2017, 1, 1),
+                end_date=date(2017, 1, 5),
+                requester=requester
+            ) for _ in range(3)
         ]
 
         self.assertEqual(list(picker.get_picker_orders()), orders)
@@ -810,12 +911,14 @@ class UserTestCase(TestCase):
         plot = Plot.objects.create(title='1', garden=garden)
 
         # Create orders
-        requester = get_user_model().objects.create_user(email=uuid_email(), password=uuid_pass())
-        Order.objects.create(plot=plot, start_date=date(2017, 1, 1), end_date=date(2017, 1, 5), requester=requester),
-        Order.objects.create(plot=plot, start_date=date(2017, 2, 1), end_date=date(2017, 2, 5), requester=requester),
-        Order.objects.create(plot=plot, start_date=date(2017, 3, 1), end_date=date(2017, 3, 5), requester=requester),
-        Order.objects.create(plot=plot, start_date=date(2017, 4, 1), end_date=date(2017, 4, 5), requester=requester),
-        Order.objects.create(plot=plot, start_date=date(2017, 5, 1), end_date=date(2017, 5, 5), requester=requester)
+        requester = get_user_model().objects.create_user(
+            email=uuid_email(), password=uuid_pass())
+        [Order.objects.create(
+            plot=plot,
+            start_date=date(2017, 1, 1),
+            end_date=date(2017, 1, 5),
+            requester=requester
+        ) for _ in range(5)]
 
         # Create user and assign it to the plot
         user = get_user_model().objects.create_user(
@@ -874,7 +977,12 @@ class UserTestCase(TestCase):
         garden = Garden.objects.create(
             title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
         plot = Plot.objects.create(title='1', garden=garden)
-        order = Order.objects.create(plot=plot, start_date=date(2017, 1, 1), end_date=date(2017, 1, 5), requester=self.normal_user)
+        order = Order.objects.create(
+            plot=plot,
+            start_date=date(2017, 1, 1),
+            end_date=date(2017, 1, 5),
+            requester=self.normal_user
+        )
 
         # Test that the gardener can edit the order
         gardener = get_user_model().objects.create_user(
@@ -898,7 +1006,12 @@ class UserTestCase(TestCase):
         garden = Garden.objects.create(
             title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
         plot = Plot.objects.create(title='1', garden=garden)
-        order = Order.objects.create(plot=plot, start_date=date(2017, 1, 1), end_date=date(2017, 1, 5), requester=self.normal_user)
+        order = Order.objects.create(
+            plot=plot,
+            start_date=date(2017, 1, 1),
+            end_date=date(2017, 1, 5),
+            requester=self.normal_user
+        )
 
         # Create picker
         picker = get_user_model().objects.create_user(
@@ -1051,7 +1164,12 @@ class DecoratorTestCase(TestCase):
         garden = Garden.objects.create(
             title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
         plot = Plot.objects.create(title='1', garden=garden)
-        order = Order.objects.create(plot=plot, start_date=date(2017, 1, 1), end_date=date(2017, 1, 5), requester=self.normal_user)
+        order = Order.objects.create(
+            plot=plot,
+            start_date=date(2017, 1, 1),
+            end_date=date(2017, 1, 5),
+            requester=self.normal_user
+        )
 
         # Test an unauthorized request
         response = order_view(self.unauthorized_request, order.id)
@@ -1090,11 +1208,37 @@ class TemplateTagsTestCase(TestCase):
             Plot.objects.create(title='4', garden=garden)
         ]
         orders = [
-            Order.objects.create(plot=plots[0], start_date=date.today()+timedelta(days=5), end_date=date.today()+timedelta(days=10), requester=requester),
-            Order.objects.create(plot=plots[1], start_date=date.today()-timedelta(days=10), end_date=date.today()-timedelta(days=5), requester=requester),
-            Order.objects.create(plot=plots[3], start_date=date.today()-timedelta(days=5), end_date=date.today()+timedelta(days=5), requester=requester),
-            Order.objects.create(plot=plots[2], start_date=date.today()-timedelta(days=5), end_date=date.today()+timedelta(days=5), requester=requester),
-            Order.objects.create(plot=plots[0], start_date=date.today()-timedelta(days=5), end_date=date.today()+timedelta(days=5), requester=requester),        ]
+            Order.objects.create(
+                plot=plots[0],
+                start_date=date.today()+timedelta(days=5),
+                end_date=date.today()+timedelta(days=10),
+                requester=requester
+            ),
+            Order.objects.create(
+                plot=plots[1],
+                start_date=date.today()-timedelta(days=10),
+                end_date=date.today()-timedelta(days=5),
+                requester=requester
+            ),
+            Order.objects.create(
+                plot=plots[3],
+                start_date=date.today()-timedelta(days=5),
+                end_date=date.today()+timedelta(days=5),
+                requester=requester
+            ),
+            Order.objects.create(
+                plot=plots[2],
+                start_date=date.today()-timedelta(days=5),
+                end_date=date.today()+timedelta(days=5),
+                requester=requester
+            ),
+            Order.objects.create(
+                plot=plots[0],
+                start_date=date.today()-timedelta(days=5),
+                end_date=date.today()+timedelta(days=5),
+                requester=requester
+            ),
+        ]
 
         # Create picker
         picker = get_user_model().objects.create_user(
