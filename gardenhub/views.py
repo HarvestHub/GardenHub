@@ -7,6 +7,7 @@ from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView
 from django.views.generic.base import TemplateView
 from django.template.loader import render_to_string
+from django.urls import reverse_lazy
 from sorl.thumbnail import get_thumbnail
 from .models import Crop, Garden, Plot, Pick, Order
 from .forms import (
@@ -14,8 +15,7 @@ from .forms import (
     EditGardenForm,
     EditPlotForm,
     ActivateAccountForm,
-    AccountSettingsForm,
-    CreatePickForm
+    AccountSettingsForm
 )
 from .decorators import (
     can_edit_plot,
@@ -107,7 +107,7 @@ class OrderCreateView(LoginRequiredMixin, CreateView):
         return kwargs
 
     def form_valid(self, form):
-        response = super().form_valid(form)
+        response = super().form_valid(form)  # Sets self.object
         order = self.object
         # Notify pickers on this order's garden that there's a new order
         pickers = order.plot.garden.pickers.all()
@@ -125,48 +125,44 @@ class OrderCreateView(LoginRequiredMixin, CreateView):
         return response
 
 
-@login_required
 # FIXME: Only a picker should be able to access this
-def pick_create_view(request, plotId):
+class PickCreateView(LoginRequiredMixin, CreateView):
     """
     Form enabling a picker to submit a Pick for a given plot.
     """
-    plot = get_object_or_404(Plot, id=plotId)
+    model = Pick
+    fields = ['crops']
+    success_url = reverse_lazy('home')
 
-    context = {
-        'plot': plot,
-        'crops': Crop.objects.all()
-    }
+    def get_form_kwargs(self):
+        # Set the pick's plot and requester
+        plot = get_object_or_404(Plot, id=self.kwargs['plotId'])
+        pick = Pick(plot=plot, picker=self.request.user)
+        kwargs = super().get_form_kwargs()
+        kwargs.update({'instance': pick})
+        return kwargs
 
-    # A form has been submitted
-    if request.method == 'POST':
-        form = CreatePickForm(request.POST)
-        if form.is_valid():
-            pick = Pick.objects.create(
-                picker=request.user,
-                plot=plot,
-            )
-            pick.crops.set(form.cleaned_data['crops'])
-            pick.save()
-            # Notify Pick inquirers,
-            for inquirer in pick.inquirers():
-                inquirer.email_user(
-                    subject="Plot {} in {} has been picked!".format(
-                        pick.plot.title, pick.plot.garden.title),
-                    message=render_to_string(
-                        'gardenhub/email_inquirer_new_pick.txt', {
-                            'inquirer': inquirer,
-                            'pick': pick
-                        }
-                    )
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['plot'] = get_object_or_404(Plot, id=self.kwargs['plotId'])
+        return context
+
+    def form_valid(self, form):
+        response = super().form_valid(form)  # Sets self.object
+        pick = self.object
+        # Notify Pick inquirers
+        for inquirer in pick.inquirers():
+            inquirer.email_user(
+                subject="Plot {} in {} has been picked!".format(
+                    pick.plot.title, pick.plot.garden.title),
+                message=render_to_string(
+                    'gardenhub/email_inquirer_new_pick.txt', {
+                        'inquirer': inquirer,
+                        'pick': pick
+                    }
                 )
-            context["success"] = True
-    else:
-        form = CreatePickForm()
-
-    context["form"] = form
-
-    return render(request, 'gardenhub/pick_create.html', context)
+            )
+        return response
 
 
 class OrderDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):

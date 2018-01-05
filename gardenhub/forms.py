@@ -45,10 +45,6 @@ class EditGardenForm(forms.Form):
     manager_emails = MultipleEmailField()
 
 
-class CreatePickForm(forms.Form):
-    crops = forms.ModelMultipleChoiceField(queryset=Crop.objects.all())
-
-
 class ActivateAccountForm(forms.Form):
     first_name = forms.CharField()
     last_name = forms.CharField()

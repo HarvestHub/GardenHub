@@ -15,10 +15,11 @@
         <p class="description">Type the names of the crops you picked today from plot {{ plot.title }}.</p>
         <select name="crops" class="ui crops fluid search dropdown" multiple="">
           <option value="">Type crops&hellip;</option>
-          {% for crop in crops.all %}
+          {% for crop in form.crops.field.queryset %}
             <option value="{{ crop.id }}">{{ crop.title }}</option>
-          {% endfor%}
+          {% endfor %}
         </select>
+        {{ form.crops.errors }}
       </div>
       <button class="large purple ui right floated button" type="submit">
         <i class="checkmark icon"></i>
