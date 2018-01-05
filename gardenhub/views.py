@@ -4,23 +4,21 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView, DetailView
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic.base import TemplateView
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from sorl.thumbnail import get_thumbnail
 from .models import Crop, Garden, Plot, Pick, Order
 from .forms import (
-    CreateOrderForm,
+    OrderForm,
     EditGardenForm,
     EditPlotForm,
     ActivateAccountForm,
     AccountSettingsForm
 )
-from .decorators import (
-    can_edit_plot,
-    can_edit_garden
-)
+from .decorators import can_edit_plot
+from .mixins import UserCanEditGardenMixin
 
 
 def login_view(request):
@@ -90,7 +88,7 @@ class OrderCreateView(LoginRequiredMixin, CreateView):
     managers, or anyone who has the ability to edit a plot.
     """
     model = Order
-    form_class = CreateOrderForm
+    form_class = OrderForm
 
     def get_form(self, *args, **kwargs):
         form = super().get_form(*args, **kwargs)
@@ -194,50 +192,30 @@ class GardenListView(LoginRequiredMixin, ListView):
         return self.request.user.get_gardens()
 
 
-class GardenDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
+class GardenDetailView(LoginRequiredMixin, UserCanEditGardenMixin, DetailView):
     """
     View a single garden.
     """
     model = Garden
 
-    def test_func(self):
-        # Test that the user can edit this garden
-        return self.request.user.can_edit_garden(self.get_object())
 
-
-@login_required
-@can_edit_garden
-def garden_update_view(request, pk):
+class GardenUpdateView(LoginRequiredMixin, UserCanEditGardenMixin, UpdateView):
     """
     Edit form for an individual garden.
     """
-    context = {}
-    garden = get_object_or_404(Garden, id=pk)
+    model = Garden
+    form_class = EditGardenForm
 
-    # A form has been submitted
-    if request.method == 'POST':
-        # Pass data into the form
-        form = EditGardenForm(request.POST)
-        # Check if the form is valid
-        if form.is_valid():
-            # Get user objects from email addresses and invite everyone else
-            managers = get_user_model().objects.get_or_invite_users(
-                form.cleaned_data['manager_emails'],  # Submitted emails
-                request  # The email template needs request data
-            )
-            # FIXME: There has got to be a better way of updating objects
-            garden.title = form.cleaned_data['title']
-            garden.address = form.cleaned_data['address']
-            garden.managers.set(managers)
-            garden.save()
-            context["success"] = True
-    else:
-        form = EditGardenForm()
-
-    context["garden"] = garden
-    context["form"] = form
-
-    return render(request, 'gardenhub/garden_update.html', context)
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        # Get user objects from email addresses and invite everyone else
+        managers = get_user_model().objects.get_or_invite_users(
+            form.cleaned_data['manager_emails'],  # Submitted emails
+            self.request  # The email template needs request data
+        )
+        self.object.managers.set(managers)
+        self.object.save()  # FIXME: Prevent saving the object twice
+        return response
 
 
 class PlotListView(LoginRequiredMixin, ListView):

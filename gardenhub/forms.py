@@ -3,11 +3,12 @@ from django import forms
 from django.forms import ModelForm
 from django.core import validators
 from django.core.exceptions import ValidationError
-from .models import Crop, Order
+from .models import Crop, Order, Garden
 
 
 class MultipleEmailField(forms.MultipleChoiceField):
     def valid_value(self, value):
+        # Valid values are email addresses
         try:
             validators.validate_email(value)
             return True
@@ -15,7 +16,7 @@ class MultipleEmailField(forms.MultipleChoiceField):
             return False
 
 
-class CreateOrderForm(ModelForm):
+class OrderForm(ModelForm):
     class Meta:
         model = Order
         fields = ['plot', 'crops', 'start_date', 'end_date']
@@ -39,10 +40,12 @@ class EditPlotForm(forms.Form):
         self.fields['garden'].queryset = user.get_gardens()
 
 
-class EditGardenForm(forms.Form):
-    title = forms.CharField()
-    address = forms.CharField()
+class EditGardenForm(ModelForm):
     manager_emails = MultipleEmailField()
+
+    class Meta:
+        model = Garden
+        fields = ['title', 'address']
 
 
 class ActivateAccountForm(forms.Form):

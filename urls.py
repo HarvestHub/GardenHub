@@ -41,7 +41,7 @@ urlpatterns = [
     # Gardens
     path('gardens/', views.GardenListView.as_view(), name='garden-list'),
     path('garden/<int:pk>/', views.GardenDetailView.as_view(), name='garden-detail'),  # noqa
-    path('garden/<int:pk>/edit/', views.garden_update_view, name='garden-update'),  # noqa
+    path('garden/<int:pk>/edit/', views.GardenUpdateView.as_view(), name='garden-update'),  # noqa
     # API
     path('_api/crops/<int:pk>/', views.api_crops),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
