@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView, DetailView
+from django.views.generic.edit import CreateView
 from django.views.generic.base import TemplateView
 from django.template.loader import render_to_string
 from sorl.thumbnail import get_thumbnail
@@ -83,47 +84,45 @@ class OrderListView(LoginRequiredMixin, ListView):
         return self.request.user.get_orders()
 
 
-@login_required
-def order_create_view(request):
+class OrderCreateView(LoginRequiredMixin, CreateView):
     """
     This is a form used to submit a new order. It's used by gardeners, garden
     managers, or anyone who has the ability to edit a plot.
     """
-    context = {}
+    model = Order
+    form_class = CreateOrderForm
 
-    # A form has been submitted
-    if request.method == 'POST':
-        form = CreateOrderForm(request.user, request.POST)
-        if form.is_valid():
-            requester = request.user
-            order = Order.objects.create(
-                plot=form.cleaned_data['plot'],
-                start_date=form.cleaned_data['start_date'],
-                end_date=form.cleaned_data['end_date'],
-                canceled=False,
-                requester=requester
-            )
-            order.crops.set(form.cleaned_data['crops'])
-            order.save()
-            # Notify pickers on this order's garden that there's a new order
-            pickers = order.plot.garden.pickers.all()
-            for picker in pickers:
-                picker.email_user(
-                    subject="New order on plot {} in {}".format(
-                        order.plot.title, order.plot.garden.title),
-                    message=render_to_string(
-                        'gardenhub/email_picker_new_order.txt', {
-                            'picker': picker,
-                            'order': order
-                        }
-                    )
+    def get_form(self, *args, **kwargs):
+        form = super().get_form(*args, **kwargs)
+        # Constrain Plot choices
+        # We have to do this here because we can access the Request
+        form.fields['plot'].queryset = self.request.user.get_plots()
+        return form
+
+    def get_form_kwargs(self):
+        # Force Order values: canceled and requester
+        order = Order(canceled=False, requester=self.request.user)
+        kwargs = super().get_form_kwargs()
+        kwargs.update({'instance': order})
+        return kwargs
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        order = self.object
+        # Notify pickers on this order's garden that there's a new order
+        pickers = order.plot.garden.pickers.all()
+        for picker in pickers:
+            picker.email_user(
+                subject="New order on plot {} in {}".format(
+                    order.plot.title, order.plot.garden.title),
+                message=render_to_string(
+                    'gardenhub/email_picker_new_order.txt', {
+                        'picker': picker,
+                        'order': order
+                    }
                 )
-            context["success"] = True
-    else:
-        form = CreateOrderForm(request.user)
-
-    context["form"] = form
-    return render(request, 'gardenhub/order_create.html', context)
+            )
+        return response
 
 
 @login_required

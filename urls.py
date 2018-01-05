@@ -32,7 +32,7 @@ urlpatterns = [
     path('activate/<uuid:token>/', views.account_activate_view, name='account-activate'),  # noqa
     # Orders
     path('orders/', views.OrderListView.as_view(), name='order-list'),
-    path('orders/new/', views.order_create_view, name='order-create'),
+    path('orders/new/', views.OrderCreateView.as_view(), name='order-create'),
     path('order/<int:pk>/', views.OrderDetailView.as_view(), name='order-detail'),  # noqa
     path('pick/<int:plotId>/', views.pick_create_view, name='pick-create'),
     # Plots

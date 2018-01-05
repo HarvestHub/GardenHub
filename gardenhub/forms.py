@@ -1,8 +1,9 @@
 from datetime import date
 from django import forms
+from django.forms import ModelForm
 from django.core import validators
 from django.core.exceptions import ValidationError
-from .models import Crop
+from .models import Crop, Order
 
 
 class MultipleEmailField(forms.MultipleChoiceField):
@@ -14,17 +15,13 @@ class MultipleEmailField(forms.MultipleChoiceField):
             return False
 
 
-class CreateOrderForm(forms.Form):
-    plot = forms.ModelChoiceField(queryset=None)
-    crops = forms.ModelMultipleChoiceField(queryset=Crop.objects.all())
-    start_date = forms.DateField()
-    end_date = forms.DateField()
-
-    def __init__(self, user, *args, **kwargs):
-        super(CreateOrderForm, self).__init__(*args, **kwargs)
-        self.fields['plot'].queryset = user.get_plots()
+class CreateOrderForm(ModelForm):
+    class Meta:
+        model = Order
+        fields = ['plot', 'crops', 'start_date', 'end_date']
 
     def clean_start_date(self):
+        """ Prevent orders being placed for dates prior to today. """
         start_date = self.cleaned_data['start_date']
         if start_date < date.today():
             raise ValidationError("You cannot create a backdated order")

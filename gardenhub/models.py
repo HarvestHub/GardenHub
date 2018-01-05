@@ -8,6 +8,7 @@ from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
+from django.urls import reverse
 
 from .managers import OrderQuerySet, UserManager
 
@@ -105,6 +106,9 @@ class Order(models.Model):
 
     def __str__(self):
         return str(self.id)
+
+    def get_absolute_url(self):
+        return reverse('order-detail', args=[self.id])
 
     def progress(self):
         """ Percentage this order is complete, as a decimal between 0-100. """

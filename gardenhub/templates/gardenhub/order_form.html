@@ -3,15 +3,6 @@
 
 {% block content %}
   <div class="ui container">
-    {% if success %}
-      <div class="ui success message">
-        <i class="close icon"></i>
-        <div class="header">
-          Order Submitted
-        </div>
-        <p>Your order has been submitted successfully!</p>
-      </div>
-    {% endif %}
     <form class="ui form" action="" method="post">
       {% csrf_token %}
       {{ form.non_field_errors }}
@@ -31,6 +22,7 @@
             {% endfor%}
           </div>
         </div>
+        {{ form.plot.errors }}
       </div>
       <div class="two fields">
         <div class="field">
@@ -42,6 +34,7 @@
               <i class="calendar icon"></i>
             </div>
           </div>
+          {{ form.start_date.errors }}
         </div>
         <div class="field">
           <label>End Date</label>
@@ -52,6 +45,7 @@
               <i class="calendar icon"></i>
             </div>
           </div>
+          {{ form.end_date.errors }}
         </div>
       </div>
       <div class="field">
@@ -60,6 +54,7 @@
         <select class="crops" name="{{ form.crops.name }}" style="display:none" multiple></select>
         <p class="ui crop message">You must select a plot before you can choose any crops.</p>
         <div class="crop tapicons" style="display:none"></div>
+        {{ form.crops.errors }}
       </div>
       <button class="large purple ui right floated button" type="submit">
         <i class="checkmark icon"></i>
