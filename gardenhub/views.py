@@ -125,14 +125,17 @@ class OrderCreateView(LoginRequiredMixin, CreateView):
         return response
 
 
-# FIXME: Only a picker should be able to access this
-class PickCreateView(LoginRequiredMixin, CreateView):
+class PickCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     """
     Form enabling a picker to submit a Pick for a given plot.
     """
     model = Pick
     fields = ['crops']
     success_url = reverse_lazy('home')
+
+    def test_func(self):
+        # Reject non-Pickers from this view
+        return self.request.user.is_picker()
 
     def get_form_kwargs(self):
         # Set the pick's plot and requester
