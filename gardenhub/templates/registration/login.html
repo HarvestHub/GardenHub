@@ -10,30 +10,31 @@
         <img class="logo" src="{% static "images/logo-white.svg" %}">
         GardenHub
       </h1>
-      {% if loggedout %}
-        <div class="ui success message">
-          <i class="close icon"></i>
-          <div class="header">
-            Logged out
+      {% if messages %}
+        <div class="messages">
+          {% for message in messages %}
+          <div{% if message.tags %} class="ui {{ message.tags }} message"{% endif %}>
+            {{ message }}
           </div>
-          <p>You've been successfully logged out. See you next time!</p>
+          {% endfor %}
         </div>
       {% endif %}
-      <form class="ui large form" method="post" action="">
+      <form class="ui large form{% if form.errors %} error{% endif %}" method="post" action="">
+        <div class="ui error message">{{ form.non_field_errors|first }}</div>
         {% csrf_token %}
         <div class="ui left aligned stacked segment">
-          <div class="field">
+          <div class="field{% if form.username.errors %} error{% endif %}">
             <label>E-mail address</label>
             <div class="ui left icon input">
               <i class="user icon"></i>
-              <input type="text" name="username" placeholder="E-mail address">
+              <input type="text" name="username" placeholder="E-mail address" autofocus required>
             </div>
           </div>
-          <div class="field">
+          <div class="field{% if form.password.errors %} error{% endif %}">
             <label>Password</label>
             <div class="ui left icon input">
               <i class="lock icon"></i>
-              <input type="password" name="password" placeholder="Password">
+              <input type="password" name="password" placeholder="Password" required>
             </div>
           </div>
           <input class="ui fluid large purple submit button" type="submit" value="Login">
@@ -45,16 +46,4 @@
 
     </div>
   </div>
-{% endblock %}
-
-{% block extra_scripts %}
-  <script>
-    // Message close
-    $('.message .close')
-    .on('click', function() {
-      $(this)
-        .closest('.message')
-        .transition('fade');
-    });
-  </script>
 {% endblock %}

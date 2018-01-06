@@ -1,6 +1,5 @@
 from datetime import date
 from django import forms
-from django.forms import ModelForm
 from django.core import validators
 from django.core.exceptions import ValidationError
 from .models import Crop, Order, Garden
@@ -16,7 +15,7 @@ class MultipleEmailField(forms.MultipleChoiceField):
             return False
 
 
-class OrderForm(ModelForm):
+class OrderForm(forms.ModelForm):
     class Meta:
         model = Order
         fields = ['plot', 'crops', 'start_date', 'end_date']
@@ -40,7 +39,7 @@ class EditPlotForm(forms.Form):
         self.fields['garden'].queryset = user.get_gardens()
 
 
-class EditGardenForm(ModelForm):
+class EditGardenForm(forms.ModelForm):
     manager_emails = MultipleEmailField()
 
     class Meta:

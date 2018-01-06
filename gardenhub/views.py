@@ -1,5 +1,7 @@
 from django.http import HttpResponseRedirect, JsonResponse
-from django.contrib.auth import authenticate, login, logout, get_user_model
+from django.contrib import messages
+from django.contrib.auth import get_user_model
+from django.contrib.auth.views import LogoutView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import render, get_object_or_404
@@ -21,48 +23,19 @@ from .decorators import can_edit_plot
 from .mixins import UserCanEditGardenMixin
 
 
-def login_view(request):
-    """
-    The main login form that gives people access into the site. It's common
-    for people to be redirected here if they don't have permission to view
-    something. It's the entrypoint to the whole site.
-    """
-    context = {}
-
-    # The user is already logged in; redirect them home.
-    if request.user.is_authenticated:
-        return HttpResponseRedirect('/')
-
-    # Login credentials have been submitted via the form.
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-
-        user = authenticate(username=username, password=password)
-        if user is not None and user.is_active:
-            login(request, user)
-            return HttpResponseRedirect('/')
-        else:
-            context['login_failed'] = True
-
-    # Display a success message if the user just logged out
-    try:
-        del request.session['loggedout']
-        context['loggedout'] = True
-    except KeyError:
-        pass
-
-    return render(request, 'gardenhub/login.html', context)
-
-
-def logout_view(request):
+class LogoutView(LogoutView):
     """
     Logs out the user and redirects them to the login screen.
     """
-    logout(request)
-    # Pass a token to the login screen so it can display a success message
-    request.session['loggedout'] = True
-    return HttpResponseRedirect('/')
+    next_page = reverse_lazy('login')
+
+    def get_next_page(self):
+        # Notify the user that their logout was successful
+        messages.add_message(
+            self.request, messages.SUCCESS,
+            "You've been successfully logged out."
+        )
+        return super().get_next_page()
 
 
 class HomePageView(LoginRequiredMixin, TemplateView):

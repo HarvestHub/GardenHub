@@ -18,12 +18,13 @@ from django.urls import path
 from django.conf.urls.static import static
 from gardenhub import views
 from django.contrib import admin
+from django.contrib.auth.views import LoginView
 
 
 urlpatterns = [
     path('', views.HomePageView.as_view(), name='home'),
-    path('login/', views.login_view, name='login'),
-    path('logout/', views.logout_view, name='logout'),
+    path('login/', LoginView.as_view(), name='login'),
+    path('logout/', views.LogoutView.as_view(), name='logout'),
     path('admin/', admin.site.urls),
     # Account
     path('account/', views.AccountView.as_view(), name='account'),
