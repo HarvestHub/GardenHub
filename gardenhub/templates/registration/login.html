@@ -10,15 +10,7 @@
         <img class="logo" src="{% static "images/logo-white.svg" %}">
         GardenHub
       </h1>
-      {% if messages %}
-        <div class="messages">
-          {% for message in messages %}
-          <div{% if message.tags %} class="ui {{ message.tags }} message"{% endif %}>
-            {{ message }}
-          </div>
-          {% endfor %}
-        </div>
-      {% endif %}
+      {% include "gardenhub/partials/messages.html" %}
       <form class="ui large form{% if form.errors %} error{% endif %}" method="post" action="">
         <div class="ui error message">{{ form.non_field_errors|first }}</div>
         {% csrf_token %}

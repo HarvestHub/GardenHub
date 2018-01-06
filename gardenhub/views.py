@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView, DetailView
-from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic.edit import FormView, CreateView, UpdateView
 from django.views.generic.base import TemplateView
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
@@ -279,31 +279,59 @@ class AccountView(LoginRequiredMixin, TemplateView):
     template_name = 'gardenhub/account.html'
 
 
-@login_required
-def account_settings_view(request):
+class AccountSettingsView(LoginRequiredMixin, FormView):
     """
     Account settings screen for the logged-in user.
     """
+    template_name = 'gardenhub/account_settings.html'
+    form_class = AccountSettingsForm
+    success_url = reverse_lazy('account-settings')
 
-    context = {}
+    def form_valid(self, form):
+        user = self.request.user
 
-    # Form has been submitted
-    if request.method == 'POST':
-        form = AccountSettingsForm(request.POST)
-        if form.is_valid():
-            request.user.first_name = form.cleaned_data['first_name']
-            request.user.last_name = form.cleaned_data['last_name']
-            # Set password if it's entered
-            if form.cleaned_data['password']:
-                if form.cleaned_data['new_password1'] == \
-                        form.cleaned_data['new_password2']:
-                    request.user.set_password(
-                        form.cleaned_data['new_password1'])
+        # Set user's name
+        user.first_name = form.cleaned_data['first_name']
+        user.last_name = form.cleaned_data['last_name']
 
-            context['success'] = True
-            request.user.save()
+        # Set password if it's entered
+        pass1 = form.cleaned_data['new_password1']
+        pass2 = form.cleaned_data['new_password2']
+        oldpass = form.cleaned_data['password']
 
-    return render(request, 'gardenhub/account_settings.html', context)
+        has_passwords = oldpass and pass1 and pass2
+
+        # Only applicable if the user entered data into the password fields
+        if has_passwords:
+            passwords_match = pass1 == pass2
+            valid_oldpass = user.check_password(oldpass)
+
+            if valid_oldpass and passwords_match:
+                user.set_password(pass1)
+                messages.add_message(
+                    self.request, messages.SUCCESS,
+                    "Account successfully updated."
+                )
+            elif not valid_oldpass:
+                messages.add_message(
+                    self.request, messages.ERROR,
+                    "You entered the wrong password."
+                )
+            else:
+                messages.add_message(
+                    self.request, messages.ERROR,
+                    "The given passwords do not match."
+                )
+        # If the user did *not* enter passwords...
+        else:
+            messages.add_message(
+                self.request, messages.SUCCESS, "Profile successfully updated."
+            )
+
+        # Save user object
+        user.save()
+
+        return super().form_valid(form)
 
 
 # TODO: Make this actually deactivate the user's account

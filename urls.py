@@ -28,7 +28,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     # Account
     path('account/', views.AccountView.as_view(), name='account'),
-    path('account/settings/', views.account_settings_view, name='account-settings'),  # noqa
+    path('account/settings/', views.AccountSettingsView.as_view(), name='account-settings'),  # noqa
     path('account/delete/', views.DeleteAccountView.as_view(), name='account-delete'),  # noqa
     path('activate/<uuid:token>/', views.account_activate_view, name='account-activate'),  # noqa
     # Orders

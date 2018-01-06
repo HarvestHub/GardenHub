@@ -2,15 +2,7 @@
 
 {% block content %}
   <div class="ui container">
-    {% if success %}
-      <div class="ui success message">
-        <i class="close icon"></i>
-        <div class="header">
-          Settings Saved
-        </div>
-        <p>Your settings have been successfully updated!</p>
-      </div>
-    {% endif %}
+    {% include "gardenhub/partials/messages.html" %}
     <h2 class="ui header">
       Account Settings
       <span class="sub header">Manage your account.</span>
