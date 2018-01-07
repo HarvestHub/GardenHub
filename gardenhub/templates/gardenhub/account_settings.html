@@ -1,67 +1,51 @@
 {% extends "gardenhub/_manage_base.html" %}
 
 {% block content %}
-  <div class="ui container">
-    {% include "gardenhub/partials/messages.html" %}
-    <h2 class="ui header">
-      Account Settings
-      <span class="sub header">Manage your account.</span>
-    </h2>
+  <h2 class="ui header">
+    Account Settings
+    <span class="sub header">Manage your account.</span>
+  </h2>
 
-    <form class="ui form" action="" method="post">
-      {% csrf_token %}
-      <h3 class="ui dividing header">Profile</h4>
-      <div class="field">
-        <label>First Name</label>
-        <div class="ui input">
-          <input type="text" name="first_name" placeholder="Enter your first name" value="{{ request.user.first_name }}">
-        </div>
+  <form class="ui form" action="" method="post">
+    {% csrf_token %}
+    <h3 class="ui dividing header">Profile</h4>
+    <div class="field">
+      <label>First Name</label>
+      <div class="ui input">
+        <input type="text" name="first_name" placeholder="Enter your first name" value="{{ request.user.first_name }}">
       </div>
-      <div class="field">
-        <label>Last Name</label>
-        <div class="ui input">
-          <input type="text" name="last_name" placeholder="Enter your last name" value="{{ request.user.last_name }}">
-        </div>
+    </div>
+    <div class="field">
+      <label>Last Name</label>
+      <div class="ui input">
+        <input type="text" name="last_name" placeholder="Enter your last name" value="{{ request.user.last_name }}">
       </div>
+    </div>
 
-      <h3 class="ui dividing header">Change Password</h3>
-      <p>You don't need to fill out this section unless you want to change your password.</p>
-      <div class="field">
-        <label>Current Password</label>
-        <div class="ui input">
-          <input type="password" name="password" placeholder="●●●●●●●●">
-        </div>
+    <h3 class="ui dividing header">Change Password</h3>
+    <p>You don't need to fill out this section unless you want to change your password.</p>
+    <div class="field">
+      <label>Current Password</label>
+      <div class="ui input">
+        <input type="password" name="password" placeholder="●●●●●●●●">
       </div>
-      <div class="field">
-        <label>New Password</label>
-        <div class="ui input">
-          <input type="password" name="new_password1" placeholder="Enter a new password">
-        </div>
+    </div>
+    <div class="field">
+      <label>New Password</label>
+      <div class="ui input">
+        <input type="password" name="new_password1" placeholder="Enter a new password">
       </div>
-      <div class="field">
-        <label>New Password (again)</label>
-        <div class="ui input">
-          <input type="password" name="new_password2" placeholder="Re-enter the password">
-        </div>
+    </div>
+    <div class="field">
+      <label>New Password (again)</label>
+      <div class="ui input">
+        <input type="password" name="new_password2" placeholder="Re-enter the password">
       </div>
+    </div>
 
-      <button class="large purple ui right floated button" type="submit">
-        <i class="checkmark icon"></i>
-        Save
-      </button>
-    </form>
-
-  </div>
-{% endblock %}
-
-{% block extra_scripts %}
-  <script>
-    // Message close
-    $('.message .close')
-    .on('click', function() {
-      $(this)
-        .closest('.message')
-        .transition('fade');
-    });
-  </script>
+    <button class="large purple ui right floated button" type="submit">
+      <i class="checkmark icon"></i>
+      Save
+    </button>
+  </form>
 {% endblock %}

@@ -54,6 +54,9 @@
 
 {% block wrap %}
   <div class="content">
-    {% block content %}{% endblock %}
+    <div class="ui container">
+      {% include "gardenhub/partials/messages.html" %}
+      {% block content %}{% endblock %}
+    </div>
   </div>
 {% endblock %}

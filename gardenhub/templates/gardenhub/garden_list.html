@@ -2,33 +2,29 @@
 {% load gardenhub thumbnail %}
 
 {% block content %}
-  <div class="ui container">
-    <div class="page_title">
-      <h2>Manage Gardens</h2>
-    </div>
+  <h2 class="ui header">Manage Gardens</h2>
 
-    <div class="ui unstackable divided items">
-      {% for garden in gardens %}
-        <div class="item">
-          <a class="ui tiny image" href="/garden/{{ garden.id }}/">
-            {% if garden.photo %}
-              {% thumbnail garden.photo "300x300" crop="center" as photo %}
-                <img src="{{ photo.url }}" width="{{ photo.width }}" height="{{ photo.height }}">
-              {% endthumbnail %}
-            {% else %}
-              <img src="{% placeholder 300 garden %}">
-            {% endif %}
-          </a>
-          <div class="middle aligned content">
-            <a class="header" href="/garden/{{ garden.id }}/">{{ garden.title }}</a>
-            <div class="description">
-              <p>{{ garden.address }}</p>
-              {% garden_user_orders garden as orders %}
-              <p>{{ orders|length }} upcoming orders.</p>
-            </div>
+  <div class="ui unstackable divided items">
+    {% for garden in gardens %}
+      <div class="item">
+        <a class="ui tiny image" href="/garden/{{ garden.id }}/">
+          {% if garden.photo %}
+            {% thumbnail garden.photo "300x300" crop="center" as photo %}
+              <img src="{{ photo.url }}" width="{{ photo.width }}" height="{{ photo.height }}">
+            {% endthumbnail %}
+          {% else %}
+            <img src="{% placeholder 300 garden %}">
+          {% endif %}
+        </a>
+        <div class="middle aligned content">
+          <a class="header" href="/garden/{{ garden.id }}/">{{ garden.title }}</a>
+          <div class="description">
+            <p>{{ garden.address }}</p>
+            {% garden_user_orders garden as orders %}
+            <p>{{ orders|length }} upcoming orders.</p>
           </div>
         </div>
-      {% endfor %}
-    </div>
+      </div>
+    {% endfor %}
   </div>
 {% endblock %}

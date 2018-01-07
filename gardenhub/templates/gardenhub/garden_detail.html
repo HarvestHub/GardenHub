@@ -2,58 +2,54 @@
 {% load gardenhub thumbnail %}
 
 {% block content %}
-  <div class="ui container">
+  {% if garden.photo %}
+    {% thumbnail garden.photo "300x300" crop="center" as photo %}
+      <img class="ui centered small circular image" src="{{ photo.url }}" width="{{ photo.width }}" height="{{ photo.height }}">
+    {% endthumbnail %}
+  {% else %}
+    <img class="ui centered small circular image" src="{% placeholder 300 garden %}">
+  {% endif %}
 
-    {% if garden.photo %}
-      {% thumbnail garden.photo "300x300" crop="center" as photo %}
-        <img class="ui centered small circular image" src="{{ photo.url }}" width="{{ photo.width }}" height="{{ photo.height }}">
-      {% endthumbnail %}
-    {% else %}
-      <img class="ui centered small circular image" src="{% placeholder 300 garden %}">
-    {% endif %}
+  <h2 class="ui center aligned header">
+    {{ garden.title }}
+  </h2>
 
-    <h2 class="ui center aligned header">
-      {{ garden.title }}
-    </h2>
-
-    <div class="ui basic padded segment">
-      <div class="ui list">
+  <div class="ui basic padded segment">
+    <div class="ui list">
+      <div class="item">
+        <i class="plot icon"></i>
+        <div class="content">
+          {{ garden.plots.all|length }} plot{{ garden.plots.all|pluralize }}
+        </div>
+      </div>
+      {% if garden.affiliations.all %}
         <div class="item">
-          <i class="plot icon"></i>
+          <i class="users icon"></i>
           <div class="content">
-            {{ garden.plots.all|length }} plot{{ garden.plots.all|pluralize }}
+            Member of:
+            {% for affiliation in garden.affiliations.all %}
+              <span class="member-of-list-item">{{  affiliation.title }}</span>
+            {% endfor %}
           </div>
         </div>
-        {% if garden.affiliations.all %}
-          <div class="item">
-            <i class="users icon"></i>
-            <div class="content">
-              Member of:
-              {% for affiliation in garden.affiliations.all %}
-                <span class="member-of-list-item">{{  affiliation.title }}</span>
-              {% endfor %}
-            </div>
-          </div>
-        {% endif %}
-        <div class="item">
-          <i class="marker icon"></i>
-          <div class="content">
-            {{ garden.address }}
-          </div>
+      {% endif %}
+      <div class="item">
+        <i class="marker icon"></i>
+        <div class="content">
+          {{ garden.address }}
         </div>
       </div>
     </div>
+  </div>
 
-    <div class="ui basic padded segment">
-      <a class="ui left floated labeled icon button" href="/garden/{{ garden.id }}/edit/">
-        <i class="edit icon"></i>
-        Edit Garden
-      </a>
-      <a class="ui right floated right labeled negative icon button" href="/garden/{{ garden.id }}/delete/">
-        <i class="trash icon"></i>
-        Delete Garden
-      </a>
-    </div>
-
+  <div class="ui basic padded segment">
+    <a class="ui left floated labeled icon button" href="/garden/{{ garden.id }}/edit/">
+      <i class="edit icon"></i>
+      Edit Garden
+    </a>
+    <a class="ui right floated right labeled negative icon button" href="/garden/{{ garden.id }}/delete/">
+      <i class="trash icon"></i>
+      Delete Garden
+    </a>
   </div>
 {% endblock %}

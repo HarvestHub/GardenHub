@@ -11,16 +11,16 @@ from django.views.generic.base import TemplateView
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from sorl.thumbnail import get_thumbnail
-from .models import Crop, Garden, Plot, Pick, Order
+from .models import Garden, Plot, Pick, Order
 from .forms import (
     OrderForm,
-    EditGardenForm,
-    EditPlotForm,
+    GardenForm,
+    PlotForm,
     ActivateAccountForm,
     AccountSettingsForm
 )
 from .decorators import can_edit_plot
-from .mixins import UserCanEditGardenMixin
+from .mixins import UserCanEditGardenMixin, UserCanEditPlotMixin
 
 
 class LogoutView(LogoutView):
@@ -177,7 +177,7 @@ class GardenUpdateView(LoginRequiredMixin, UserCanEditGardenMixin, UpdateView):
     Edit form for an individual garden.
     """
     model = Garden
-    form_class = EditGardenForm
+    form_class = GardenForm
 
     def form_valid(self, form):
         response = super().form_valid(form)
@@ -187,6 +187,11 @@ class GardenUpdateView(LoginRequiredMixin, UserCanEditGardenMixin, UpdateView):
             self.request  # The email template needs request data
         )
         self.object.managers.set(managers)
+        messages.add_message(
+            self.request, messages.SUCCESS,
+            "Garden {} has been successfully updated!".format(
+                self.object.title)
+        )
         self.object.save()  # FIXME: Prevent saving the object twice
         return response
 
@@ -201,42 +206,35 @@ class PlotListView(LoginRequiredMixin, ListView):
         return self.request.user.get_plots()
 
 
-@login_required
-@can_edit_plot
-def plot_update_view(request, pk):
+class PlotUpdateView(LoginRequiredMixin, UserCanEditPlotMixin, UpdateView):
     """
     Edit form for an individual plot.
     """
-    plot = get_object_or_404(Plot, id=pk)
+    model = Plot
+    form_class = PlotForm
+    success_url = reverse_lazy('plot-list')
 
-    context = {}
+    def get_form(self, *args, **kwargs):
+        form = super().get_form(*args, **kwargs)
+        # Constrain Garden choices
+        # We have to do this here because we can access the Request
+        form.fields['garden'].queryset = self.request.user.get_gardens()
+        return form
 
-    # A form has been submitted
-    if request.method == 'POST':
-        # Pass data into the form
-        form = EditPlotForm(request.user, request.POST)
-        # Check if the form is valid
-        if form.is_valid():
-            # Get user objects from email addresses and invite everyone else
-            gardeners = get_user_model().objects.get_or_invite_users(
-                form.cleaned_data['gardener_emails'],  # Submitted emails
-                request  # The email template needs request data
-            )
-            # FIXME: There has got to be a better way of updating objects
-            plot.title = form.cleaned_data['title']
-            plot.garden = form.cleaned_data['garden']
-            plot.gardeners.set(gardeners)
-            plot.crops.set(form.cleaned_data['crops'])
-            plot.save()
-            context["success"] = True
-    else:
-        form = EditPlotForm(request.user)
-
-    context["form"] = form
-    context["plot"] = plot
-    context["crops"] = Crop.objects.all()
-
-    return render(request, 'gardenhub/plot_update.html', context)
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        # Get user objects from email addresses and invite everyone else
+        gardeners = get_user_model().objects.get_or_invite_users(
+            form.cleaned_data['gardener_emails'],  # Submitted emails
+            self.request  # The email template needs request data
+        )
+        self.object.gardeners.set(gardeners)
+        self.object.save()  # FIXME: Prevent saving the object twice
+        messages.add_message(
+            self.request, messages.SUCCESS,
+            "Plot {} has been successfully updated!".format(self.object.title)
+        )
+        return response
 
 
 def account_activate_view(request, token):

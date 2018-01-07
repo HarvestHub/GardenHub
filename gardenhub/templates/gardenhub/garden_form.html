@@ -2,64 +2,45 @@
 {% load gardenhub %}
 
 {% block content %}
-  <div class="ui container">
-    {% if success %}
-      <div class="ui success message">
-        <i class="close icon"></i>
-        <div class="header">
-          Garden Updated
-        </div>
-        <p>{{ garden }} has been successfully updated!</p>
+  <form class="ui form" action="" method="post">
+    {% csrf_token %}
+    <div class="field">
+      <label>Name</label>
+      <p class="description">Enter the name of this garden.</p>
+      <div class="ui input">
+        <input type="text" name="title" placeholder="Enter a name" value="{{ form.title.value }}">
       </div>
-    {% endif %}
-    <form class="ui form" action="" method="post">
-      {% csrf_token %}
-      <div class="field">
-        <label>Name</label>
-        <p class="description">Enter the name of this garden.</p>
-        <div class="ui input">
-          <input type="text" name="title" placeholder="Enter a name" value="{{ form.title.value }}">
-        </div>
-      </div>
+    </div>
 
-      <div class="field">
-        <label>Address</label>
-        <p class="description">Enter the address of this garden.</p>
-        <div class="ui left icon input">
-          <i class="marker icon"></i>
-          <input type="text" name="address" placeholder="Enter an address" value="{{ form.address.value }}">
-        </div>
+    <div class="field">
+      <label>Address</label>
+      <p class="description">Enter the address of this garden.</p>
+      <div class="ui left icon input">
+        <i class="marker icon"></i>
+        <input type="text" name="address" placeholder="Enter an address" value="{{ form.address.value }}">
       </div>
+    </div>
 
-      <div class="field">
-        <label>Managers</label>
-        <p class="description">List the people who should manage this garden, or enter an email address to invite someone new.</p>
-        <select name="manager_emails" class="ui managers fluid search dropdown" multiple="">
-          <option value="">Add managers&hellip;</option>
-          {% for peer in object.managers|combine:request.user.get_peers %}
-            <option value="{{ peer.email }}"{% if peer in garden.managers.all %} selected{% endif %}>{% if peer.get_full_name %}{{ peer.get_full_name }}{% else %}{{ peer.email }}{% endif %}</option>
-          {% endfor%}
-        </select>
-      </div>
+    <div class="field">
+      <label>Managers</label>
+      <p class="description">List the people who should manage this garden, or enter an email address to invite someone new.</p>
+      <select name="manager_emails" class="ui managers fluid search dropdown" multiple="">
+        <option value="">Add managers&hellip;</option>
+        {% for peer in object.managers|combine:request.user.get_peers %}
+          <option value="{{ peer.email }}"{% if peer in object.managers.all %} selected{% endif %}>{% if peer.get_full_name %}{{ peer.get_full_name }}{% else %}{{ peer.email }}{% endif %}</option>
+        {% endfor%}
+      </select>
+    </div>
 
-      <button class="large purple ui right floated button" type="submit">
-        <i class="checkmark icon"></i>
-        Save
-      </button>
-    </form>
-  </div>
+    <button class="large purple ui right floated button" type="submit">
+      <i class="checkmark icon"></i>
+      Save
+    </button>
+  </form>
 {% endblock %}
 
 {% block extra_scripts %}
   <script>
-    // Message close
-    $('.message .close')
-    .on('click', function() {
-      $(this)
-        .closest('.message')
-        .transition('fade');
-    });
-
     $('.ui.managers.dropdown')
       .dropdown({
         allowAdditions: true

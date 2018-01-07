@@ -1,58 +1,52 @@
 {% extends "gardenhub/_manage_base.html" %}
 
 {% block content %}
-  <div class="ui container">
+  <!-- FIX ME: Indicate atatus of order with different icons/colors-->
+  <h2 class="ui header">Order #{{ order.id }}</h2>
 
-    <!-- FIX ME: Indicate atatus of order with different icons/colors-->
+  <h4 class="ui sub header">
+    <i class="left floated check circle icon"></i>
+    {{ order.plot.garden }}, Plot #{{ order.plot.title }}
+  </h4>
 
-    <h2 class="ui header">Order #{{ order.id }}</h2>
-
-    <h4 class="ui sub header">
-      <i class="left floated check circle icon"></i>
-      {{ order.plot.garden }}, Plot #{{ order.plot.title }}
-    </h4>
-
-    <h4 class="ui sub header">Date Range</h4>
-    <div class="summary">
-      {{ order.start_date }}&ndash;{{ order.end_date }}
-    </div>
-
-    <h4 class="ui sub header">Status</h4>
-    {% if order.is_complete %}
-      This order is <strong>complete</strong>.
-    {% else %}
-      Your crops are being picked by {{ order.plot.garden.pickers.all|join:", " }}.
-      <div class="ui green progress" data-percent="{{ order.progress }}">
-        <div class="bar"></div>
-      </div>
-    {% endif %}
-
-    <h4 class="ui sub header">Crops to be Picked</h4>
-    <div class="ui mini horizontal list">
-      {% for crop in order.crops.all %}
-        <div class="item">
-          <img class="ui avatar image" src="{{ crop.image.url }}">
-          <div class="middle aligned content">
-            <div class="description">{{ crop.title }}</div>
-          </div>
-        </div>
-        {% endfor %}
-    </div>
-
-    <!-- FIX ME: Make these buttons actually edit and cancel orders -->
-    <div class="content">
-      <!-- <a class="ui left floated labeled icon button">
-        <i class="edit icon"></i>
-        Edit Order
-      </a> -->
-      <a class="ui right floated right labeled negative icon button">
-        <i class="trash icon"></i>
-        Cancel Order
-      </a>
-    </div>
-
+  <h4 class="ui sub header">Date Range</h4>
+  <div class="summary">
+    {{ order.start_date }}&ndash;{{ order.end_date }}
   </div>
 
+  <h4 class="ui sub header">Status</h4>
+  {% if order.is_complete %}
+    This order is <strong>complete</strong>.
+  {% else %}
+    Your crops are being picked by {{ order.plot.garden.pickers.all|join:", " }}.
+    <div class="ui green progress" data-percent="{{ order.progress }}">
+      <div class="bar"></div>
+    </div>
+  {% endif %}
+
+  <h4 class="ui sub header">Crops to be Picked</h4>
+  <div class="ui mini horizontal list">
+    {% for crop in order.crops.all %}
+      <div class="item">
+        <img class="ui avatar image" src="{{ crop.image.url }}">
+        <div class="middle aligned content">
+          <div class="description">{{ crop.title }}</div>
+        </div>
+      </div>
+      {% endfor %}
+  </div>
+
+  <!-- FIX ME: Make these buttons actually edit and cancel orders -->
+  <div class="content">
+    <!-- <a class="ui left floated labeled icon button">
+      <i class="edit icon"></i>
+      Edit Order
+    </a> -->
+    <a class="ui right floated right labeled negative icon button">
+      <i class="trash icon"></i>
+      Cancel Order
+    </a>
+  </div>
 {% endblock %}
 
 {% block extra_scripts %}

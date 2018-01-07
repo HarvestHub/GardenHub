@@ -1,47 +1,55 @@
 {% extends "gardenhub/_manage_base.html" %}
 
 {% block content %}
-  <div class="ui container">
-    <h2 class="ui header">
-      Active Orders
-      <span class="sub header">These orders are currently happening.</span>
-    </h2>
+  <div>
+    <a href="{% url "order-create" %}" class="right floated large purple ui button">
+      <i class="plus icon"></i>
+      New Order
+    </a>
+  </div>
+
+  <h2 class="ui header">
+    Active Orders
+    <span class="sub header">These orders are currently happening.</span>
+  </h2>
+  {% if orders.active %}
     <div class="ui three stackable cards">
       {% for order in orders.active %}
         {% include "gardenhub/partials/order_card.html" %}
       {% endfor %}
     </div>
-  </div>
+  {% else %}
+    <p class="ui message">You don't have any active orders. Would you like to <a href="{% url "order-create" %}">place one?</a></p>
+  {% endif %}
 
-  <div class="ui container">
-    <h2 class="ui header">
-      Upcoming Orders
-      <span class="sub header">Review future orders.</span>
-    </h2>
+  <h2 class="ui header">
+    Upcoming Orders
+    <span class="sub header">Review future orders.</span>
+  </h2>
+  {% if orders.upcoming %}
     <div class="ui three stackable cards">
       {% for order in orders.upcoming %}
         {% include "gardenhub/partials/order_card.html" %}
       {% endfor %}
     </div>
-  </div>
+  {% else %}
+    <p class="ui message">You don't have any upcoming orders scheduled.</p>
+  {% endif %}
 
-  <div class="ui container">
-    <h2 class="ui header">
-      Order History
-      <span class="sub header">Review orders that have passed.</span>
-    </h2>
+  <h2 class="ui header">
+    Order History
+    <span class="sub header">Review orders that have passed.</span>
+  </h2>
+  {% if orders.completed %}
     <div class="ui three stackable cards">
       {% for order in orders.completed %}
         {% include "gardenhub/partials/order_card.html" %}
       {% endfor %}
     </div>
-    <div>
-      <a href="/orders/new/" class="right floated large purple ui button">
-        <i class="plus icon"></i>
-        New Order
-      </a>
-    </div>
-  </div>
+  {% else %}
+    <p class="ui message">Your order history is empty. Once an order you placed finishes it will appear here.</p>
+  {% endif %}
+
 {% endblock %}
 
 {% block extra_scripts %}

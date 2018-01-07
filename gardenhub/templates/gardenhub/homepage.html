@@ -2,105 +2,102 @@
 {% load static gardenhub %}
 
 {% block content %}
-  <div class=" ui container">
-
-    {# Display active orders to the picker #}
-    {% if request.user.is_picker %}
-      <h1 class="ui header center aligned">
-        <span class="ui sub header">{% now "l, N j" %}</span>
-        {{ request.user.first_name}}'s Assignments
-        <span class="sub header">Let's go to work on these orders!</span>
-      </h1>
-      {% for garden in request.user.get_picker_gardens %}
-        {% with orders=request.user.get_picker_orders|picker_format:garden %}
-          <h2 class="ui header">
-            {{ garden.title }}
-            <span class="sub header">{{ orders|length }} open order{{ orders|pluralize }}</span>
-          </h2>
-          {% if orders %}
-            <div class="ui cards">
-              {% for order in orders %}
-                <div class="card{% if order.was_picked_today %} picked{% endif %}">
-                  <div class="content">
-                    {% if order.was_picked_today %}
-                      <i class="right floated grey check circle icon"></i>
-                    {% else %}
-                      <i class="right floated green circle icon"></i>
-                    {% endif %}
-                    <div class="header">Plot {{ order.plot.title }}</div>
-                  </div>
-                  <div class="content">
-                    <p>Order #{{ order.id }}</p>
-                    <h4 class="ui sub header">Crops to be Picked</h4>
-                    <div class="ui mini horizontal list">
-                      {% for crop in order.crops.all %}
-                        <div class="item">
-                          <img class="ui avatar image" src="{{ crop.image.url }}">
-                          <div class="middle aligned content">
-                            <div class="description">{{ crop.title }}</div>
-                          </div>
+  {# Display active orders to the picker #}
+  {% if request.user.is_picker %}
+    <h1 class="ui header center aligned">
+      <span class="ui sub header">{% now "l, N j" %}</span>
+      {{ request.user.first_name}}'s Assignments
+      <span class="sub header">Let's go to work on these orders!</span>
+    </h1>
+    {% for garden in request.user.get_picker_gardens %}
+      {% with orders=request.user.get_picker_orders|picker_format:garden %}
+        <h2 class="ui header">
+          {{ garden.title }}
+          <span class="sub header">{{ orders|length }} open order{{ orders|pluralize }}</span>
+        </h2>
+        {% if orders %}
+          <div class="ui cards">
+            {% for order in orders %}
+              <div class="card{% if order.was_picked_today %} picked{% endif %}">
+                <div class="content">
+                  {% if order.was_picked_today %}
+                    <i class="right floated grey check circle icon"></i>
+                  {% else %}
+                    <i class="right floated green circle icon"></i>
+                  {% endif %}
+                  <div class="header">Plot {{ order.plot.title }}</div>
+                </div>
+                <div class="content">
+                  <p>Order #{{ order.id }}</p>
+                  <h4 class="ui sub header">Crops to be Picked</h4>
+                  <div class="ui mini horizontal list">
+                    {% for crop in order.crops.all %}
+                      <div class="item">
+                        <img class="ui avatar image" src="{{ crop.image.url }}">
+                        <div class="middle aligned content">
+                          <div class="description">{{ crop.title }}</div>
                         </div>
-                        {% endfor %}
-                    </div>
-                  </div>
-                  <div class="ui bottom attached buttons">
-                    <a class="ui button" href="{% url "pick-create" order.plot.id %}">
-                      <i class="plus icon"></i>
-                      Pick
-                    </a>
-                    <a class="ui button" href="{% url "order-detail" order.id %}">
-                      <i class="eye icon"></i>
-                      View Order
-                    </a>
+                      </div>
+                      {% endfor %}
                   </div>
                 </div>
-              {% endfor %}
-            </div>
-          {% else %}
-            <p>No orders for this garden!</p>
-          {% endif %}
-        {% endwith %}
-      {% endfor %}
-
-    {% else %}
-
-      {# Welcome the user with a nice message #}
-      <h1 class="left aligned">Welcome, {{user.first_name}}!</h1>
-      {# FIXME: what sort of info would be useful here? #}
-      <span class="sub header">You have donated 12 lbs of food this year.</span>
-
-      <div class="ui center aligned container">
-        <div class="welcome-screen">
-
-          {# Guide a new user to create an order #}
-          {% if not request.user.has_open_orders %}
-            <div class="ui container">
-              <h2 class="ui header">
-                No Orders Placed
-                <span class="sub header">Create an order to get started.</span>
-              </h2>
-              <a class="big purple ui button" href="/orders/new/"><i class="plus icon"></i> New Order</a>
-            </div>
-
-          {# If the user already has open orders, give them some other calls to action #}
-          {% else %}
-            <div class="ui items">
-              <div class="item">
-                <a class="huge fluid purple ui button" href="/orders/new/"><i class="plus icon"></i> New Order</a>
+                <div class="ui bottom attached buttons">
+                  <a class="ui button" href="{% url "pick-create" order.plot.id %}">
+                    <i class="plus icon"></i>
+                    Pick
+                  </a>
+                  <a class="ui button" href="{% url "order-detail" order.id %}">
+                    <i class="eye icon"></i>
+                    View Order
+                  </a>
+                </div>
               </div>
-              <div class="item">
-                <a class="huge fluid purple ui button" href="/orders"><i class="edit icon"></i> View My Orders</a>
-              </div>
-              <div class="item">
-                <a class="huge fluid purple ui button" href="/plots"><i class="plot icon"></i> View My Plots</a>
-              </div>
-            </div>
-          {% endif %}
+            {% endfor %}
+          </div>
+        {% else %}
+          <p>No orders for this garden!</p>
+        {% endif %}
+      {% endwith %}
+    {% endfor %}
 
-        </div>
+  {% else %}
+
+    {# Welcome the user with a nice message #}
+    <h1 class="left aligned">Welcome, {{user.first_name}}!</h1>
+    {# FIXME: what sort of info would be useful here? #}
+    <span class="sub header">You have donated 12 lbs of food this year.</span>
+
+    <div class="ui center aligned container">
+      <div class="welcome-screen">
+
+        {# Guide a new user to create an order #}
+        {% if not request.user.has_open_orders %}
+          <div class="ui container">
+            <h2 class="ui header">
+              No Orders Placed
+              <span class="sub header">Create an order to get started.</span>
+            </h2>
+            <a class="big purple ui button" href="/orders/new/"><i class="plus icon"></i> New Order</a>
+          </div>
+
+        {# If the user already has open orders, give them some other calls to action #}
+        {% else %}
+          <div class="ui items">
+            <div class="item">
+              <a class="huge fluid purple ui button" href="/orders/new/"><i class="plus icon"></i> New Order</a>
+            </div>
+            <div class="item">
+              <a class="huge fluid purple ui button" href="/orders"><i class="edit icon"></i> View My Orders</a>
+            </div>
+            <div class="item">
+              <a class="huge fluid purple ui button" href="/plots"><i class="plot icon"></i> View My Plots</a>
+            </div>
+          </div>
+        {% endif %}
+
       </div>
-    {% endif %}
-  </div>
+    </div>
+  {% endif %}
 {% endblock %}
 
 {% block extra_scripts %}
