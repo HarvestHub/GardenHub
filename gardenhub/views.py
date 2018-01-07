@@ -2,7 +2,6 @@ from django.http import HttpResponseRedirect, JsonResponse
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.views import LogoutView
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView, DetailView
@@ -19,7 +18,6 @@ from .forms import (
     ActivateAccountForm,
     AccountSettingsForm
 )
-from .decorators import can_edit_plot
 from .mixins import UserCanEditGardenMixin, UserCanEditPlotMixin
 
 
@@ -340,22 +338,23 @@ class DeleteAccountView(LoginRequiredMixin, TemplateView):
     template_name = 'gardenhub/account_delete.html'
 
 
-@login_required
-@can_edit_plot
-def api_crops(request, pk):
+class ApiCrops(LoginRequiredMixin, UserCanEditPlotMixin, DetailView):
     """
     Return JSON about crops.
     """
-    try:
-        plot = get_object_or_404(Plot, id=pk)
-        crops = plot.crops.all()
-        return JsonResponse({
-            "crops": [{
-                "id": crop.id,
-                "title": crop.title,
-                "image": get_thumbnail(
-                    crop.image, '125x125', crop='center').url
-            } for crop in crops]})
+    model = Plot
 
-    except Exception:
-        return JsonResponse({})
+    def get(self, request, *args, **kwargs):
+        super().get(self, request, *args, **kwargs)
+        try:
+            crops = self.object.crops.all()
+            return JsonResponse({
+                "crops": [{
+                    "id": crop.id,
+                    "title": crop.title,
+                    "image": get_thumbnail(
+                        crop.image, '125x125', crop='center').url
+                } for crop in crops]})
+
+        except Exception:
+            return JsonResponse({})
