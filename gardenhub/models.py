@@ -134,6 +134,17 @@ class Order(models.Model):
         """
         return self in Order.objects.picked_today()
 
+    def get_picks(self):
+        """
+        Return the list of Picks that occurred on this Order's plot within
+        this Order's timeframe.
+        """
+        return Pick.objects.filter(
+            Q(plot__id=self.plot.id) &
+            Q(timestamp__gte=self.start_date) &
+            Q(timestamp__lte=self.end_date)
+        )
+
 
 class Pick(models.Model):
     """

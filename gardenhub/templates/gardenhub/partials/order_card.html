@@ -19,7 +19,9 @@
     {% if order.is_complete %}
       This order is <strong>complete</strong>.
     {% else %}
-      Your crops are being picked by {{ order.plot.garden.pickers.all|join:", " }}.
+      {% with order.get_picks|length as pick_count %}
+        Your crops have been picked <strong>{{ pick_count }} time{{ pick_count|pluralize }}.</strong>
+      {% endwith %}
       <div class="ui green progress" data-percent="{{ order.progress }}">
         <div class="bar"></div>
       </div>

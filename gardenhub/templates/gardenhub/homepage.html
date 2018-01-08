@@ -16,7 +16,7 @@
           <span class="sub header">{{ orders|length }} open order{{ orders|pluralize }}</span>
         </h2>
         {% if orders %}
-          <div class="ui cards">
+          <div class="ui three stackable cards">
             {% for order in orders %}
               <div class="card{% if order.was_picked_today %} picked{% endif %}">
                 <div class="content">
