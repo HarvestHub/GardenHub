@@ -24,7 +24,8 @@ ADD . /app
 WORKDIR /app
 
 RUN npm install -g less && \
-    pip install -r /app/requirements.txt
+    pip install -r /app/requirements.txt && \
+    pip install gunicorn
 
 RUN python manage.py collectstatic --noinput && \
     python manage.py compress --force

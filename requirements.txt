@@ -1,6 +1,5 @@
 django==2.0.1
 django-compressor==2.2
-gunicorn==19.7.1
-Pillow==4.3.0
+Pillow==5.0.0
 whitenoise==3.3.1
 sorl-thumbnail==12.4.1
