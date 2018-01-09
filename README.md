@@ -21,11 +21,11 @@ Eventually, the inner-workings of this project will be documented in detail. We'
 
 ## Local development
 
-Developing on GardenHub is easy.
+GardenHub provides a script called `dev.sh` to make local development easy. Its only dependency is [Docker](https://docs.docker.com/engine/installation/). As long as you have Docker installed, you do not need Python, Django, Postgres, or anything else running on your computer for local development with `dev.sh`. This is because `dev.sh` automatically configures a local development environment with Docker containers where all of that is already installed.
 
-First, install [Docker](https://docs.docker.com/engine/installation/) if you haven't already (you're on your own for that).
+**Note:** This has been tested on GNU/Linux. Your mileage may vary using Docker on MacOS or Windows.
 
-Next, run the following commands.
+To get up and running, issue the following commands.
 
 ```
 # Clone the repo
@@ -34,23 +34,42 @@ git clone https://github.com/HarvestHub/GardenHub.git
 # Enter the project folder
 cd GardenHub
 
-# Build the Docker image
-make build
-
-# Run the local dev environment
-make devserver
+# Run the local development server
+./dev.sh start
 ```
 
-The `build` script only needs to be run once, and it only needs to be re-run if the requirements.txt file gets changed.
+It may take a few minutes to download everything the first time, then it will run more quickly on subsequent attempts.
 
-`devserver` is a simple script that launches a postgres container in the background and connects an app container to it. It really is that simple.
+`dev.sh` has a few options you can take advantage of.
 
-As you edit files in the project, the dev server will live reload.
+| Command   | Description                                                                                                           |
+|-----------|-----------------------------------------------------------------------------------------------------------------------|
+| start     | Launches a Postgres container and a GardenHub app container then starts `manage.py runserver`.                        |
+| stop      | Kills and removes all GardenHub containers (database will be preserved).                                              |
+| restart   | Same as running `stop` followed by `start`.                                                                           |
+| build     | Rebuilds the app container. You must do this **manually** if you change requirements.txt.                             |
+| manage.py | Same as running `python manage.py` in the app container. Useful for running migrations and other management commands. |
 
-If you need to run any `manage.py` commands, you may do it like so:
+### Running migrations and management commands
+
+To run migrations, you can use:
 
 ```
-docker exec -it gardenhub python manage.py <command>
+# Migrate
+./dev.sh manage.py migrate
+
+# Make migrations
+./dev.sh manage.py makemigrations
+```
+
+Any other management command may also be run this way.
+
+### Rebuilding the container (you have to, sometimes)
+
+Changing application code shouldn't require rebuilding the container. However, you must **manually rebuild the container** any time you edit `requirements.txt`. This is because the requirements get installed into the container at build time. You can rebuild the container like so:
+
+```
+./dev.sh build
 ```
 
 ## License
