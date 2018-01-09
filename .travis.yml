@@ -8,9 +8,15 @@ python:
   - "3.5"
   - "3.6"
 
+env:
+  - PGUSER=postgres PGDATABASE=gardenhub
+
 install:
   - pip install -r requirements.txt
   - pip install coveralls
+
+before_script:
+  - psql -c 'create database gardenhub;' -d postgres -U postgres
 
 script:
   - python manage.py test
