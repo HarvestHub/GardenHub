@@ -1,6 +1,12 @@
+# Build the docker container
+function build() {
+  echo "Building GardenHub image"
+  docker build -t gardenhub .
+}
+
 function gardenhub_db() {
   # Create volume
-	docker volume create gardenhub_pgdata
+  docker volume create gardenhub_pgdata
   # Run Postgres
   docker run --rm \
     --name gardenhub_db \
@@ -11,11 +17,17 @@ function gardenhub_db() {
 }
 
 function manage_py() {
+  # Build the image if it isn't already
+  if ! docker image inspect gardenhub > /dev/null; then
+    build
+  fi
+  # Start Postgres first if it isn't
   gardenhub_db 2> /dev/null
   until nc -z 0.0.0.0 54320; do
     echo "Postgres is still starting up..."
     sleep 1
   done
+  # Run the app container
   docker run --rm \
     --name gardenhub \
     -p 8000:8000 \
@@ -30,18 +42,8 @@ function manage_py() {
     gardenhub python manage.py $@
 }
 
-# Build the docker container
-function build() {
-  echo "Building GardenHub image"
-  docker build -t gardenhub .
-}
-
 # Run containers
 function start() {
-  # Build the image if it isn't already
-  if ! docker image inspect gardenhub > /dev/null; then
-    build
-  fi
   manage_py runserver
 }
 
@@ -52,20 +54,25 @@ function stop() {
   echo "Containers killed"
 }
 
-# Restart
-function restart() {
-  stop
-  start
-}
-
 # Options
 case $1 in
   build) build ;;
   start) start ;;
   stop) stop ;;
-  restart) restart ;;
+  restart) stop && start ;;
   manage.py)
     shift
     manage_py $@
     ;;
+  *)
+    echo "GardenHub local development script"
+    echo ""
+    echo "usage: ./dev.sh <command> [<args>]"
+    echo ""
+    echo "Commands:"
+    echo "    start      Run the app and database containers."
+    echo "    stop       Kill app and database containers."
+    echo "    restart    Same as stop && start."
+    echo "    build      Build the app container."
+    echo "    manage.py  Runs python manage.py <args> in the app container."
 esac
