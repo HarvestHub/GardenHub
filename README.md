@@ -25,7 +25,7 @@ GardenHub provides a script called `dev.sh` to make local development easy. Its 
 
 **Note:** This has been tested on GNU/Linux. Your mileage may vary using Docker on MacOS or Windows.
 
-To get up and running, issue the following commands.
+To get up and running, [install Docker](https://docs.docker.com/engine/installation/). Next ensure that your user is added to the Docker group (`sudo usermod -aG docker $your_user`; you may need to log out then back in after). Finally, run the following commands:
 
 ```
 # Clone the repo
@@ -49,6 +49,7 @@ It may take a few minutes to download everything the first time, then it will ru
 | restart   | Same as running `stop` followed by `start`.                                                                           |
 | build     | Rebuilds the app container. You must do this **manually** if you change requirements.txt.                             |
 | manage.py | Same as running `python manage.py` in the app container. Useful for running migrations and other management commands. |
+| setup     | Installs Docker. Works on many GNU/Linux distros.                                                                     |
 
 ### Running migrations and management commands
 

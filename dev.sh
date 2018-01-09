@@ -56,6 +56,9 @@ function stop() {
 
 # Options
 case $1 in
+  setup)
+    wget -nv -O - https://get.docker.com/ | sh
+    ;;
   build) build ;;
   start) start ;;
   stop) stop ;;
@@ -70,6 +73,7 @@ case $1 in
     echo "usage: ./dev.sh <command> [<args>]"
     echo ""
     echo "Commands:"
+    echo "    setup      Installs Docker."
     echo "    start      Run the app and database containers."
     echo "    stop       Kill app and database containers."
     echo "    restart    Same as stop && start."
