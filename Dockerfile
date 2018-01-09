@@ -18,6 +18,8 @@ RUN apk add --update \
     tiff-dev \
     tk-dev \
     tcl-dev \
+    # Postgres
+    postgresql-dev \
   && rm -rf /var/cache/apk/*
 
 ADD . /app
@@ -30,4 +32,4 @@ RUN npm install -g less && \
 RUN python manage.py collectstatic --noinput && \
     python manage.py compress --force
 
-CMD ["gunicorn", "wsgi", "-b 0.0.0.0:5000"]
+CMD ["gunicorn", "wsgi", "-b :5000"]

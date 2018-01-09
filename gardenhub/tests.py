@@ -689,7 +689,7 @@ class UserTestCase(TestCase):
             garden.managers.add(user)
 
         # Test that User.get_gardens() returns the correct result
-        self.assertEqual(list(user.get_gardens()), gardens)
+        self.assertEqual(set(user.get_gardens()), set(gardens))
 
     def test_get_plots(self):
         """ user.get_plots() """
@@ -720,7 +720,7 @@ class UserTestCase(TestCase):
 
         # Test results
         result = [plots[0], plots[1], plots[2]]
-        self.assertEqual(list(user.get_plots()), result)
+        self.assertEqual(set(user.get_plots()), set(result))
 
     def test_get_orders(self):
         """ user.get_orders() """
@@ -746,7 +746,7 @@ class UserTestCase(TestCase):
         plot.gardeners.add(user)
 
         # Test orders
-        self.assertEqual(list(user.get_orders()), orders)
+        self.assertEqual(set(user.get_orders()), set(orders))
 
     def test_get_peers(self):
         """ user.get_peers() """
@@ -778,27 +778,27 @@ class UserTestCase(TestCase):
         # Garden with 2 managers and 1 plot with 1 gardener
         gardens[0].managers.add(users[0], users[1])
         plots[0].gardeners.add(users[2])
-        self.assertEqual(list(users[0].get_peers()), [users[1], users[2]])
-        self.assertEqual(list(users[1].get_peers()), [users[0], users[2]])
-        self.assertEqual(list(users[2].get_peers()), [])
+        self.assertEqual(set(users[0].get_peers()), set([users[1], users[2]]))
+        self.assertEqual(set(users[1].get_peers()), set([users[0], users[2]]))
+        self.assertEqual(set(users[2].get_peers()), set([]))
 
         # Garden with 2 managers and no plots
         gardens[1].managers.add(users[3], users[4])
-        self.assertEqual(list(users[3].get_peers()), [users[4]])
-        self.assertEqual(list(users[4].get_peers()), [users[3]])
+        self.assertEqual(set(users[3].get_peers()), set([users[4]]))
+        self.assertEqual(set(users[4].get_peers()), set([users[3]]))
 
         # Garden with 0 managers and 1 plot with 2 gardeners
         gardens[2].managers.add(users[5], users[6])
-        self.assertEqual(list(users[5].get_peers()), [users[6]])
-        self.assertEqual(list(users[6].get_peers()), [users[5]])
+        self.assertEqual(set(users[5].get_peers()), set([users[6]]))
+        self.assertEqual(set(users[6].get_peers()), set([users[5]]))
 
         # Garden with 1 manager and 2 plots, each with 1 gardener
         gardens[3].managers.add(users[7])
         plots[2].gardeners.add(users[8])
         plots[3].gardeners.add(users[9])
-        self.assertEqual(list(users[7].get_peers()), [users[8], users[9]])
-        self.assertEqual(list(users[8].get_peers()), [])
-        self.assertEqual(list(users[9].get_peers()), [])
+        self.assertEqual(set(users[7].get_peers()), set([users[8], users[9]]))
+        self.assertEqual(set(users[8].get_peers()), set([]))
+        self.assertEqual(set(users[9].get_peers()), set([]))
 
     def test_get_picker_gardens(self):
         """ user.get_picker_gardens() """
@@ -824,7 +824,7 @@ class UserTestCase(TestCase):
             garden.pickers.add(picker)
 
         # Test!
-        self.assertEqual(list(picker.get_picker_gardens()), gardens)
+        self.assertEqual(set(picker.get_picker_gardens()), set(gardens))
 
     def test_get_picker_orders(self):
         """ user.get_picker_orders() """
@@ -849,7 +849,7 @@ class UserTestCase(TestCase):
             ) for _ in range(3)
         ]
 
-        self.assertEqual(list(picker.get_picker_orders()), orders)
+        self.assertEqual(set(picker.get_picker_orders()), set(orders))
         self.assertEqual(picker.get_picker_orders().count(), 3)
 
     def test_is_garden_manager(self):

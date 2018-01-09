@@ -21,10 +21,11 @@ Eventually, the inner-workings of this project will be documented in detail. We'
 
 ## Local development
 
-You will need [virtualenvwrapper](http://virtualenvwrapper.readthedocs.io/en/latest/), git, lessc, and Python 3 installed. Then, follow the instructions below.
+Developing on GardenHub is easy.
 
-[![asciicast](https://asciinema.org/a/155550.png)](https://asciinema.org/a/155550)
+First, install [Docker](https://docs.docker.com/engine/installation/) if you haven't already (you're on your own for that).
 
+Next, run the following commands.
 
 ```
 # Clone the repo
@@ -33,21 +34,24 @@ git clone https://github.com/HarvestHub/GardenHub.git
 # Enter the project folder
 cd GardenHub
 
-# Create the Python virtual environment
-mkvirtualenv gh --python=python3
+# Build the Docker image
+make build
 
-# Install project dependencies
-pip install -r requirements.txt
-
-# Create the sqlite3 database
-python manage.py migrate
-
-# Run the local development server
-python manage.py runserver
+# Run the local dev environment
+make devserver
 ```
 
-### Pull the staging database
-If you have permission to access the staging server, you may pull the staging database locally by running `make pull_dev_db` in the project directory.
+The `build` script only needs to be run once, and it only needs to be re-run if the requirements.txt file gets changed.
+
+`devserver` is a simple script that launches a postgres container in the background and connects an app container to it. It really is that simple.
+
+As you edit files in the project, the dev server will live reload.
+
+If you need to run any `manage.py` commands, you may do it like so:
+
+```
+docker exec -it gardenhub python manage.py <command>
+```
 
 ## License
 

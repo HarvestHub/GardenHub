@@ -1,14 +1,38 @@
 deploy:
 	git push dokku master
-pull_dev_db:
+pull_staging_db:
 	scp root@candlewaster.co:/var/lib/dokku/data/storage/gardenhub/db.sqlite3 .
-pull_dev_media:
+pull_staging_media:
 	scp -r root@candlewaster.co:/var/lib/dokku/data/storage/gardenhub/media .
-local_prod_test:
-	pwd | export PWD
+build:
+	# Build the image
 	docker build -t gardenhub .
-	docker run -p 127.0.0.1:5000:5000 -v $(PWD)/db.sqlite3:/app/db.sqlite3 -e DJANGO_SETTINGS_MODULE=settings.production -e ALLOWED_HOSTS=localhost,127.0.0.1,0.0.0.0 -e SECRET_KEY=unsecret gardenhub
 devserver:
 	pwd | export PWD
-	docker build -t gardenhub .
-	docker run -p 127.0.0.1:5000:5000 -v $(PWD):/app gardenhub python manage.py runserver 0.0.0.0:5000
+	# Quit old containers
+	docker rm -f gardenhub gardenhub_db || :
+	# Create volume
+	docker volume create gardenhub_pgdata
+	# Start postgres
+	docker run --rm \
+		--name gardenhub_db \
+		-v gardenhub_pgdata:/var/lib/postgresql/data \
+		-p 54320:5432 \
+		-e POSTGRES_PASSWORD=gardenhub \
+		-d postgres:10-alpine
+	# Wait for postgres to start up
+	sleep 10
+	# Run a container
+	docker run --rm \
+		--name gardenhub \
+		-p 8000:8000 \
+		--network=host \
+		-e PYTHONUNBUFFERED=0 \
+		-e PGHOST=0.0.0.0 \
+		-e PGPORT=54320 \
+		-e PGUSER=postgres \
+		-e PGDATABASE=postgres \
+		-e PGPASSWORD=gardenhub \
+		-v $(PWD):/app \
+		gardenhub \
+		sh -c "python manage.py migrate && python manage.py runserver"
