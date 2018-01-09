@@ -35,4 +35,4 @@ devserver:
 		-e PGPASSWORD=gardenhub \
 		-v $(PWD):/app \
 		gardenhub \
-		sh -c "python manage.py migrate && python manage.py runserver"
+		python manage.py runserver
