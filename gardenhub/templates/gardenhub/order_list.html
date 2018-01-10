@@ -9,31 +9,17 @@
   </div>
 
   <h2 class="ui header">
-    Active Orders
-    <span class="sub header">These orders are currently happening.</span>
+    Your Orders
+    <span class="sub header">These orders are currently underway.</span>
   </h2>
   {% if orders.active %}
     <div class="ui three stackable cards">
-      {% for order in orders.active %}
+      {% for order in orders.open %}
         {% include "gardenhub/partials/order_card.html" %}
       {% endfor %}
     </div>
   {% else %}
-    <p class="ui message">You don't have any active orders. Would you like to <a href="{% url "order-create" %}">place one?</a></p>
-  {% endif %}
-
-  <h2 class="ui header">
-    Upcoming Orders
-    <span class="sub header">Review future orders.</span>
-  </h2>
-  {% if orders.upcoming %}
-    <div class="ui three stackable cards">
-      {% for order in orders.upcoming %}
-        {% include "gardenhub/partials/order_card.html" %}
-      {% endfor %}
-    </div>
-  {% else %}
-    <p class="ui message">You don't have any upcoming orders scheduled.</p>
+    <p class="ui message">You don't have any open orders. Would you like to <a href="{% url "order-create" %}">place one?</a></p>
   {% endif %}
 
   <h2 class="ui header">

@@ -15,6 +15,10 @@ class OrderQuerySet(models.QuerySet):
         """ Orders that have finished. """
         return self.filter(end_date__lt=date.today())
 
+    def open(self):
+        """ Orders that have not finished but also may not have begun. """
+        return self.filter(end_date__gt=date.today())
+
     def upcoming(self):
         """ Orders that have not yet begun. """
         return self.filter(start_date__gt=date.today())
