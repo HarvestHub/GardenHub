@@ -68,6 +68,7 @@ function pulldb() {
   docker cp db.dump gardenhub_db:/db.dump
   docker exec -it gardenhub_db sh -c \
     "pg_restore -U postgres -d postgres /db.dump && rm /db.dump"
+  echo "Successfully restored staging database!"
 }
 
 # Pull media files from staging
