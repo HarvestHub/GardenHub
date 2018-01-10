@@ -28,8 +28,7 @@ function manage_py() {
     sleep 1
   done
   # Run the app container
-  docker run --rm \
-    --name gardenhub \
+  docker run --rm -it \
     -p 8000:8000 \
     --network=host \
     -e PYTHONUNBUFFERED=0 \
@@ -40,14 +39,14 @@ function manage_py() {
 
 # Run containers
 function start() {
+  manage_py migrate
   manage_py runserver
 }
 
 # Stop containers
 function stop() {
   docker stop gardenhub_db 2> /dev/null
-  docker stop gardenhub 2> /dev/null
-  echo "Containers killed"
+  echo "Database killed"
 }
 
 # Options
@@ -71,7 +70,7 @@ case $1 in
     echo "Commands:"
     echo "    setup      Installs Docker."
     echo "    start      Run the app and database containers."
-    echo "    stop       Kill app and database containers."
+    echo "    stop       Kill database container."
     echo "    restart    Same as stop && start."
     echo "    build      Build the app container."
     echo "    manage.py  Runs python manage.py <args> in the app container."
