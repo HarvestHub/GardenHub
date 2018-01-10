@@ -33,11 +33,7 @@ function manage_py() {
     -p 8000:8000 \
     --network=host \
     -e PYTHONUNBUFFERED=0 \
-    -e PGHOST=0.0.0.0 \
-    -e PGPORT=54320 \
-    -e PGUSER=postgres \
-    -e PGDATABASE=postgres \
-    -e PGPASSWORD=gardenhub \
+    -e DATABASE_URL="postgres://postgres:gardenhub@0.0.0.0:54320/postgres" \
     -v $(pwd):/app \
     gardenhub python manage.py $@
 }
