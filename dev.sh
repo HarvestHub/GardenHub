@@ -73,6 +73,7 @@ function pulldb() {
 
 # Pull media files from staging
 function pullmedia() {
+  mkdir -p media
   scp -r root@candlewaster.co:/var/lib/dokku/data/storage/gardenhub/media/* media
 }
 
