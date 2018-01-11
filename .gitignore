@@ -1,8 +1,9 @@
 /node_modules
 __pycache__
 *.pyc
-db.sqlite3
+/db.sqlite3
 /static
 /media
-settings/local.py
-db.dump
+/settings/local.py
+/db.dump
+/docs/_build
