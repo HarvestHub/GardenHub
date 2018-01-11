@@ -14,7 +14,7 @@ Formed around the simple idea that food should not go to waste, GardenHub is the
 
 GardenHub is building technology to enable gardeners to collaborate and act upon what's growing, ripening, and available for harvest in their gardens. Using this information, GardenHub notifies gardeners, local charities, restaurants, and other stakeholders of the availability of this food.
 
-[Read the full documentation here.](https://gardenhub.readthedocs.io/en/latest/)
+[Read the full documentation on Read the Docs.](https://gardenhub.readthedocs.io/en/latest/)
 
 ## WIP
 

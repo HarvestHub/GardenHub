@@ -10,6 +10,8 @@ GardenHub is an open source web application that facilitates food distribution
 for community gardens. It's written in Python_ using the `Django web
 framework`_.
 
+`GardenHub's source code`_ may be found on GitHub.
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
@@ -28,3 +30,4 @@ Indices and tables
 
 .. _Python: https://www.python.org/
 .. _Django web framework: https://www.djangoproject.com/
+.. _GardenHub's source code: https://github.com/HarvestHub/GardenHub
