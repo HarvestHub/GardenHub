@@ -52,7 +52,17 @@
       <p class="description">Select the crops you'd like picked. Tap the icons to select them.</p>
       <select class="crops" name="{{ form.crops.name }}" style="display:none" multiple></select>
       <p class="ui crop message">You must select a plot before you can choose any crops.</p>
-      <div class="crop tapicons" style="display:none"></div>
+      <div class="crop selector" style="display:none">
+        <p>
+          <a class="selectall mini purple ui button">
+            <i class="checkmark icon"></i> Select All
+          </a>
+          <a class="deselectall mini purple ui button">
+            <i class="x icon"></i> Deselect All
+          </a>
+        </p>
+        <div class="crop tapicons"></div>
+      </div>
       {{ form.crops.errors }}
     </div>
     <button class="large purple ui right floated button" type="submit">
@@ -123,7 +133,7 @@
         $('select.crops').html(cropSelectTemplate(data.crops));
         $('.crop.tapicons').html(cropThumbsTemplate(data.crops));
         $('.crop.message').slideUp();
-        $('.crop.tapicons').slideDown();
+        $('.crop.selector').slideDown();
         $('.crop .tapicon').click(function(e) {
           $(this).toggleClass("active");
           tapiconSync();
@@ -136,7 +146,7 @@
 
       // If the Plot has been set to a blank value
       if (this.value == '') {
-        $('.crop.tapicons').slideUp();
+        $('.crop.selector').slideUp();
         $('.crop.message').slideDown();
         return;
 
@@ -150,5 +160,21 @@
     if($('input[name="plot"]').val() != '') {
       doCrops($('input[name="plot"]').val());
     }
+
+    // Select all button
+    $('.selectall.button').click(function() {
+      $('.crop .tapicon').each(function(i, tapicon) {
+        $(tapicon).addClass('active');
+      });
+      tapiconSync();
+    });
+
+    // Deselect all button
+    $('.deselectall.button').click(function() {
+      $('.crop .tapicon').each(function(i, tapicon) {
+        $(tapicon).removeClass('active');
+      });
+      tapiconSync();
+    });
   </script>
 {% endblock %}
