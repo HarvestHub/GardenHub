@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime, time
 from django.db import models
 from django.db.models import Q
 from django.core.mail import send_mail
@@ -118,18 +118,26 @@ class Order(models.Model):
 
     def progress(self):
         """ Percentage this order is complete, as a decimal between 0-100. """
-        # Total number of days this order covers
-        duration = (self.end_date - self.start_date).days
-        # Number of days that have already passed through this order's range
-        elapsed = (date.today() - self.start_date).days
+        midnight = time(hour=0, minute=0, second=0)
+
+        # Total amount of time this order covers
+        start_time = datetime.combine(self.start_date, midnight)
+        end_time = datetime.combine(self.end_date, midnight)
+        duration = (end_time - start_time).total_seconds()
+
+        # Amount of time already passed through this order's range
+        now = datetime.now()
+        elapsed = (now - start_time).total_seconds()
+
         # Calculate the completeness
         percentage = (elapsed / duration) * 100
+
         # Force bounds
         return min(100, max(0, percentage))
 
     def is_complete(self):
         """ Whether this Order is finished. """
-        return self.progress() == 100
+        return self in Order.objects.completed()
 
     def is_active(self):
         """ Whether this Order is active. """
