@@ -12,6 +12,12 @@
   <div class="content">
     <h4 class="ui sub header">Location</h4>
     <p><strong><a href="/garden/{{ order.plot.garden.id }}/">{{ order.plot.garden }}</a></strong>, Plot {{ order.plot.title }}</p>
+
+    {% if request.user.is_garden_manager %}
+      <h4 class="ui sub header">Requester</h4>
+      {{ order.requester.get_full_name }}
+    {% endif %}
+
     <h4 class="ui sub header">Date Range</h4>
     <div class="summary">
       {{ order.start_date }}&ndash;{{ order.end_date }}
@@ -22,7 +28,11 @@
       This order is <strong>complete</strong>.
     {% elif order.is_active %}
       {% with order.get_picks|length as pick_count %}
-        Your crops have been picked <strong>{{ pick_count }} time{{ pick_count|pluralize }}.</strong>
+        {% if pick_count > 0 %}
+          Your crops have been picked <strong>{{ pick_count }} time{{ pick_count|pluralize }}.</strong>
+        {% else %}
+          <strong>{{ order.plot.garden.pickers.first.first_name }}</strong> will be picking your crops soon, hang tight!
+        {% endif %}
       {% endwith %}
       <div class="ui green progress" data-percent="{{ order.progress }}">
         <div class="bar"></div>
