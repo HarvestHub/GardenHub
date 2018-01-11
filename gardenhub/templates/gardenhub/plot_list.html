@@ -14,10 +14,10 @@
           <div class="header">{{ plot.garden.title }}, Plot #{{ plot.title }}</div>
         </div>
         <div class="content">
-          <h4 class="ui sub header">Upcoming Orders</h4>
+          <h4 class="ui sub header">Open Orders</h4>
           <div class="summary">
             {% plot_user_orders plot as orders %}
-            {{ orders|length }} upcoming orders.
+            {{ orders.open|length }} open order{{ orders.open|pluralize }}.
           </div>
 
           <h4 class="ui sub header">Crops in this Plot</h4>

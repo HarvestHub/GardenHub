@@ -13,7 +13,7 @@
       {% with orders=request.user.get_picker_orders|picker_format:garden %}
         <h2 class="ui header">
           {{ garden.title }}
-          <span class="sub header">{{ orders|length }} open order{{ orders|pluralize }}</span>
+          <span class="sub header">{{ orders|length }} active order{{ orders|pluralize }}</span>
         </h2>
         {% if orders %}
           <div class="ui three stackable cards">
