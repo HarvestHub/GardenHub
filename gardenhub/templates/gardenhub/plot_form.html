@@ -5,14 +5,6 @@
   <form class="ui form" action="" method="post">
     {% csrf_token %}
     <div class="field">
-      <label>Name</label>
-      <p class="description">The plot's name is probably a number, like 11. The plot should be clearly labeled with a sign.</p>
-      <div class="ui input">
-        <input type="text" name="title" placeholder="Enter a name&hellip;" value="{{ object.title }}">
-      </div>
-    </div>
-
-    <div class="field">
       <label>Garden</label>
       <p class="description">Select the garden the plot is in.</p>
 
@@ -28,6 +20,14 @@
             <div class="item" data-value="{{ garden.id }}">{{ garden }}</div>
           {% endfor%}
         </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Name</label>
+      <p class="description">The plot's name is probably a number, like 11. The plot should be clearly labeled with a sign.</p>
+      <div class="ui input">
+        <input type="text" name="title" placeholder="Enter a name&hellip;" value="{{ object.title }}">
       </div>
     </div>
 
