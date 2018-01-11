@@ -4,24 +4,26 @@
 {% block content %}
   <form class="ui form" action="" method="post">
     {% csrf_token %}
-    <div class="field">
-      <label>Garden</label>
-      <p class="description">Select the garden the plot is in.</p>
 
-      <div class="ui fluid search selection dropdown">
-        <input name="garden" type="hidden" value="{{ object.garden.id }}">
-        <i class="dropdown icon"></i>
-        <div class="default text">
-          <i class="garden icon"></i>
-          Select a Garden
-        </div>
-        <div class="menu">
-          {% for garden in request.user.get_gardens %}
-            <div class="item" data-value="{{ garden.id }}">{{ garden }}</div>
-          {% endfor%}
+    {% with field=form.garden.field %}
+      <div class="field{% if field.disabled %} disabled{% endif %}">
+        <label>Garden</label>
+        <p class="description">The garden this plot is in.</p>
+        <div class="ui fluid search selection dropdown">
+          <input name="garden" type="hidden" value="{{ object.garden.id }}">
+          <i class="dropdown icon"></i>
+          <div class="default text">
+            <i class="garden icon"></i>
+            Select a Garden
+          </div>
+          <div class="menu">
+            {% for garden in field.queryset %}
+              <div class="item" data-value="{{ garden.id }}">{{ garden }}</div>
+            {% endfor%}
+          </div>
         </div>
       </div>
-    </div>
+    {% endwith %}
 
     <div class="field">
       <label>Name</label>

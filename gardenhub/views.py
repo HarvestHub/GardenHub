@@ -214,9 +214,20 @@ class PlotUpdateView(LoginRequiredMixin, UserCanEditPlotMixin, UpdateView):
 
     def get_form(self, *args, **kwargs):
         form = super().get_form(*args, **kwargs)
+        garden = self.object.garden
+        garden_field = form.fields['garden']
+        # Garden options should be all gardens the user can manage
+        # plus the current Plot's garden
+        user_gardens = self.request.user.get_gardens()
+        garden_queryset = user_gardens.union(
+            Garden.objects.filter(id=garden.id)
+        )
         # Constrain Garden choices
         # We have to do this here because we can access the Request
-        form.fields['garden'].queryset = self.request.user.get_gardens()
+        garden_field.queryset = garden_queryset
+        # Only managers of the plot's garden can change its garden
+        if not self.request.user.can_edit_garden(garden):
+            garden_field.disabled = True
         return form
 
     def form_valid(self, form):
