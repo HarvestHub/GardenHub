@@ -107,6 +107,9 @@ class Order(models.Model):
 
     objects = OrderQuerySet.as_manager()
 
+    class Meta:
+        ordering = ["start_date"]
+
     def __str__(self):
         return str(self.id)
 
@@ -127,6 +130,10 @@ class Order(models.Model):
     def is_complete(self):
         """ Whether this Order is finished. """
         return self.progress() == 100
+
+    def is_active(self):
+        """ Whether this Order is active. """
+        return self in Order.objects.active()
 
     def was_picked_today(self):
         """
