@@ -82,13 +82,30 @@
         {% else %}
           <div class="ui items">
             <div class="item">
-              <a class="huge fluid purple ui button" href="/orders/new/"><i class="plus icon"></i> New Order</a>
+              <a class="huge fluid purple ui button" href="/orders/new/">
+                <i class="plus icon"></i>
+                New Order
+              </a>
             </div>
             <div class="item">
-              <a class="huge fluid purple ui button" href="/orders"><i class="edit icon"></i> View My Orders</a>
+              <a class="huge fluid purple ui button" href="/orders">
+                <i class="edit icon"></i>
+                {% if request.user.is_garden_manager %}
+                  Upcoming Orders
+                {% else %}
+                  View My Orders
+                {% endif %}
+              </a>
             </div>
             <div class="item">
-              <a class="huge fluid purple ui button" href="/plots"><i class="plot icon"></i> View My Plots</a>
+              <a class="huge fluid purple ui button" href="/plots">
+                <i class="plot icon"></i>
+                {% if request.user.is_garden_manager %}
+                  Manage Plots
+                {% else %}
+                  View My Plots
+                {% endif %}
+              </a>
             </div>
           </div>
         {% endif %}
