@@ -37,30 +37,32 @@
     {% endfor %}
   </div>
 
-  <h3 class="ui header">Activity</h3>
-  <div class="ui feed">
-    {% for pick in order.get_picks %}
-      <div class="event">
-        <div class="label">
-          {% if pick.picker.photo %}
-            {% thumbnail pick.picker.photo "150x150" crop="center" as photo %}
-              <img src="{{ photo.url }}" width="{{ photo.width }}" height="{{ photo.height }}">
-            {% endthumbnail %}
-          {% else %}
-            <img src="{% placeholder 150 pick.picker.get_full_name %}">
-          {% endif %}
-        </div>
-        <div class="content">
-          <div class="date">
-            {{ pick.timestamp }}
+  {% if order.get_picks %}
+    <h3 class="ui header">Activity</h3>
+    <div class="ui feed">
+      {% for pick in order.get_picks %}
+        <div class="event">
+          <div class="label">
+            {% if pick.picker.photo %}
+              {% thumbnail pick.picker.photo "150x150" crop="center" as photo %}
+                <img src="{{ photo.url }}" width="{{ photo.width }}" height="{{ photo.height }}">
+              {% endthumbnail %}
+            {% else %}
+              <img src="{% placeholder 150 pick.picker.get_full_name %}">
+            {% endif %}
           </div>
-          <div class="">
-            {{ pick.picker.first_name }} picked <strong>{{ pick.crops.all|join:", " }}</strong>.
+          <div class="content">
+            <div class="date">
+              {{ pick.timestamp }}
+            </div>
+            <div class="">
+              {{ pick.picker.first_name }} picked <strong>{{ pick.crops.all|join:", " }}</strong>.
+            </div>
           </div>
         </div>
-      </div>
-    {% endfor %}
-  </div>
+      {% endfor %}
+    </div>
+  {% endif %}
 
   <!-- FIX ME: Make these buttons actually edit and cancel orders -->
   <div class="content">
