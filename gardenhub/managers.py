@@ -1,10 +1,11 @@
-from datetime import date
 import uuid
 from django.db import models
 from django.db.models import Q
 from django.contrib.auth import get_user_model
 from django.contrib.auth.base_user import BaseUserManager
 from django.template.loader import render_to_string
+from django.utils import timezone
+from gardenhub.utils import today
 
 
 class OrderQuerySet(models.QuerySet):
@@ -13,37 +14,37 @@ class OrderQuerySet(models.QuerySet):
     """
     def completed(self):
         """ Orders that have finished. """
-        return self.filter(end_date__lt=date.today())
+        return self.filter(end_date__lt=today())
 
     def open(self):
         """ Orders that have not finished but also may not have begun. """
-        return self.filter(end_date__gt=date.today())
+        return self.filter(end_date__gt=today())
 
     def upcoming(self):
         """ Orders that have not yet begun. """
-        return self.filter(start_date__gt=date.today())
+        return self.filter(start_date__gt=today())
 
     def active(self):
         """ All active orders. """
         return self.filter(
-            Q(end_date__gte=date.today()) &
-            Q(start_date__lte=date.today())
+            Q(end_date__gte=today()) &
+            Q(start_date__lte=today())
         )
 
     def inactive(self):
         """ All inactive orders. """
         return self.filter(
-            Q(end_date__lt=date.today()) |
-            Q(start_date__gt=date.today())
+            Q(end_date__lt=today()) |
+            Q(start_date__gt=today())
         )
 
     def picked_today(self):
         """ Orders that have at least one Pick from today. """
-        return self.filter(plot__picks__timestamp__gte=date.today())
+        return self.filter(plot__picks__timestamp__gte=today())
 
     def unpicked_today(self):
         """ Orders that have no Picks from today. """
-        return self.exclude(plot__picks__timestamp__gte=date.today())
+        return self.exclude(plot__picks__timestamp__gte=today())
 
 
 class UserManager(BaseUserManager):

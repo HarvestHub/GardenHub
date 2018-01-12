@@ -1,8 +1,8 @@
-from datetime import date
 from django import forms
 from django.core import validators
 from django.core.exceptions import ValidationError
 from .models import Order, Garden, Plot
+from gardenhub.utils import today, localdate
 
 
 class MultipleEmailField(forms.MultipleChoiceField):
@@ -23,7 +23,7 @@ class OrderForm(forms.ModelForm):
     def clean_start_date(self):
         """ Prevent orders being placed for dates prior to today. """
         start_date = self.cleaned_data['start_date']
-        if start_date < date.today():
+        if localdate(start_date) < today():
             raise ValidationError("You cannot create a backdated order")
         return start_date
 

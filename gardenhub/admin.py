@@ -4,12 +4,61 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from .models import Crop, Garden, Plot, Pick, Order, Affiliation, User
 
-admin.site.register(Crop)
-admin.site.register(Garden)
-admin.site.register(Plot)
-admin.site.register(Pick)
-admin.site.register(Order)
-admin.site.register(Affiliation)
+
+class PlotAdmin(admin.ModelAdmin):
+    list_display = ('get_plot', 'get_garden')
+
+    def get_plot(self, obj):
+        return "Plot #{}".format(obj.title)
+    get_plot.admin_order_field  = 'title'
+    get_plot.short_description = 'Plot'
+
+    def get_garden(self, obj):
+        return obj.garden
+    get_garden.admin_order_field  = 'garden__title'
+    get_garden.short_description = 'Garden'
+
+
+class GardenAdmin(admin.ModelAdmin):
+    list_display = ('title', 'address')
+
+
+class OrderAdmin(admin.ModelAdmin):
+    readonly_fields = ('timestamp',)
+    list_display = (
+        'get_order', 'requester', 'start_date', 'end_date', 'get_plot',
+        'get_garden', 'timestamp'
+    )
+
+    def get_order(self, obj):
+        return "Order #{}".format(obj.id)
+    get_order.admin_order_field  = 'id'
+    get_order.short_description = 'Order'
+
+    def get_plot(self, obj):
+        return "Plot #{}".format(obj.plot.title)
+    get_plot.admin_order_field  = 'plot__title'
+    get_plot.short_description = 'Plot'
+
+    def get_garden(self, obj):
+        return obj.plot.garden
+    get_garden.admin_order_field  = 'plot__garden__title'
+    get_garden.short_description = 'Garden'
+
+
+class PickAdmin(admin.ModelAdmin):
+    readonly_fields = ('timestamp',)
+    list_display = ('timestamp', 'picker', 'get_plot', 'get_garden')
+
+    def get_plot(self, obj):
+        return obj.plot.title
+    get_plot.admin_order_field  = 'plot__title'
+    get_plot.short_description = 'Plot'
+
+    def get_garden(self, obj):
+        return obj.plot.garden
+    get_garden.admin_order_field  = 'plot__garden__title'
+    get_garden.short_description = 'Garden'
 
 
 class UserCreationForm(forms.ModelForm):
@@ -67,7 +116,8 @@ class UserAdmin(BaseUserAdmin):
     # The fields to be used in displaying the User model.
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
-    list_display = ('email', 'first_name', 'last_name')
+    list_display = (
+        'email', 'first_name', 'last_name', 'is_active', 'is_superuser')
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
         ('Personal', {'fields': ('first_name', 'last_name', 'photo')}),
@@ -87,4 +137,10 @@ class UserAdmin(BaseUserAdmin):
     filter_horizontal = ()
 
 
+admin.site.register(Crop)
+admin.site.register(Garden, GardenAdmin)
+admin.site.register(Plot, PlotAdmin)
+admin.site.register(Order, OrderAdmin)
+admin.site.register(Affiliation)
+admin.site.register(Pick, PickAdmin)
 admin.site.register(User, UserAdmin)

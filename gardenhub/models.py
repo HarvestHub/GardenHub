@@ -1,4 +1,3 @@
-from datetime import date, datetime, time
 from django.db import models
 from django.db.models import Q
 from django.core.mail import send_mail
@@ -9,6 +8,7 @@ from django.contrib.auth.base_user import AbstractBaseUser
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.urls import reverse
+from gardenhub.utils import localdate
 
 from .managers import OrderQuerySet, UserManager
 
@@ -19,8 +19,10 @@ class Crop(models.Model):
     orange. Crops are stored in a master list, managed by the site admin, and
     may be listed on Orders or Picks.
     """
-    title = models.CharField(max_length=255)
-    image = models.ImageField()
+    title = models.CharField(
+        max_length=255,
+        help_text="All lowercase name of this crop.")
+    image = models.ImageField(help_text="Photo of this crop.")
 
     def __str__(self):
         return self.title
@@ -30,8 +32,14 @@ class Affiliation(models.Model):
     """
     A group of affiliated gardens.
     """
-    title = models.CharField(max_length=255)
-    managers = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)
+    title = models.CharField(
+        max_length=255,
+        help_text="The name of this affiliation."
+    )
+    managers = models.ManyToManyField(
+        settings.AUTH_USER_MODEL, blank=True,
+        help_text="People who can edit this affiliation."
+    )
 
     def __str__(self):
         return self.title
@@ -44,21 +52,28 @@ class Garden(models.Model):
     title = models.CharField(max_length=255)
 
     managers = models.ManyToManyField(
-        settings.AUTH_USER_MODEL,
-        related_name='gardens',
-        blank=True
+        settings.AUTH_USER_MODEL, related_name='gardens', blank=True,
+        help_text="People who can edit this garden, edit plots on this garden,"
+                  " and view/place orders for plots on this garden."
     )
 
-    address = models.CharField(max_length=255)
+    address = models.CharField(
+        max_length=255,
+        help_text="The full, neatly-formatted mailing address of this garden."
+    )
 
     affiliations = models.ManyToManyField(
-        Affiliation, related_name='gardens', blank=True
+        Affiliation, related_name='gardens', blank=True,
+        help_text="This garden's affiliations."
     )
 
-    photo = models.ImageField(blank=True)
+    photo = models.ImageField(
+        blank=True, help_text="A photo of this garden."
+    )
 
     pickers = models.ManyToManyField(
-        settings.AUTH_USER_MODEL, related_name='+', blank=True
+        settings.AUTH_USER_MODEL, related_name='+', blank=True,
+        help_text="People who are assigned to fulfill orders on this garden."
     )
 
     def __str__(self):
@@ -74,15 +89,19 @@ class Plot(models.Model):
     """
     title = models.CharField(
         max_length=255,
-        help_text=_(
-            "The plot's name is probably a number, like 11. "
-            "The plot should be clearly labeled with a sign."
+        help_text=_("The plot's name is probably a number, like 11. "
+                    "The plot should be clearly labeled with a sign."
         ))
 
-    garden = models.ForeignKey('Garden', models.CASCADE, related_name='plots')
+    garden = models.ForeignKey(
+        'Garden', models.CASCADE, related_name='plots',
+        help_text="The garden this plot is a part of."
+    )
 
     gardeners = models.ManyToManyField(
-        settings.AUTH_USER_MODEL, related_name='plots', blank=True
+        settings.AUTH_USER_MODEL, related_name='plots', blank=True,
+        help_text="People who grow food on this plot. Listing them here "
+                  "enables them to place orders."
     )
 
     crops = models.ManyToManyField('Crop', related_name='+', blank=True)
@@ -96,14 +115,36 @@ class Order(models.Model):
     A request from a Gardener or Garden Manager to enlist a particular Plot for
     picking over a specified number of days.
     """
-    timestamp = models.DateTimeField(auto_now_add=True)
-    plot = models.ForeignKey('Plot', models.DO_NOTHING)
-    crops = models.ManyToManyField('Crop')
-    start_date = models.DateField()
-    end_date = models.DateField()
-    canceled = models.BooleanField(default=False)
-    canceled_date = models.DateField(null=True, blank=True)
-    requester = models.ForeignKey(settings.AUTH_USER_MODEL, models.DO_NOTHING)
+    timestamp = models.DateTimeField(
+        default=timezone.now, editable=False,
+        help_text="The exact moment this order was submitted."
+    )
+    plot = models.ForeignKey(
+        'Plot', models.DO_NOTHING,
+        help_text="The plot this order targets for picking."
+    )
+    crops = models.ManyToManyField(
+        'Crop',
+        help_text="Crops that should be picked for this order."
+    )
+    start_date = models.DateField(
+        help_text="The day picking should begin for this order."
+    )
+    end_date = models.DateField(
+        help_text="The day picking should end for this order."
+    )
+    canceled = models.BooleanField(
+        default=False,
+        help_text="Whether or not this order has been canceled."
+    )
+    canceled_timestamp = models.DateTimeField(
+        null=True, blank=True,
+        help_text="The moment this order was canceled, if so."
+    )
+    requester = models.ForeignKey(
+        settings.AUTH_USER_MODEL, models.DO_NOTHING,
+        help_text="Person who submitted this order."
+    )
 
     objects = OrderQuerySet.as_manager()
 
@@ -118,15 +159,13 @@ class Order(models.Model):
 
     def progress(self):
         """ Percentage this order is complete, as a decimal between 0-100. """
-        midnight = time(hour=0, minute=0, second=0)
-
         # Total amount of time this order covers
-        start_time = datetime.combine(self.start_date, midnight)
-        end_time = datetime.combine(self.end_date, midnight)
+        start_time = localdate(self.start_date)
+        end_time = localdate(self.end_date)
         duration = (end_time - start_time).total_seconds()
 
         # Amount of time already passed through this order's range
-        now = datetime.now()
+        now = timezone.now()
         elapsed = (now - start_time).total_seconds()
 
         # Calculate the completeness
@@ -156,8 +195,8 @@ class Order(models.Model):
         """
         return Pick.objects.filter(
             Q(plot__id=self.plot.id) &
-            Q(timestamp__gte=self.start_date) &
-            Q(timestamp__lte=self.end_date)
+            Q(timestamp__gte=localdate(self.start_date)) &
+            Q(timestamp__lte=localdate(self.end_date))
         )
 
 
@@ -166,10 +205,22 @@ class Pick(models.Model):
     A submission by a picker signifying that certain Crops have been picked
     from a particular Plot at a particular time.
     """
-    timestamp = models.DateTimeField(auto_now_add=True)
-    picker = models.ForeignKey(settings.AUTH_USER_MODEL, models.DO_NOTHING)
-    plot = models.ForeignKey(Plot, models.DO_NOTHING, related_name='picks')
-    crops = models.ManyToManyField(Crop)
+    timestamp = models.DateTimeField(
+        default=timezone.now, editable=False,
+        help_text="The exact moment this pick was submitted."
+    )
+    picker = models.ForeignKey(
+        settings.AUTH_USER_MODEL, models.DO_NOTHING,
+        help_text="Person who submitted this pick."
+    )
+    plot = models.ForeignKey(
+        Plot, models.DO_NOTHING, related_name='picks',
+        help_text="Plot this pick occurred upon."
+    )
+    crops = models.ManyToManyField(
+        Crop,
+        help_text="Crops that were harvested by this pick."
+    )
 
     def __str__(self):
         return str(self.id)
@@ -191,10 +242,24 @@ class User(AbstractBaseUser, PermissionsMixin):
     Custom user class for GardenHub users. This is necessary because we want to
     authorize users by their email address (and provide a few extra fields).
     """
-    email = models.EmailField(_('email address'), unique=True)
-    first_name = models.CharField(_('first name'), max_length=30)
-    last_name = models.CharField(_('last name'), max_length=150)
-    photo = models.ImageField(_('photo'), blank=True)
+    email = models.EmailField(
+        _('email address'), unique=True,
+        help_text="The user's email address, which is used for notifications "
+                  "and doubles as the username for logging in."
+    )
+    first_name = models.CharField(
+        _('first name'), max_length=30,
+        help_text="The user's given name or nickname, sometimes used in a "
+                  "casual context."
+    )
+    last_name = models.CharField(_('last name'), max_length=150,
+        help_text="The user's family name, sometimes used to distinguish one "
+                  "user from another."
+    )
+    photo = models.ImageField(
+        _('photo'), blank=True,
+        help_text="A photo of the user or an avatar."
+    )
     is_staff = models.BooleanField(
         _('staff status'),
         default=False,
@@ -211,10 +276,15 @@ class User(AbstractBaseUser, PermissionsMixin):
             'Unselect this instead of deleting accounts.'
         ),
     )
-    date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
+    date_joined = models.DateTimeField(
+        _('date joined'), default=timezone.now,
+        help_text="The exact moment this user joined the website."
+    )
 
     activation_token = models.CharField(
-        max_length=36, unique=True, blank=True, null=True
+        max_length=36, unique=True, blank=True, null=True,
+        help_text="A temporary token used to activate the user's account "
+                  "upon being invited to the site initially."
     )
 
     objects = UserManager()
