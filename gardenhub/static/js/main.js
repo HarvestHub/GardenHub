@@ -5,3 +5,8 @@ $('.top.menu .ui.dropdown')
 
 $('form .ui.dropdown')
   .dropdown();
+
+$('.ui.settings.dropdown')
+  .dropdown({
+    "action": "nothing"
+  });

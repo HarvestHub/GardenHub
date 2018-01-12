@@ -2,6 +2,21 @@
 {% load thumbnail gardenhub %}
 
 {% block content %}
+
+  <div class="clearfix">
+    <div class="ui icon top left pointing right floated settings dropdown basic button">
+      <i class="wrench icon"></i>
+      <div class="menu">
+        <a class="item" href="{% url "account-settings" %}">
+          <i class="edit icon"></i> Edit Account
+        </a>
+        <a class="item" href="{% url "account-delete" %}">
+          <i class="trash icon"></i> Delete Account
+        </a>
+      </div>
+    </div>
+  </div>
+
   {% if request.user.photo %}
     {% thumbnail request.user.photo "300x300" crop="center" as photo %}
       <img class="ui centered small circular image" src="{{ photo.url }}" width="{{ photo.width }}" height="{{ photo.height }}">
@@ -40,13 +55,9 @@
   </div>
 
   <div class="ui basic padded segment">
-    <a class="ui left floated labeled icon button" href="/account/settings/">
+    <a class="ui right floated labeled icon button" href="{% url "account-settings" %}">
       <i class="edit icon"></i>
       Edit Profile
-    </a>
-    <a class="ui right floated right labeled negative icon button" href="/account/delete/">
-      <i class="trash icon"></i>
-      Delete Account
     </a>
   </div>
 {% endblock %}
