@@ -42,3 +42,12 @@ body > .content {
   opacity: 0.7;
   filter: grayscale(1);
 }
+
+/* I hate that this is necessary */
+.clearfix {
+  &::after {
+    content: '';
+    display: table;
+    clear: both;
+  }
+}

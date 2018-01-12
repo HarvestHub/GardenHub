@@ -2,6 +2,22 @@
 {% load gardenhub thumbnail %}
 
 {% block content %}
+
+  <div class="clearfix">
+    <div class="ui icon top left pointing right floated settings dropdown basic button">
+      <i class="wrench icon"></i>
+      <div class="menu">
+        <a class="item" href="{% url "garden-update" garden.id %}">
+          <i class="edit icon"></i> Edit Garden
+        </a>
+        <!-- FIXME: Enable this functionality -->
+        <!-- <a class="item" href="/garden/{{ garden.id }}/delete/">
+          <i class="trash icon"></i> Delete Garden
+        </a> -->
+      </div>
+    </div>
+  </div>
+
   {% if garden.photo %}
     {% thumbnail garden.photo "300x300" crop="center" as photo %}
       <img class="ui centered small circular image" src="{{ photo.url }}" width="{{ photo.width }}" height="{{ photo.height }}">
@@ -43,13 +59,16 @@
   </div>
 
   <div class="ui basic padded segment">
-    <a class="ui left floated labeled icon button" href="/garden/{{ garden.id }}/edit/">
-      <i class="edit icon"></i>
-      Edit Garden
-    </a>
-    <a class="ui right floated right labeled negative icon button" href="/garden/{{ garden.id }}/delete/">
-      <i class="trash icon"></i>
-      Delete Garden
+    <a class="ui labeled right floated icon button" href="{% url "garden-update" garden.id %}">
+      <i class="edit icon"></i> Edit Garden
     </a>
   </div>
+{% endblock %}
+
+{% block extra_scripts %}
+  <script>
+    $('.ui.settings.dropdown')
+      .dropdown()
+    ;
+  </script>
 {% endblock %}
