@@ -48,8 +48,6 @@ It may take a few minutes to download everything the first time, then it will ru
 | Command   | Description                                                                                                           |
 |-----------|-----------------------------------------------------------------------------------------------------------------------|
 | start     | Launches a Postgres container and a GardenHub app container then starts `manage.py runserver`.                        |
-| stop      | Kills and removes all GardenHub containers (database will be preserved).                                              |
-| restart   | Same as running `stop` followed by `start`.                                                                           |
 | build     | Rebuilds the app container. You must do this **manually** if you change requirements.txt.                             |
 | manage.py | Same as running `python manage.py` in the app container. Useful for running migrations and other management commands. |
 | setup     | Installs Docker. Works on many GNU/Linux distros.                                                                     |
