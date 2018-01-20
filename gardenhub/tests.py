@@ -117,8 +117,8 @@ class OrderManagerTestCase(TestCase):
     Tests for the custom OrderManager.
     """
 
-    def test_completed(self):
-        """ Order.objects.completed() """
+    def test_closed(self):
+        """ Order.objects.closed() """
 
         # Create garden, plot, and picker
         garden = Garden.objects.create(
@@ -137,6 +137,8 @@ class OrderManagerTestCase(TestCase):
                 requester=picker
             ) for _ in range(3)
         ]
+
+        # FIXME: Test canceled orders
 
         # Incomplete orders
         incomplete_orders = [
@@ -157,7 +159,7 @@ class OrderManagerTestCase(TestCase):
         ]
 
         # Test it
-        result = Order.objects.completed()
+        result = Order.objects.closed()
         for order in completed_orders:
             self.assertIn(order, list(result))
         for order in incomplete_orders:
@@ -399,9 +401,9 @@ class OrderTestCase(TestCase):
         self.assertTrue(abs(orders[1].progress() - 50) < 10)
         self.assertEqual(orders[2].progress(), 0)
 
-    def test_is_complete(self):
+    def test_is_closed(self):
         """
-        order.is_complete()
+        order.is_closed()
         """
         requester = get_user_model().objects.create_user(
             email=uuid_email(), password=uuid_pass())
@@ -433,9 +435,11 @@ class OrderTestCase(TestCase):
             ),
         ]
 
-        self.assertTrue(orders[0].is_complete())
-        self.assertFalse(orders[1].is_complete())
-        self.assertFalse(orders[2].is_complete())
+        # FIXME: Test canceled orders
+
+        self.assertTrue(orders[0].is_closed())
+        self.assertFalse(orders[1].is_closed())
+        self.assertFalse(orders[2].is_closed())
 
     def test_was_picked_today(self):
         """

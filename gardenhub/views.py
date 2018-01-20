@@ -4,11 +4,12 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.views import LogoutView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import render, get_object_or_404
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, DeleteView
 from django.views.generic.edit import FormView, CreateView, UpdateView
 from django.views.generic.base import TemplateView
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
+from django.utils import timezone
 from sorl.thumbnail import get_thumbnail
 from .models import Garden, Plot, Pick, Order
 from .forms import (
@@ -151,6 +152,33 @@ class OrderDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
         is_picker = self.request.user.is_order_picker(self.get_object())
         # Is the user a manager or picker of this order?
         return is_manager or is_picker
+
+
+class OrderCancelView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Order
+    success_url = reverse_lazy('order-list')
+    template_name_suffix = '_confirm_cancel'
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+        order = self.object
+
+        order.canceled = True
+        order.canceled_timestamp = timezone.now()
+        order.save()
+
+        messages.add_message(
+            self.request, messages.SUCCESS,
+            "You've successfully canceled order #{}.".format(order.id)
+        )
+
+        return HttpResponseRedirect(success_url)
+
+    def test_func(self):
+        order = self.get_object()
+        is_manager = self.request.user.can_edit_order(order)
+        return is_manager and order.is_open()
 
 
 class GardenListView(LoginRequiredMixin, ListView):
@@ -348,17 +376,18 @@ class DeleteAccountView(LoginRequiredMixin, TemplateView):
     template_name = 'gardenhub/account_delete.html'
 
     def post(self, request):
-        if 'delete' in request.POST:
-            user = request.user
-            user.is_active = False
-            user.save()
-            messages.add_message(
-                self.request, messages.SUCCESS,
-                "You've successfully removed your account."
-            )
-            return HttpResponseRedirect(reverse_lazy('logout'))
-        else:
-            super().post(self, request)
+        # Be doubly sure of the user's intent
+        if 'delete' not in request.POST:
+            return super().post(self, request)
+
+        user = request.user
+        user.is_active = False
+        user.save()
+        messages.add_message(
+            self.request, messages.SUCCESS,
+            "You've successfully removed your account."
+        )
+        return HttpResponseRedirect(reverse_lazy('logout'))
 
 
 class ApiCrops(LoginRequiredMixin, UserCanEditPlotMixin, DetailView):

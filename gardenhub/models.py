@@ -178,9 +178,13 @@ class Order(models.Model):
         # Force bounds
         return min(100, max(0, percentage))
 
-    def is_complete(self):
-        """ Whether this Order is finished. """
-        return self in Order.objects.completed()
+    def is_open(self):
+        """ Whether this Order is open. """
+        return self in Order.objects.open()
+
+    def is_closed(self):
+        """ Whether this Order is closed. """
+        return self in Order.objects.closed()
 
     def is_active(self):
         """ Whether this Order is active. """
@@ -202,6 +206,20 @@ class Order(models.Model):
             Q(timestamp__gte=localdate(self.start_date)) &
             Q(timestamp__lte=localdate(self.end_date))
         )
+
+    def get_status_icon(self):
+        """
+        Returns a Semantic UI status icon class string depending on this
+        order's status. This may be removed in the future.
+        """
+        if self.canceled:
+            return "red ban"
+        elif self.is_active():
+            return "green circle"
+        elif self.is_closed():
+            return "grey check circle"
+        else:
+            return "grey circle"
 
 
 class Pick(models.Model):

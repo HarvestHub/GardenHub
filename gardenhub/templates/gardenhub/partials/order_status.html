@@ -1,0 +1,18 @@
+{% if order.canceled %}
+  Canceled on <strong>{{ order.canceled_timestamp }}</strong>
+{% elif order.is_closed %}
+  This order is <strong>complete</strong>.
+{% elif order.is_active %}
+  {% with order.get_picks|length as pick_count %}
+    {% if pick_count > 0 %}
+      Your crops have been picked <strong>{{ pick_count }} time{{ pick_count|pluralize }}.</strong>
+    {% else %}
+      <strong>{{ order.plot.garden.pickers.first.first_name }}</strong> will be picking your crops soon, hang tight!
+    {% endif %}
+  {% endwith %}
+  <div class="ui green progress" data-percent="{{ order.progress }}">
+    <div class="bar"></div>
+  </div>
+{% else %}
+  This order is scheduled to begin on <strong>{{ order.start_date }}</strong>.
+{% endif %}

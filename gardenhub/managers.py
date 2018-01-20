@@ -4,7 +4,6 @@ from django.db.models import Q
 from django.contrib.auth import get_user_model
 from django.contrib.auth.base_user import BaseUserManager
 from django.template.loader import render_to_string
-from django.utils import timezone
 from gardenhub.utils import today
 
 
@@ -12,27 +11,29 @@ class OrderQuerySet(models.QuerySet):
     """
     Custom QuerySet for advanced filtering of orders.
     """
-    def completed(self):
-        """ Orders that have finished. """
-        return self.filter(end_date__lt=today())
-
     def open(self):
         """ Orders that have not finished but also may not have begun. """
-        return self.filter(end_date__gt=today())
+        return self.filter(end_date__gt=today()).exclude(canceled=True)
+
+    def closed(self):
+        """ Orders that have finished or were canceled. """
+        completed = self.filter(end_date__lt=today())
+        canceled = self.filter(canceled=True)
+        return completed.union(canceled).distinct()
 
     def upcoming(self):
-        """ Orders that have not yet begun. """
-        return self.filter(start_date__gt=today())
+        """ Orders that have not yet begun but are scheduled to happen. """
+        return self.filter(start_date__gt=today()).exclude(canceled=True)
 
     def active(self):
-        """ All active orders. """
+        """ Orders that are happening right now. """
         return self.filter(
             Q(end_date__gte=today()) &
             Q(start_date__lte=today())
-        )
+        ).exclude(canceled=True)
 
     def inactive(self):
-        """ All inactive orders. """
+        """ All orders that aren't happening right now. """
         return self.filter(
             Q(end_date__lt=today()) |
             Q(start_date__gt=today())

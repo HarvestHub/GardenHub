@@ -35,6 +35,7 @@ urlpatterns = [
     path('orders/', views.OrderListView.as_view(), name='order-list'),
     path('orders/new/', views.OrderCreateView.as_view(), name='order-create'),
     path('order/<int:pk>/', views.OrderDetailView.as_view(), name='order-detail'),  # noqa
+    path('order/<int:pk>/cancel/', views.OrderCancelView.as_view(), name='order-cancel'),  # noqa
     path('pick/<int:plotId>/', views.PickCreateView.as_view(), name='pick-create'),  # noqa
     # Plots
     path('plots/', views.PlotListView.as_view(), name='plot-list'),

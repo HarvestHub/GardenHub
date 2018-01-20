@@ -1,12 +1,6 @@
 <div class="card">
   <div class="content">
-    {% if order.is_active %}
-      <i class="right floated green circle icon"></i>
-    {% elif order.is_complete %}
-      <i class="right floated grey check circle icon"></i>
-    {% else %}
-      <i class="right floated grey circle icon"></i>
-    {% endif %}
+    <i class="right floated {{ order.get_status_icon }} icon"></i>
     <div class="header">Order #{{ order.id }}</div>
   </div>
   <div class="content">
@@ -24,22 +18,7 @@
     </div>
 
     <h4 class="ui sub header">Status</h4>
-    {% if order.is_complete %}
-      This order is <strong>complete</strong>.
-    {% elif order.is_active %}
-      {% with order.get_picks|length as pick_count %}
-        {% if pick_count > 0 %}
-          Your crops have been picked <strong>{{ pick_count }} time{{ pick_count|pluralize }}.</strong>
-        {% else %}
-          <strong>{{ order.plot.garden.pickers.first.first_name }}</strong> will be picking your crops soon, hang tight!
-        {% endif %}
-      {% endwith %}
-      <div class="ui green progress" data-percent="{{ order.progress }}">
-        <div class="bar"></div>
-      </div>
-    {% else %}
-      This order is scheduled to begin on <strong>{{ order.start_date }}</strong>.
-    {% endif %}
+    {% include "gardenhub/partials/order_status.html" %}
 
     <h4 class="ui sub header">Crops to be Picked</h4>
     <div class="ui mini horizontal list">

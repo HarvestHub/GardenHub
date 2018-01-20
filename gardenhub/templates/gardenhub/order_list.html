@@ -26,9 +26,9 @@
     Order History
     <span class="sub header">Review orders that have passed.</span>
   </h2>
-  {% if orders.completed %}
+  {% if orders.closed %}
     <div class="ui three stackable cards">
-      {% for order in orders.completed %}
+      {% for order in orders.closed %}
         {% include "gardenhub/partials/order_card.html" %}
       {% endfor %}
     </div>
