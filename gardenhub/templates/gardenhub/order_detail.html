@@ -37,6 +37,11 @@
     {% endfor %}
   </div>
 
+  {% if order.comment %}
+    <h4 class="ui sub header">Special Instructions</h4>
+    <div>{{ order.comment }}</div>
+  {% endif %}
+
   {% if order.get_picks %}
     <h3 class="ui header">Activity</h3>
     <div class="ui feed">

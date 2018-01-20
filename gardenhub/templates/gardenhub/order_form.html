@@ -65,6 +65,11 @@
       </div>
       {{ form.crops.errors }}
     </div>
+    <div class="field">
+      <label>Comment</label>
+      <p class="description">Do you have any special instructions or comments about this order?</p>
+      <textarea name="{{ form.comment.name }}" rows="2"></textarea>
+    </div>
     <button class="large purple ui right floated button" type="submit">
       <i class="checkmark icon"></i>
       Submit Order

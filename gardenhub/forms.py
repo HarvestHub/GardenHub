@@ -18,7 +18,7 @@ class MultipleEmailField(forms.MultipleChoiceField):
 class OrderForm(forms.ModelForm):
     class Meta:
         model = Order
-        fields = ['plot', 'crops', 'start_date', 'end_date']
+        fields = ['plot', 'crops', 'start_date', 'end_date', 'comment']
 
     def clean_start_date(self):
         """ Prevent orders being placed for dates prior to today. """

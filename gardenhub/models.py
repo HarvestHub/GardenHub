@@ -91,7 +91,7 @@ class Plot(models.Model):
         max_length=255,
         help_text=_("The plot's name is probably a number, like 11. "
                     "The plot should be clearly labeled with a sign."
-        ))
+                    ))
 
     garden = models.ForeignKey(
         'Garden', models.CASCADE, related_name='plots',
@@ -144,6 +144,10 @@ class Order(models.Model):
     requester = models.ForeignKey(
         settings.AUTH_USER_MODEL, models.DO_NOTHING,
         help_text="Person who submitted this order."
+    )
+    comment = models.TextField(
+        blank=True,
+        help_text="Additional comments about this order."
     )
 
     objects = OrderQuerySet.as_manager()
@@ -252,7 +256,8 @@ class User(AbstractBaseUser, PermissionsMixin):
         help_text="The user's given name or nickname, sometimes used in a "
                   "casual context."
     )
-    last_name = models.CharField(_('last name'), max_length=150,
+    last_name = models.CharField(
+        _('last name'), max_length=150,
         help_text="The user's family name, sometimes used to distinguish one "
                   "user from another."
     )
