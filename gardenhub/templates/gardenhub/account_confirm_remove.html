@@ -1,0 +1,12 @@
+{% extends "gardenhub/_manage_base.html" %}
+
+{% block content %}
+  <h2 class="ui header">Remove Account</h2>
+  <p>If you remove your account, you will not be able to log in or recover your account. Are you sure you want to do this?</p>
+  <form action="" method="post">
+    {% csrf_token %}
+    <button class="red ui icon button" type="submit">
+      <i class="trash icon"></i> Remove my account
+    </button>
+  </form>
+{% endblock %}

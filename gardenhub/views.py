@@ -5,7 +5,9 @@ from django.contrib.auth.views import LogoutView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView, DetailView, DeleteView
-from django.views.generic.edit import FormView, CreateView, UpdateView
+from django.views.generic.edit import (
+    FormView, CreateView, UpdateView, DeletionMixin
+)
 from django.views.generic.base import TemplateView
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
@@ -160,9 +162,8 @@ class OrderCancelView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     template_name_suffix = '_confirm_cancel'
 
     def delete(self, request, *args, **kwargs):
-        self.object = self.get_object()
+        order = self.object = self.get_object()
         success_url = self.get_success_url()
-        order = self.object
 
         order.canceled = True
         order.canceled_timestamp = timezone.now()
@@ -369,25 +370,26 @@ class AccountSettingsView(LoginRequiredMixin, FormView):
         return super().form_valid(form)
 
 
-class DeleteAccountView(LoginRequiredMixin, TemplateView):
+class AccountRemoveView(LoginRequiredMixin, DeletionMixin, TemplateView):
     """
-    Delete the logged-in user's GardenHub account.
+    Remove the logged-in user's GardenHub account.
     """
-    template_name = 'gardenhub/account_delete.html'
+    template_name = 'gardenhub/account_confirm_remove.html'
+    success_url = reverse_lazy('logout')
 
-    def post(self, request):
-        # Be doubly sure of the user's intent
-        if 'delete' not in request.POST:
-            return super().post(self, request)
+    def delete(self, request, *args, **kwargs):
+        user = self.object = request.user
+        success_url = self.get_success_url()
 
-        user = request.user
         user.is_active = False
         user.save()
+
         messages.add_message(
             self.request, messages.SUCCESS,
             "You've successfully removed your account."
         )
-        return HttpResponseRedirect(reverse_lazy('logout'))
+
+        return HttpResponseRedirect(success_url)
 
 
 class ApiCrops(LoginRequiredMixin, UserCanEditPlotMixin, DetailView):

@@ -29,7 +29,7 @@ urlpatterns = [
     # Account
     path('account/', views.AccountView.as_view(), name='account'),
     path('account/settings/', views.AccountSettingsView.as_view(), name='account-settings'),  # noqa
-    path('account/delete/', views.DeleteAccountView.as_view(), name='account-delete'),  # noqa
+    path('account/remove/', views.AccountRemoveView.as_view(), name='account-remove'),  # noqa
     path('activate/<uuid:token>/', views.account_activate_view, name='account-activate'),  # noqa
     # Orders
     path('orders/', views.OrderListView.as_view(), name='order-list'),
