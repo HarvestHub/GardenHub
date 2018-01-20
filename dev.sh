@@ -1,13 +1,15 @@
+app="gardenhub"
+
 # Build the docker container
 function build() {
-  echo "Building GardenHub image"
-  docker build -t gardenhub .
+  echo "Building $app image"
+  docker build -t $app .
 }
 
 # Test whether the database is up
 function test_db() {
   docker run --rm --network=host \
-    -e PGPASSWORD=gardenhub \
+    -e PGPASSWORD=$app \
     postgres:10-alpine \
     sh -c 'psql -h "0.0.0.0" -p '$db_port' -U "postgres" -c "\q"' &> /dev/null
 }
@@ -15,17 +17,17 @@ function test_db() {
 # Start database container
 function start_db() {
   # Create volume
-  docker volume create gardenhub_pgdata
+  docker volume create ${app}_pgdata
   # Run Postgres
   docker run --rm \
-    --name gardenhub_db \
-    -v gardenhub_pgdata:/var/lib/postgresql/data \
+    --name ${app}_db \
+    -v ${app}_pgdata:/var/lib/postgresql/data \
     -p 0:5432 \
-    -e POSTGRES_PASSWORD=gardenhub \
+    -e POSTGRES_PASSWORD=$app \
     -d postgres:10-alpine $@
   # Get DB port
   regex="5432\/tcp -> 0\.0\.0\.0:([0-9]+)"
-  if [[ $(docker port gardenhub_db) =~ $regex ]]
+  if [[ $(docker port ${app}_db) =~ $regex ]]
   then
       db_port="${BASH_REMATCH[1]}"
       echo "Database is listening at port ${db_port}"
@@ -39,12 +41,12 @@ function start_db() {
 
 # Stop the database container
 function stop_db() {
-  docker stop gardenhub_db 2> /dev/null
+  docker stop ${app}_db 2> /dev/null
 }
 
 function manage_py() {
   # Build the image if it isn't already
-  if ! docker image inspect gardenhub > /dev/null; then
+  if ! docker image inspect $app > /dev/null; then
     build
   fi
   # Start Postgres first if it isn't
@@ -54,9 +56,9 @@ function manage_py() {
     -p 8000:8000 \
     --network=host \
     -e PYTHONUNBUFFERED=0 \
-    -e DATABASE_URL="postgres://postgres:gardenhub@0.0.0.0:${db_port}/postgres" \
+    -e DATABASE_URL="postgres://postgres:${app}@0.0.0.0:${db_port}/postgres" \
     -v $(pwd):/app \
-    gardenhub python manage.py $@
+    $app python manage.py $@
   # Stop the database when the development server stops
   if [ $1 = "runserver" ]; then
     stop_db
@@ -72,12 +74,12 @@ function start() {
 # Pull database from staging to local
 function pulldb() {
   stop
-  docker volume rm gardenhub_pgdata
-  docker volume create gardenhub_pgdata
-  ssh dokku@candlewaster.co postgres:export gardenhub > db.dump
+  docker volume rm ${app}_pgdata
+  docker volume create ${app}_pgdata
+  ssh dokku@candlewaster.co postgres:export $app > db.dump
   start_db
-  docker cp db.dump gardenhub_db:/db.dump
-  docker exec -it gardenhub_db sh -c \
+  docker cp db.dump ${app}_db:/db.dump
+  docker exec -it ${app}_db sh -c \
     "pg_restore -U postgres -d postgres /db.dump && rm /db.dump"
   echo "Successfully restored staging database!"
 }
@@ -85,7 +87,7 @@ function pulldb() {
 # Pull media files from staging
 function pullmedia() {
   mkdir -p media
-  scp -r root@candlewaster.co:/var/lib/dokku/data/storage/gardenhub/media/* media
+  scp -r root@candlewaster.co:/var/lib/dokku/data/storage/${app}/media/* media
 }
 
 # Options
@@ -102,7 +104,7 @@ case $1 in
   pulldb) pulldb ;;
   pullmedia) pullmedia ;;
   *)
-    echo "GardenHub local development script"
+    echo "$app local development script"
     echo ""
     echo "usage: ./dev.sh <command> [<args>]"
     echo ""
