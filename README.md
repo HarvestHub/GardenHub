@@ -24,13 +24,21 @@ Eventually, the inner-workings of this project will be documented in detail. We'
 
 ## Local development
 
-GardenHub provides a script called `dev.sh` to make local development easy. Its only dependency is [Docker](https://docs.docker.com/engine/installation/). As long as you have Docker installed, you do not need Python, Django, Postgres, or anything else running on your computer for local development with `dev.sh`. This is because `dev.sh` automatically configures a local development environment with Docker containers where all of that is already installed.
+GardenHub provides a script called `dev.sh` to make local development easy. As long as you have [Docker](https://www.docker.com/) installed, you do not need Python, Django, Postgres, or anything else running on your computer for local development with `dev.sh`. This is because `dev.sh` automatically configures a local development environment with Docker containers where all of that is already installed.
 
 **Note:** This has been tested on GNU/Linux. Your mileage may vary using Docker on other operating systems.
+
+You will need the following packages installed to develop on GardenHub:
+
+* docker-ce
+* git
+* bash
 
 ### Installing Docker
 
 To check if you already have Docker installed, run `docker -v` in your terminal. GardenHub has been tested with version 17. **If you already have it, skip to the next section.**
+
+[![asciicast](https://asciinema.org/a/158200.png)](https://asciinema.org/a/158200)
 
 On most GNU/Linux distros, you can use the following command to install Docker:
 
@@ -47,6 +55,8 @@ sudo usermod -aG docker $(whoami)
 Finally, log out and back into your computer, and then head to the next section.
 
 ### Starting the development server
+
+[![asciicast](https://asciinema.org/a/158203.png)](https://asciinema.org/a/158203)
 
 With Docker installed and ready to go, just follow these commands:
 
