@@ -76,7 +76,7 @@ function start() {
 
 # Pull database from staging to local
 function pulldb() {
-  stop
+  docker stop ${app}_db 2> /dev/null # Force stop db
   docker volume rm ${app}_pgdata
   docker volume create ${app}_pgdata
   ssh dokku@candlewaster.co postgres:export $app > db.dump
@@ -85,6 +85,7 @@ function pulldb() {
   docker exec -it ${app}_db sh -c \
     "pg_restore -U postgres -d postgres /db.dump && rm /db.dump"
   echo "Successfully restored staging database!"
+  stop_db
 }
 
 # Pull media files from staging
