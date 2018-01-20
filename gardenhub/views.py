@@ -257,7 +257,7 @@ def account_activate_view(request, token):
     if user.is_active:
         user.activation_token = None
         user.save()
-        return HttpResponseRedirect('/')
+        return HttpResponseRedirect(reverse_lazy('home'))
 
     # Form has been submitted
     if request.method == 'POST':
@@ -274,7 +274,7 @@ def account_activate_view(request, token):
             user.set_password(form.cleaned_data['password1'])
             user.save()
             # TODO: Actually authenticate the user
-            return HttpResponseRedirect('/')
+            return HttpResponseRedirect(reverse_lazy('home'))
 
     return render(request, 'gardenhub/account_activate.html')
 
@@ -341,12 +341,24 @@ class AccountSettingsView(LoginRequiredMixin, FormView):
         return super().form_valid(form)
 
 
-# TODO: Make this actually deactivate the user's account
 class DeleteAccountView(LoginRequiredMixin, TemplateView):
     """
     Delete the logged-in user's GardenHub account.
     """
     template_name = 'gardenhub/account_delete.html'
+
+    def post(self, request):
+        if 'delete' in request.POST:
+            user = request.user
+            user.is_active = False
+            user.save()
+            messages.add_message(
+                self.request, messages.SUCCESS,
+                "You've successfully removed your account."
+            )
+            return HttpResponseRedirect(reverse_lazy('logout'))
+        else:
+            super().post(self, request)
 
 
 class ApiCrops(LoginRequiredMixin, UserCanEditPlotMixin, DetailView):

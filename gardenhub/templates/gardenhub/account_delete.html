@@ -2,4 +2,12 @@
 
 {% block content %}
   <h2 class="ui header">Delete Account</h2>
+  <p>If you delete your account, you will not be able to log in or recover your account. Are you sure you want to do this?</p>
+  <form action="" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="delete" value="">
+    <button class="purple ui icon button" type="submit">
+      <i class="trash icon"></i> Delete my account
+    </button>
+  </form>
 {% endblock %}
