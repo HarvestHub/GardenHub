@@ -312,7 +312,7 @@ class AccountView(LoginRequiredMixin, TemplateView):
     """
     Profile edit screen for the logged-in user.
     """
-    template_name = 'gardenhub/account.html'
+    template_name = 'gardenhub/account_detail.html'
 
 
 class AccountSettingsView(LoginRequiredMixin, FormView):
