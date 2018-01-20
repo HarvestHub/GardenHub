@@ -39,9 +39,14 @@ function start_db() {
   done
 }
 
-# Stop the database container
+# Stop the database container if it's not in use
 function stop_db() {
-  docker stop ${app}_db 2> /dev/null
+  # Get number of app containers running
+  n=$(docker ps -f ancestor=$app --format '{{.Names}}' | wc -l)
+  # If 0 app containers are running, stop the db container
+  if [ $n -eq 0 ]; then
+    docker stop ${app}_db 2> /dev/null
+  fi
 }
 
 function manage_py() {
@@ -59,10 +64,8 @@ function manage_py() {
     -e DATABASE_URL="postgres://postgres:${app}@0.0.0.0:${db_port}/postgres" \
     -v $(pwd):/app \
     $app python manage.py $@
-  # Stop the database when the development server stops
-  if [ $1 = "runserver" ]; then
-    stop_db
-  fi
+  # Stop Postgres if it's no longer being used
+  stop_db
 }
 
 # Run containers

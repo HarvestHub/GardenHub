@@ -26,9 +26,29 @@ Eventually, the inner-workings of this project will be documented in detail. We'
 
 GardenHub provides a script called `dev.sh` to make local development easy. Its only dependency is [Docker](https://docs.docker.com/engine/installation/). As long as you have Docker installed, you do not need Python, Django, Postgres, or anything else running on your computer for local development with `dev.sh`. This is because `dev.sh` automatically configures a local development environment with Docker containers where all of that is already installed.
 
-**Note:** This has been tested on GNU/Linux. Your mileage may vary using Docker on MacOS or Windows.
+**Note:** This has been tested on GNU/Linux. Your mileage may vary using Docker on other operating systems.
 
-To get up and running, [install Docker](https://docs.docker.com/engine/installation/). Next ensure that your user is added to the Docker group (`sudo usermod -aG docker $your_user`; you may need to log out then back in after). Finally, run the following commands:
+### Installing Docker
+
+To check if you already have Docker installed, run `docker -v` in your terminal. GardenHub has been tested with version 17. **If you already have it, skip to the next section.**
+
+On most GNU/Linux distros, you can use the following command to install Docker:
+
+```
+sudo sh -c "wget -nv -O - https://get.docker.com/ | sh"
+```
+
+After Docker is installed, you'll want to add your user to the docker group so you don't need `sudo` to run Docker commands.
+
+```
+sudo usermod -aG docker $(whoami)
+```
+
+Finally, log out and back into your computer, and then head to the next section.
+
+### Starting the development server
+
+With Docker installed and ready to go, just follow these commands:
 
 ```
 # Clone the repo
@@ -51,6 +71,8 @@ It may take a few minutes to download everything the first time, then it will ru
 | build     | Rebuilds the app container. You must do this **manually** if you change requirements.txt.                             |
 | manage.py | Same as running `python manage.py` in the app container. Useful for running migrations and other management commands. |
 | setup     | Installs Docker. Works on many GNU/Linux distros.                                                                     |
+
+**Hint:** `./dev.sh start` will run migrations every time before it starts the development server. To skip that, you can run `./dev.sh manage.py runserver` to run the development server directly.
 
 ### Running migrations and management commands
 
