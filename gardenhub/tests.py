@@ -396,7 +396,7 @@ class OrderTestCase(TestCase):
         ]
 
         self.assertEqual(orders[0].progress(), 100)
-        self.assertTrue(abs(orders[1].progress() - 50) < 1)
+        self.assertTrue(abs(orders[1].progress() - 50) < 10)
         self.assertEqual(orders[2].progress(), 0)
 
     def test_is_complete(self):
