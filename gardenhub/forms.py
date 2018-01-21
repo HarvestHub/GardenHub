@@ -6,6 +6,11 @@ from gardenhub.utils import today, localdate
 
 
 class MultipleEmailField(forms.MultipleChoiceField):
+    def clean(self, value):
+        values = super().clean(value)
+        emails = [email.lower() for email in values]
+        return list(set(emails))
+
     def valid_value(self, value):
         # Valid values are email addresses
         try:
