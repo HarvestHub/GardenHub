@@ -25,7 +25,7 @@
       </div>
     {% endwith %}
 
-    <div class="field">
+    <div class="field{% if form.title.field.disabled %} disabled{% endif %}">
       <label>Name</label>
       <p class="description">The plot's name is probably a number, like 11. The plot should be clearly labeled with a sign.</p>
       <div class="ui input">

@@ -254,9 +254,10 @@ class PlotUpdateView(LoginRequiredMixin, UserCanEditPlotMixin, UpdateView):
         # Constrain Garden choices
         # We have to do this here because we can access the Request
         garden_field.queryset = garden_queryset
-        # Only managers of the plot's garden can change its garden
+        # Only managers of the plot's garden can change its garden and name
         if not self.request.user.can_edit_garden(garden):
             garden_field.disabled = True
+            form.fields['title'].disabled = True
         return form
 
     def form_valid(self, form):
