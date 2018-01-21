@@ -6,7 +6,7 @@
     <span class="sub header">Manage your account.</span>
   </h2>
 
-  <form class="ui form" action="" method="post">
+  <form class="ui form" action="" method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <h3 class="ui dividing header">Profile</h4>
     <div class="field">
@@ -19,6 +19,12 @@
       <label>Last Name</label>
       <div class="ui input">
         <input type="text" name="last_name" placeholder="Enter your last name" value="{{ request.user.last_name }}">
+      </div>
+    </div>
+    <div class="field">
+      <label>Photo</label>
+      <div class="ui input">
+        {{ form.photo }}
       </div>
     </div>
 

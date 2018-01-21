@@ -69,6 +69,7 @@ class ActivateAccountForm(forms.Form):
 class AccountSettingsForm(forms.Form):
     first_name = forms.CharField()
     last_name = forms.CharField()
+    photo = forms.ImageField(required=False)
     password = forms.CharField(required=False)
     new_password1 = forms.CharField(required=False)
     new_password2 = forms.CharField(required=False)

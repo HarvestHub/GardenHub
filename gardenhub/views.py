@@ -331,6 +331,9 @@ class AccountSettingsView(LoginRequiredMixin, FormView):
         user.first_name = form.cleaned_data['first_name']
         user.last_name = form.cleaned_data['last_name']
 
+        # Set photo
+        user.photo = form.cleaned_data['photo']
+
         # Set password if it's entered
         pass1 = form.cleaned_data['new_password1']
         pass2 = form.cleaned_data['new_password2']
