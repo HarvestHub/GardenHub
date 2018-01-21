@@ -48,6 +48,13 @@
       </div>
     </div>
     <div class="field">
+      <label>Pick everything?</label>
+      <div class="ui pick-all toggle checkbox">
+        <input type="checkbox" name="{{ form.pick_all.name }}">
+        <label>Have every crop growing on your plot get picked.</label>
+      </div>
+    </div>
+    <div class="crops field">
       <label>Crops</label>
       <p class="description">Select the crops you'd like picked. Tap the icons to select them.</p>
       <select class="crops" name="{{ form.crops.name }}" style="display:none" multiple></select>
@@ -67,8 +74,8 @@
     </div>
     <div class="field">
       <label>Comment</label>
-      <p class="description">Do you have any special instructions or comments about this order?</p>
-      <textarea name="{{ form.comment.name }}" rows="2"></textarea>
+      <p class="description">Special instructions or comments about the order.</p>
+      <textarea name="{{ form.comment.name }}" rows="2" placeholder="Is there anything you'd like to tell the picker about your order?"></textarea>
     </div>
     <button class="large purple ui right floated button" type="submit">
       <i class="checkmark icon"></i>
@@ -90,12 +97,14 @@
       startCalendar: $('.ui.calendar#start_date')
     });
 
-    // Message close
-    $('.message .close')
-    .on('click', function() {
-      $(this)
-        .closest('.message')
-        .transition('fade');
+    // "Pick All" checkbox settings
+    $('.ui.pick-all.checkbox').checkbox({
+      onChecked: function() {
+        $('.crops.field').slideUp();
+      },
+      onUnchecked: function() {
+        $('.crops.field').slideDown();
+      }
     });
 
     // Generates the hidden <select> crop template

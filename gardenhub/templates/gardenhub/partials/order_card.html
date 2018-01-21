@@ -21,16 +21,22 @@
     {% include "gardenhub/partials/order_status.html" %}
 
     <h4 class="ui sub header">Crops to be Picked</h4>
-    <div class="ui mini horizontal list">
-      {% for crop in order.crops.all %}
-        <div class="item">
-          <img class="ui avatar image" src="{{ crop.image.url }}">
-          <div class="middle aligned content">
-            <div class="description">{{ crop.title }}</div>
+    {% if order.pick_all %}
+      <p><i class="info circle icon"></i> All crops on the plot</p>
+    {% elif order.crops %}
+      <div class="ui mini horizontal list">
+        {% for crop in order.crops.all %}
+          <div class="item">
+            <img class="ui avatar image" src="{{ crop.image.url }}">
+            <div class="middle aligned content">
+              <div class="description">{{ crop.title }}</div>
+            </div>
           </div>
-        </div>
-        {% endfor %}
-    </div>
+          {% endfor %}
+      </div>
+    {% else %}
+      <p>No crops were selected for this order.</p>
+    {% endif %}
   </div>
   <a class="ui bottom attached button" href="/order/{{ order.id }}/">
     <i class="edit icon"></i>

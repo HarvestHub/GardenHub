@@ -123,8 +123,13 @@ class Order(models.Model):
         'Plot', models.DO_NOTHING,
         help_text="The plot this order targets for picking."
     )
+    pick_all = models.BooleanField(
+        default=False,
+        help_text="Whether all crops on the physical plot should be picked "
+                  "or not. When checked, the `crops` field is ignored."
+    )
     crops = models.ManyToManyField(
-        'Crop',
+        'Crop', blank=True,
         help_text="Crops that should be picked for this order."
     )
     start_date = models.DateField(
