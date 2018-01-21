@@ -51,8 +51,12 @@
   {% endif %}
 
   {% if order.comment %}
-    <h4 class="ui sub header">Special Instructions</h4>
-    <div>{{ order.comment }}</div>
+  <div class="ui warning message">
+    <div class="header">
+      Special Instructions
+    </div>
+    <em>&ldquo;{{ order.comment }}&rdquo; &mdash;{{ order.requester.get_full_name }}</em>
+  </div>
   {% endif %}
 
   {% if order.get_picks %}

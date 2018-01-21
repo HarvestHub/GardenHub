@@ -6,6 +6,40 @@
     Today I picked&hellip;
     <span class="sub header">Crops from <strong>plot {{ plot.title }}</strong> in {{ plot.garden.title }}</span>
   </h1>
+
+  {% with order=plot.order_set.active.first %}
+    {% if order %}
+      {% with crops=order.crops.all %}
+        <h4 class="ui sub header">Crops to pick</h4>
+        {% if order.pick_all %}
+          <p>Pick all the crops on the plot.</p>
+        {% elif crops %}
+          <div class="ui small horizontal list">
+            {% for crop in crops %}
+              <div class="clickable crop item" data-crop-id="{{ crop.id }}">
+                <img class="ui avatar image" src="{{ crop.image.url }}">
+                <div class="middle aligned content">
+                  <div class="description">{{ crop.title }}</div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p>This order has no crops in it. Something is wrong.</p>
+        {% endif %}
+      {% endwith %}
+
+      {% if order.comment %}
+        <div class="ui warning message">
+          <div class="header">
+            Special Instructions
+          </div>
+          <em>&ldquo;{{ order.comment }}&rdquo; &mdash;{{ order.requester.get_full_name }}</em>
+        </div>
+      {% endif %}
+    {% endif %}
+  {% endwith %}
+
   <form class="ui form" action="" method="post">
     {% csrf_token %}
     {{ form.non_field_errors }}
@@ -25,4 +59,13 @@
       Save
     </button>
   </form>
+{% endblock %}
+
+{% block extra_scripts %}
+  <script>
+    $(".crop.item").click(function(e) {
+      var cropId = $(this).data("crop-id");
+      $(".crops.dropdown").dropdown('set selected', cropId);
+    });
+  </script>
 {% endblock %}
