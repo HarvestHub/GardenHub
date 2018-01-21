@@ -129,6 +129,11 @@
             '<div class="title">' + crop.title + '</div>' +
           '</div>'
       });
+      var plot = $('input[name="plot"]').val();
+      html += '' +
+        '<a class="add-crops massive circular ui icon button" href="/plot/' + plot + '/edit/">' +
+          '<i class="plus icon"></i>' +
+        '</a>';
       return html;
     }
 
