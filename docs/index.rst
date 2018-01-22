@@ -18,6 +18,7 @@ framework`_.
 
    models
    views
+   deployment
 
 
 
