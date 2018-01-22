@@ -81,6 +81,7 @@ It may take a few minutes to download everything the first time, then it will ru
 | build     | Rebuilds the app container. You must do this **manually** if you change requirements.txt.                             |
 | manage.py | Same as running `python manage.py` in the app container. Useful for running migrations and other management commands. |
 | setup     | Installs Docker. Works on many GNU/Linux distros.                                                                     |
+| docs      | Runs a local server for editing the docs. Uses sphinx-autobuild within the container.                                 |
 
 **Hint:** `./dev.sh start` will run migrations every time before it starts the development server. To skip that, you can run `./dev.sh manage.py runserver` to run the development server directly.
 

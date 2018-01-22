@@ -94,6 +94,16 @@ function pullmedia() {
   scp -r root@candlewaster.co:/var/lib/dokku/data/storage/${app}/media/* media
 }
 
+# Serve docs
+function servedocs() {
+  docker run --rm -it \
+    -p 8000:8000 \
+    --network=host \
+    -e PYTHONUNBUFFERED=0 \
+    -v $(pwd):/app \
+    $app sh -c "cd /app/docs && sphinx-autobuild -b html . _build/html"
+}
+
 # Options
 case $1 in
   setup)
@@ -105,6 +115,7 @@ case $1 in
     shift
     manage_py $@
     ;;
+  docs) servedocs ;;
   pulldb) pulldb ;;
   pullmedia) pullmedia ;;
   *)
@@ -117,6 +128,7 @@ case $1 in
     echo "    build      Manually (re)build the app container."
     echo "    manage.py  Runs python manage.py <args> in the app container."
     echo "    setup      Installs Docker."
+    echo "    docs       Runs a local server for the docs on port 8000."
     echo ""
     echo "Staging sync (permission required):"
     echo "    pulldb     Downloads db from staging."
