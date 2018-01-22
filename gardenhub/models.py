@@ -94,7 +94,7 @@ class Plot(models.Model):
                     ))
 
     garden = models.ForeignKey(
-        'Garden', models.CASCADE, related_name='plots',
+        'Garden', on_delete=models.CASCADE, related_name='plots',
         help_text="The garden this plot is a part of."
     )
 
@@ -120,7 +120,7 @@ class Order(models.Model):
         help_text="The exact moment this order was submitted."
     )
     plot = models.ForeignKey(
-        'Plot', models.DO_NOTHING,
+        'Plot', on_delete=models.PROTECT,
         help_text="The plot this order targets for picking."
     )
     pick_all = models.BooleanField(
@@ -147,7 +147,7 @@ class Order(models.Model):
         help_text="The moment this order was canceled, if so."
     )
     requester = models.ForeignKey(
-        settings.AUTH_USER_MODEL, models.DO_NOTHING,
+        settings.AUTH_USER_MODEL, on_delete=models.PROTECT,
         help_text="Person who submitted this order."
     )
     comment = models.TextField(
@@ -237,11 +237,11 @@ class Pick(models.Model):
         help_text="The exact moment this pick was submitted."
     )
     picker = models.ForeignKey(
-        settings.AUTH_USER_MODEL, models.DO_NOTHING,
+        settings.AUTH_USER_MODEL, on_delete=models.PROTECT,
         help_text="Person who submitted this pick."
     )
     plot = models.ForeignKey(
-        Plot, models.DO_NOTHING, related_name='picks',
+        Plot, on_delete=models.PROTECT, related_name='picks',
         help_text="Plot this pick occurred upon."
     )
     crops = models.ManyToManyField(
