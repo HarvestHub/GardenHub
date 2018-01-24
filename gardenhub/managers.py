@@ -36,7 +36,8 @@ class OrderQuerySet(models.QuerySet):
         """ All orders that aren't happening right now. """
         return self.filter(
             Q(end_date__lt=today()) |
-            Q(start_date__gt=today())
+            Q(start_date__gt=today()) |
+            Q(canceled=True)
         )
 
     def picked_today(self):
