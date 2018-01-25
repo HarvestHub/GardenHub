@@ -17,6 +17,7 @@ framework`_.
    :caption: Contents:
 
    models
+   orders
    views
    deployment
 
