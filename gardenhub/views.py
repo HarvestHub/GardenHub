@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.http import HttpResponseRedirect, JsonResponse
 from django.contrib import messages
 from django.contrib.auth import get_user_model
@@ -247,10 +248,10 @@ class PlotUpdateView(LoginRequiredMixin, UserCanEditPlotMixin, UpdateView):
         garden_field = form.fields['garden']
         # Garden options should be all gardens the user can manage
         # plus the current Plot's garden
-        user_gardens = self.request.user.get_gardens()
-        garden_queryset = user_gardens.union(
-            Garden.objects.filter(id=garden.id)
-        ).distinct()
+        garden_queryset = Garden.objects.filter(
+            Q(id=garden.id) |
+            Q(managers__id=self.request.user.id)
+        )
         # Constrain Garden choices
         # We have to do this here because we can access the Request
         garden_field.queryset = garden_queryset
