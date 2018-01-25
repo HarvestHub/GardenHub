@@ -1,25 +1,17 @@
-language: python
+sudo: required
 
 services:
-  - postgresql
-
-python:
-  - "3.4"
-  - "3.5"
-  - "3.6"
-
-env:
-  - DATABASE_URL="postgres://postgres@localhost:5432/gardenhub"
-
-install:
-  - pip install -r requirements.txt
-  - pip install coveralls
+  - docker
 
 before_script:
-  - psql -c 'create database gardenhub;' -d postgres -U postgres
+  - docker build -t gardenhub .
+  - docker run --name db -e POSTGRES_PASSWORD=gardenhub -d postgres:10-alpine && sleep 5
+  - docker run -it --name gardenhub --link db:postgres -e CI -e TRAVIS -e TRAVIS_JOB_ID -e TRAVIS_PULL_REQUEST -e DATABASE_URL="postgres://postgres:gardenhub@db:5432/postgres" -d gardenhub sh
+  - docker exec gardenhub pip install coverage coveralls
 
 script:
-  - python manage.py test
-  - coverage run --source='.' manage.py test gardenhub
+  - docker exec gardenhub coverage run --source='.' manage.py test gardenhub
 
-after_success: coveralls
+after_success:
+  - apk add git
+  - docker exec gardenhub coveralls
