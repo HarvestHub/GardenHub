@@ -14,20 +14,13 @@ from gardenhub.factories import (
     PlotFactory,
     OrderFactory,
     PickFactory,
-    ActiveUserFactory
+    ActiveUserFactory,
+    GardenerFactory,
+    GardenManagerFactory,
+    PickerFactory
 )
 
 fake = Faker()
-
-
-def uuid_email():
-    """ Returns a fake unique email address for testing """
-    return "{}@gardenhub.dev".format(str(uuid4()))
-
-
-def uuid_pass():
-    """ Returns a fake unique password for testing """
-    return str(uuid4())
 
 
 def localdate(*args, **kwargs):
@@ -364,18 +357,11 @@ class PickTestCase(TestCase):
 
     def test_inquirers(self):
         """ pick.inquirers() """
-        picker = get_user_model().objects.create_user(
-            email=uuid_email(), password=uuid_pass())
-        requester = get_user_model().objects.create_user(
-            email=uuid_email(), password=uuid_pass())
-        gardeners = [
-            get_user_model().objects.create_user(
-                email=uuid_email(), password=uuid_pass())
-            for _ in range(2)
-        ]
-        garden = Garden.objects.create(
-            title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
-        plot = Plot.objects.create(title='1', garden=garden)
+        picker = ActiveUserFactory()
+        requester = ActiveUserFactory()
+        gardeners = ActiveUserFactory.create_batch(2)
+        garden = GardenFactory()
+        plot = PlotFactory(garden=garden)
         plot.gardeners.add(gardeners[0])
         plot.gardeners.add(gardeners[1])
         Order.objects.create(
@@ -399,13 +385,13 @@ class UserManagerTestCase(TestCase):
     def test_create_user(self):
         """ User.objects.create_user() """
         user = get_user_model().objects.create_user(
-            email=uuid_email(), password=uuid_pass())
+            email=fake.email(), password=fake.password())
         self.assertIn(user, get_user_model().objects.all())
 
     def test_create_superuser(self):
         """ User.objects.create_superuser() """
         user = get_user_model().objects.create_superuser(
-            email=uuid_email(), password=uuid_pass())
+            email=fake.email(), password=fake.password())
         self.assertIn(user, get_user_model().objects.all())
         self.assertTrue(user.is_superuser)
 
@@ -446,26 +432,6 @@ class UserTestCase(TestCase):
     Test User model methods.
     """
 
-    def setUp(self):
-        # A garden and plot are first needed
-        garden = Garden.objects.create(
-            title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
-        plot = Plot.objects.create(title='1', garden=garden)
-
-        # Create a gardener of a single plot
-        self.gardener = get_user_model().objects.create_user(
-            email=uuid_email(), password=uuid_pass())
-        plot.gardeners.add(self.gardener)
-
-        # Create a garden manager of a single garden and no plots
-        self.garden_manager = get_user_model().objects.create_user(
-            email=uuid_email(), password=uuid_pass())
-        garden.managers.add(self.garden_manager)
-
-        # Create a normal user who isn't assigned to anything
-        self.normal_user = get_user_model().objects.create_user(
-            email=uuid_email(), password=uuid_pass())
-
     def test_create_user(self):
         """ Create a user """
         user = ActiveUserFactory()
@@ -475,8 +441,8 @@ class UserTestCase(TestCase):
         """ Ensure that users can't authenticate by default """
 
         # Save email and password
-        user_email = uuid_email()
-        user_password = uuid_pass()
+        user_email = fake.email()
+        user_password = fake.password()
 
         # Create new user
         get_user_model().objects.create_user(
@@ -494,8 +460,8 @@ class UserTestCase(TestCase):
         """ Ensure an activated user can authenticate """
 
         # Save email and password
-        user_email = uuid_email()
-        user_password = uuid_pass()
+        user_email = fake.email()
+        user_password = fake.password()
 
         # Create new user
         user = get_user_model().objects.create_user(
@@ -597,8 +563,8 @@ class UserTestCase(TestCase):
         # Create test Users
         users = [
             get_user_model().objects.create_user(
-                email=uuid_email(),
-                password=uuid_pass()
+                email=fake.email(),
+                password=fake.password()
             ) for _ in range(10)
         ]
 
@@ -629,28 +595,9 @@ class UserTestCase(TestCase):
 
     def test_get_picker_gardens(self):
         """ user.get_picker_gardens() """
-
-        # Create gardens
-        gardens = [
-            Garden.objects.create(
-                title='Special Garden',
-                address='1000 Garden Rd, Philadelphia PA, 1776'
-            ) for _ in range(4)
-        ]
-
-        [Garden.objects.create(
-            title='Unspecial Garden',
-            address='1000 Garden Rd, Philadelphia PA, 1776'
-        ) for _ in range(3)]
-
-        # Create picker
-        picker = get_user_model().objects.create_user(
-            email=uuid_email(), password=uuid_pass())
-
-        for garden in gardens:
-            garden.pickers.add(picker)
-
-        # Test!
+        picker = ActiveUserFactory()
+        gardens = GardenFactory.create_batch(4, pickers=[picker])
+        GardenFactory.create_batch(3)
         self.assertEqual(set(picker.get_picker_gardens()), set(gardens))
 
     def test_get_picker_orders(self):
@@ -661,12 +608,12 @@ class UserTestCase(TestCase):
             title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
         plot = Plot.objects.create(title='1', garden=garden)
         picker = get_user_model().objects.create_user(
-            email=uuid_email(), password=uuid_pass())
+            email=fake.email(), password=fake.password())
         garden.pickers.add(picker)
 
         # Create orders
         requester = get_user_model().objects.create_user(
-            email=uuid_email(), password=uuid_pass())
+            email=fake.email(), password=fake.password())
         orders = [
             Order.objects.create(
                 plot=plot,
@@ -681,47 +628,42 @@ class UserTestCase(TestCase):
 
     def test_is_garden_manager(self):
         """ user.is_garden_manager() """
-
         # Test a garden manager
-        self.assertTrue(self.garden_manager.is_garden_manager())
-
+        self.assertTrue(GardenManagerFactory().is_garden_manager())
         # Test *not* garden managers
-        self.assertFalse(self.gardener.is_garden_manager())
-        self.assertFalse(self.normal_user.is_garden_manager())
+        self.assertFalse(GardenerFactory().is_garden_manager())
+        self.assertFalse(ActiveUserFactory().is_garden_manager())
 
     def test_is_gardener(self):
         """ user.is_gardener() """
-
         # Test a gardener of a single plot
-        self.assertTrue(self.gardener.is_gardener())
-
+        self.assertTrue(GardenerFactory().is_gardener())
         # Test that a garden manager is also considered a gardener
-        self.assertTrue(self.garden_manager.is_gardener())
-
+        # if the garden has plots
+        manager = GardenManagerFactory()
+        garden = manager.get_gardens().first()
+        PlotFactory.create_batch(3, garden=garden)
+        self.assertTrue(manager.is_gardener())
         # Create and test a *not* gardener
-        self.assertFalse(self.normal_user.is_gardener())
+        self.assertFalse(ActiveUserFactory().is_gardener())
 
     def test_is_anything(self):
         """ user.is_anything() """
-
         # Test a normal user
-        self.assertFalse(self.normal_user.is_anything())
-
+        self.assertFalse(ActiveUserFactory().is_anything())
         # Test a gardener and garden manager
-        self.assertTrue(self.gardener.is_anything())
-        self.assertTrue(self.garden_manager.is_anything())
+        self.assertTrue(GardenerFactory().is_anything())
+        self.assertTrue(GardenManagerFactory().is_anything())
 
     def test_is_picker(self):
         """ user.is_picker() """
 
         # Test a normal user
-        self.assertFalse(self.normal_user.is_anything())
+        self.assertFalse(ActiveUserFactory().is_anything())
 
         # Create garden and assign a picker
-        garden = Garden.objects.create(
-            title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
-        picker = get_user_model().objects.create_user(
-            email=uuid_email(), password=uuid_pass())
+        garden = GardenFactory()
+        picker = ActiveUserFactory()
         garden.pickers.add(picker)
 
         # Test that the user is a picker
@@ -731,127 +673,89 @@ class UserTestCase(TestCase):
         """ user.has_open_orders() """
 
         # Create plot
-        garden = Garden.objects.create(
-            title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
-        plot = Plot.objects.create(title='1', garden=garden)
+        garden = GardenFactory()
+        plot = PlotFactory(garden=garden)
 
         # Create orders
-        requester = get_user_model().objects.create_user(
-            email=uuid_email(), password=uuid_pass())
-        [Order.objects.create(
+        requester = ActiveUserFactory()
+        OrderFactory.create_batch(
+            5,
             plot=plot,
-            start_date=localdate(2017, 1, 1),
-            end_date=localdate(2017, 1, 5),
             requester=requester
-        ) for _ in range(5)]
+        )
 
         # Create user and assign it to the plot
-        user = get_user_model().objects.create_user(
-            email=uuid_email(), password=uuid_pass())
+        user = ActiveUserFactory()
         plot.gardeners.add(user)
 
         # Test orders
         self.assertTrue(user.has_open_orders())
-        self.assertFalse(self.normal_user.has_open_orders())
+        self.assertFalse(ActiveUserFactory().has_open_orders())
 
     def test_can_edit_garden(self):
         """ user.can_edit_garden() """
 
-        # Create garden
-        garden = Garden.objects.create(
-            title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
+        # Garden manager can edit the garden
+        manager = GardenManagerFactory()
+        garden = manager.get_gardens().first()
+        self.assertTrue(manager.can_edit_garden(garden))
 
-        # Assign garden manager to garden
-        garden_manager = get_user_model().objects.create_user(
-            email=uuid_email(), password=uuid_pass())
-        garden.managers.add(garden_manager)
+        # Gardener can't edit the garden
+        gardener = GardenerFactory()
+        garden = gardener.get_plots().first().garden
+        self.assertFalse(gardener.can_edit_garden(garden))
 
-        # Test that the GM can edit the garden
-        self.assertTrue(garden_manager.can_edit_garden(garden))
-
-        # Test that a normal user can't edit the garden
-        self.assertFalse(self.normal_user.can_edit_garden(garden))
+        # Normal user can't edit the garden
+        self.assertFalse(ActiveUserFactory().can_edit_garden(GardenFactory()))
 
     def test_can_edit_plot(self):
         """ user.can_edit_plot() """
 
-        # Create plot
-        garden = Garden.objects.create(
-            title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
-        plot = Plot.objects.create(title='1', garden=garden)
-
-        # Test that the gardener can edit the plot
-        gardener = get_user_model().objects.create_user(
-            email=uuid_email(), password=uuid_pass())
-        plot.gardeners.add(gardener)
+        # Gardener can edit the plot
+        gardener = GardenerFactory()
+        plot = gardener.get_plots().first()
         self.assertTrue(gardener.can_edit_plot(plot))
 
-        # Test that a garden manager can edit the plot
-        garden_manager = get_user_model().objects.create_user(
-            email=uuid_email(), password=uuid_pass())
-        garden.managers.add(garden_manager)
-        self.assertTrue(garden_manager.can_edit_plot(plot))
+        # Garden manager can edit the plot
+        manager = GardenManagerFactory()
+        garden = manager.get_gardens().first()
+        plot = PlotFactory(garden=garden)
+        self.assertTrue(manager.can_edit_plot(plot))
 
-        # Test that a normal user can't edit the plot
-        self.assertFalse(self.normal_user.can_edit_plot(plot))
+        # Normal user can't edit the plot
+        self.assertFalse(ActiveUserFactory().can_edit_plot(PlotFactory()))
 
     def test_can_edit_order(self):
         """ user.can_edit_order() """
 
-        # Create order
-        garden = Garden.objects.create(
-            title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
-        plot = Plot.objects.create(title='1', garden=garden)
-        order = Order.objects.create(
-            plot=plot,
-            start_date=localdate(2017, 1, 1),
-            end_date=localdate(2017, 1, 5),
-            requester=self.normal_user
-        )
-
-        # Test that the gardener can edit the order
-        gardener = get_user_model().objects.create_user(
-            email=uuid_email(), password=uuid_pass())
-        plot.gardeners.add(gardener)
+        # Gardener can edit the order
+        gardener = GardenerFactory()
+        order = OrderFactory(plot=gardener.get_plots().first())
         self.assertTrue(gardener.can_edit_order(order))
 
-        # Test that a garden manager can edit the order
-        garden_manager = get_user_model().objects.create_user(
-            email=uuid_email(), password=uuid_pass())
-        garden.managers.add(garden_manager)
-        self.assertTrue(garden_manager.can_edit_order(order))
+        # Garden manager can edit the order
+        manager = GardenManagerFactory()
+        garden = manager.get_gardens().first()
+        plot = PlotFactory(garden=garden)
+        order = OrderFactory(plot=plot)
+        self.assertTrue(manager.can_edit_order(order))
 
-        # Test that a normal user can't edit the order
-        self.assertFalse(self.normal_user.can_edit_order(order))
+        # Normal user can't edit the order
+        self.assertFalse(ActiveUserFactory().can_edit_order(OrderFactory()))
 
     def test_is_order_picker(self):
         """ user.is_order_picker() """
-
-        # Create order
-        garden = Garden.objects.create(
-            title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
-        plot = Plot.objects.create(title='1', garden=garden)
-        order = Order.objects.create(
-            plot=plot,
-            start_date=localdate(2017, 1, 1),
-            end_date=localdate(2017, 1, 5),
-            requester=self.normal_user
-        )
-
-        # Create picker
-        picker = get_user_model().objects.create_user(
-            email=uuid_email(), password=uuid_pass())
-        garden.pickers.add(picker)
+        picker = PickerFactory()
+        plot = PlotFactory(garden=Garden.objects.get(pickers__id=picker.id))
+        order = OrderFactory(plot=plot)
         self.assertTrue(picker.is_order_picker(order))
-
-        # Test that a normal user can't edit the order
-        self.assertFalse(self.normal_user.is_order_picker(order))
+        self.assertFalse(ActiveUserFactory().is_order_picker(order))
 
 
 class TemplateTagsTestCase(TestCase):
     def test_picker_format(self):
         requester = get_user_model().objects.create_user(
-            email=uuid_email(), password=uuid_pass())
+            email=fake.email(), password=fake.password())
 
         garden = Garden.objects.create(
             title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
@@ -896,7 +800,7 @@ class TemplateTagsTestCase(TestCase):
 
         # Create picker
         picker = get_user_model().objects.create_user(
-            email=uuid_email(), password=uuid_pass())
+            email=fake.email(), password=fake.password())
         garden.pickers.add(picker)
 
         formatted = templatetags.picker_format(

@@ -25,6 +25,11 @@ class GardenFactory(DjangoModelFactory):
         if extracted:
             self.managers.set(extracted)
 
+    @factory.post_generation
+    def pickers(self, create, extracted, **kwargs):
+        if extracted:
+            self.pickers.set(extracted)
+
 
 class PlotFactory(DjangoModelFactory):
     class Meta:
@@ -67,12 +72,24 @@ class GardenerFactory(ActiveUserFactory):
     @factory.post_generation
     def plots(self, create, extracted, **kwargs):
         if extracted:
-            # Set plots if provided
+            # Set to plots if provided
             for plot in extracted:
                 plot.gardeners.add(self)
         else:
             # Otherwise, add to a single plot
             PlotFactory().gardeners.add(self)
+
+
+class GardenManagerFactory(ActiveUserFactory):
+    @factory.post_generation
+    def gardens(self, create, extracted, **kwargs):
+        if extracted:
+            # Set to gardens if provided
+            for garden in extracted:
+                garden.managers.add(self)
+        else:
+            # Otherwise, add to a single garden
+            GardenFactory().managers.add(self)
 
 
 class PickerFactory(ActiveUserFactory):

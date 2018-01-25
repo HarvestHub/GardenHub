@@ -402,7 +402,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     def is_gardener(self):
         """
         A gardener is someone who rents a garden Plot and grows food there.
-        Gardeners are assigned to Plot.gardener on at least one Plot.
+        Gardeners are assigned to Plot.gardener on at least one Plot. GM's of
+        a garden with plots are also considered gardeners.
         """
         return self.get_plots().count() > 0
 

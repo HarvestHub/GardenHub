@@ -8,6 +8,7 @@ from gardenhub.factories import (
     PickFactory,
     ActiveUserFactory,
     GardenerFactory,
+    GardenManagerFactory,
     PickerFactory
 )
 
@@ -29,6 +30,12 @@ class GardenFactoryTestCase(TestCase):
         garden = GardenFactory(managers=managers)
         self.assertEqual(set(managers), set(garden.managers.all()))
 
+    def test_set_pickers(self):
+        """ Test setting pickers """
+        pickers = [ActiveUserFactory()]
+        garden = GardenFactory(pickers=pickers)
+        self.assertEqual(set(pickers), set(garden.pickers.all()))
+
 
 class PlotFactoryTestCase(TestCase):
     def test_create(self):
@@ -37,7 +44,7 @@ class PlotFactoryTestCase(TestCase):
 
     def test_set_crops(self):
         """ Test setting crops """
-        crops = [CropFactory() for _ in range(5)]
+        crops = CropFactory.create_batch(5)
         plot = PlotFactory(crops=crops)
         self.assertEqual(set(crops), set(plot.crops.all()))
 
@@ -98,7 +105,7 @@ class GardenerFactoryTestCase(TestCase):
 
     def test_set_plots(self):
         """ Make sure we can set plots """
-        plots = [PlotFactory() for _ in range(5)]
+        plots = PlotFactory.create_batch(5)
         gardener = GardenerFactory(plots=plots)
         for plot in plots:
             self.assertIn(gardener, plot.gardeners.all())
@@ -106,12 +113,39 @@ class GardenerFactoryTestCase(TestCase):
     def test_no_plots(self):
         """ Make sure we can set no plots """
         gardener = GardenerFactory(plots=[])
-        self.assertTrue(gardener.plots.count(), 0)
+        self.assertTrue(gardener.get_plots().count(), 0)
 
     def test_gardener_only(self):
         """ By default, they're not a GM or Picker """
         self.assertFalse(GardenerFactory().is_garden_manager())
         self.assertFalse(GardenerFactory().is_picker())
+
+
+class GardenManagerTestCase(TestCase):
+    def test_create(self):
+        """ Test creation """
+        self.assertTrue(GardenManagerFactory())
+
+    def test_is_garden_manager(self):
+        """ The generated user should be a GM """
+        self.assertTrue(GardenManagerFactory().is_garden_manager())
+
+    def test_set_gardens(self):
+        """ Make sure we can set gardens """
+        gardens = GardenFactory.create_batch(5)
+        manager = GardenManagerFactory(gardens=gardens)
+        for garden in gardens:
+            self.assertIn(manager, garden.managers.all())
+
+    def test_no_gardens(self):
+        """ Make sure we can set no gardens """
+        manager = GardenManagerFactory(gardens=[])
+        self.assertTrue(manager.get_gardens().count(), 0)
+
+    def test_garden_manager_only(self):
+        """ By default, they're not a Gardener or Picker """
+        self.assertFalse(GardenManagerFactory().is_gardener())
+        self.assertFalse(GardenManagerFactory().is_picker())
 
 
 class PickerFactoryTestCase(TestCase):
