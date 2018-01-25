@@ -15,3 +15,11 @@ script:
 after_success:
   - apk add git
   - docker exec gardenhub coveralls
+
+notifications:
+    webhooks:
+        urls:
+            - "https://scalar.vector.im/api/neb/services/hooks/dHJhdmlzLWNpLyU0MGFsZXhnbGVhc29uJTNBbWF0cml4Lm9yZy8lMjFPVXNkbEF3Z09Cc09PR0hwUVYlM0FtYXRyaXgub3Jn"
+        on_success: change  # always|never|change
+        on_failure: change
+        on_start: never
