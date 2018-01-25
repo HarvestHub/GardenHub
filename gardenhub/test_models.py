@@ -1,12 +1,23 @@
-from datetime import date, timedelta, datetime
+from datetime import timedelta, datetime
 from uuid import uuid4
 from django.core import mail
 from django.test import TestCase, RequestFactory
 from django.contrib.auth import get_user_model, authenticate
 from django.utils import timezone
-from .models import Crop, Affiliation, Garden, Plot, Order, Pick
+from faker import Faker
+from gardenhub.models import Crop, Affiliation, Garden, Plot, Order, Pick
 from gardenhub.templatetags import gardenhub as templatetags
 from gardenhub.utils import today
+from gardenhub.factories import (
+    CropFactory,
+    GardenFactory,
+    PlotFactory,
+    OrderFactory,
+    PickFactory,
+    ActiveUserFactory
+)
+
+fake = Faker()
 
 
 def uuid_email():
@@ -34,16 +45,15 @@ class CropTestCase(TestCase):
         """
         Ensure that a Crop can be created and retrieved.
         """
-        crop = Crop.objects.create(title="tomato")
-        self.assertIn(crop, list(Crop.objects.all()))
+        crop = CropFactory()
+        self.assertIn(crop, Crop.objects.all())
 
     def test_crop_str(self):
         """
         Test the __str__ method of Crop.
         """
-        title = str(uuid4())
-        crop = Crop.objects.create(title=title)
-        self.assertEqual(str(crop), title)
+        crop = CropFactory(title="tomato")
+        self.assertEqual(str(crop), "tomato")
 
 
 class AffiliationTestCase(TestCase):
@@ -72,20 +82,17 @@ class GardenTestCase(TestCase):
     """
     def test_create_garden(self):
         """
-        Ensure that an Garden can be created and retrieved.
+        Ensure that an Garden can be created, saved, and retrieved.
         """
-        garden = Garden.objects.create(
-            title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
-        self.assertIn(garden, list(Garden.objects.all()))
+        garden = GardenFactory()
+        self.assertIn(garden, Garden.objects.all())
 
     def test_garden_str(self):
         """
         Test the __str__ method of Garden.
         """
-        title = str(uuid4())
-        garden = Garden.objects.create(
-            title=title, address='1000 Garden Rd, Philadelphia PA, 1776')
-        self.assertEqual(str(garden), title)
+        garden = GardenFactory(title="Test Garden")
+        self.assertEqual(str(garden), "Test Garden")
 
 
 class PlotTestCase(TestCase):
@@ -94,251 +101,172 @@ class PlotTestCase(TestCase):
     """
     def test_create_plot(self):
         """
-        Ensure that a Plot can be created and retrieved.
+        Ensure that a Plot can be created, saved, and retrieved.
         """
-        garden = Garden.objects.create(
-            title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
-        plot = Plot.objects.create(title='1', garden=garden)
-        self.assertIn(plot, list(Plot.objects.all()))
+        plot = PlotFactory()
+        self.assertIn(plot, Plot.objects.all())
 
     def test_plot_str(self):
         """
         Test the __str__ method of Plot.
         """
-        garden = Garden.objects.create(
-            title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
-        title = str(uuid4())
-        plot = Plot.objects.create(title=title, garden=garden)
-        self.assertEqual(str(plot), "Garden A [{}]".format(title))
+        garden = GardenFactory()
+        plot = PlotFactory(garden=garden)
+        self.assertEqual(str(plot), "{} [{}]".format(garden.title, plot.title))
 
 
-class OrderManagerTestCase(TestCase):
+class OrderQuerySetTestCase(TestCase):
     """
-    Tests for the custom OrderManager.
+    Tests for the custom OrderQuerySet.
     """
+    def setUp(self):
+        self.past_date = fake.past_date()
+        self.extra_past_date = self.past_date - timedelta(days=5)
+        self.future_date = fake.future_date()
+        self.extra_future_date = self.future_date + timedelta(days=5)
 
     def test_closed(self):
         """ Order.objects.closed() """
 
-        # Create garden, plot, and picker
-        garden = Garden.objects.create(
-            title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
-        plot = Plot.objects.create(title='1', garden=garden)
-        picker = get_user_model().objects.create_user(
-            email=uuid_email(), password=uuid_pass())
-        garden.pickers.add(picker)
-
         # Completed orders
-        completed_orders = [
-            Order.objects.create(
-                plot=plot,
-                start_date=today()-timedelta(days=10),
-                end_date=today()-timedelta(days=1),
-                requester=picker
-            ) for _ in range(3)
-        ]
+        completed_orders = OrderFactory.create_batch(
+            3,
+            start_date=self.extra_past_date,
+            end_date=self.past_date,
+        )
 
         # FIXME: Test canceled orders
 
         # Incomplete orders
         incomplete_orders = [
             # Start date is greater than today
-            Order.objects.create(
-                plot=plot,
-                start_date=today()+timedelta(days=5),
-                end_date=today()+timedelta(days=10),
-                requester=picker
+            OrderFactory(
+                start_date=self.future_date,
+                end_date=self.extra_future_date,
             ),
             # End date is greater than today
-            Order.objects.create(
-                plot=plot,
-                start_date=today()-timedelta(days=10),
-                end_date=today()+timedelta(days=5),
-                requester=picker
+            OrderFactory(
+                start_date=self.past_date,
+                end_date=self.future_date,
             ),
         ]
 
         # Test it
         result = Order.objects.closed()
         for order in completed_orders:
-            self.assertIn(order, list(result))
+            self.assertIn(order, result)
         for order in incomplete_orders:
-            self.assertNotIn(order, list(result))
+            self.assertNotIn(order, result)
 
     def test_active(self):
         """ Order.objects.active() """
 
-        # Create garden, plot, and picker
-        garden = Garden.objects.create(
-            title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
-        plot = Plot.objects.create(title='1', garden=garden)
-        picker = get_user_model().objects.create_user(
-            email=uuid_email(), password=uuid_pass())
-        garden.pickers.add(picker)
-
         # Active orders
         active_orders = [
-            Order.objects.create(
-                plot=plot,
-                start_date=today()-timedelta(days=10),
-                end_date=today()+timedelta(days=1),
-                requester=picker
+            OrderFactory(
+                start_date=self.past_date,
+                end_date=self.future_date,
             ) for _ in range(3)
         ]
 
         # Inactive orders
         inactive_orders = [
             # Start date is greater than today
-            Order.objects.create(
-                plot=plot,
-                start_date=today()+timedelta(days=5),
-                end_date=today()+timedelta(days=10),
-                requester=picker
+            OrderFactory(
+                start_date=self.future_date,
+                end_date=self.extra_future_date,
             ),
             # End date is greater than today
-            Order.objects.create(
-                plot=plot,
-                start_date=today()-timedelta(days=10),
-                end_date=today()-timedelta(days=5),
-                requester=picker
+            OrderFactory(
+                start_date=self.extra_past_date,
+                end_date=self.past_date,
             ),
         ]
 
         # Test it
         result = Order.objects.active()
         for order in active_orders:
-            self.assertIn(order, list(result))
+            self.assertIn(order, result)
         for order in inactive_orders:
-            self.assertNotIn(order, list(result))
+            self.assertNotIn(order, result)
 
     def test_inactive(self):
         """ Order.objects.inactive() """
 
-        # Create garden, plot, and picker
-        garden = Garden.objects.create(
-            title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
-        plot = Plot.objects.create(title='1', garden=garden)
-        picker = get_user_model().objects.create_user(
-            email=uuid_email(), password=uuid_pass())
-        garden.pickers.add(picker)
-
         # Active orders
-        active_orders = [
-            Order.objects.create(
-                plot=plot,
-                start_date=today()-timedelta(days=10),
-                end_date=today()+timedelta(days=1),
-                requester=picker
-            ) for _ in range(3)
-        ]
+        active_orders = OrderFactory.create_batch(
+            3,
+            start_date=self.past_date,
+            end_date=self.future_date,
+        )
 
         # Inactive orders
         inactive_orders = [
             # Start date is greater than today
-            Order.objects.create(
-                plot=plot,
-                start_date=today()+timedelta(days=5),
-                end_date=today()+timedelta(days=10),
-                requester=picker
+            OrderFactory(
+                start_date=self.future_date,
+                end_date=self.extra_future_date,
             ),
             # End date is greater than today
-            Order.objects.create(
-                plot=plot,
-                start_date=today()-timedelta(days=10),
-                end_date=today()-timedelta(days=5),
-                requester=picker
+            OrderFactory(
+                start_date=self.extra_past_date,
+                end_date=self.past_date,
             ),
         ]
 
         # Test it
         result = Order.objects.inactive()
         for order in inactive_orders:
-            self.assertIn(order, list(result))
+            self.assertIn(order, result)
         for order in active_orders:
-            self.assertNotIn(order, list(result))
+            self.assertNotIn(order, result)
 
     def test_upcoming(self):
         """ Order.objects.upcoming() """
 
-        # Create garden, plot, and picker
-        garden = Garden.objects.create(
-            title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
-        plot = Plot.objects.create(title='1', garden=garden)
-        picker = get_user_model().objects.create_user(
-            email=uuid_email(), password=uuid_pass())
-        garden.pickers.add(picker)
-
         # Active orders
-        active_orders = [
-            Order.objects.create(
-                plot=plot,
-                start_date=today()-timedelta(days=10),
-                end_date=today()+timedelta(days=1),
-                requester=picker
-            ) for _ in range(3)
-        ]
+        active_orders = OrderFactory.create_batch(
+            3,
+            start_date=self.past_date,
+            end_date=self.future_date,
+        )
 
         # Past orders
         past_orders = [
             # End date is greater than today
-            Order.objects.create(
-                plot=plot,
-                start_date=today()-timedelta(days=10),
-                end_date=today()-timedelta(days=5),
-                requester=picker
+            OrderFactory(
+                start_date=self.extra_past_date,
+                end_date=self.past_date,
             ),
         ]
 
         # Upcoming orders
         upcoming_orders = [
             # Start date is greater than today
-            Order.objects.create(
-                plot=plot,
-                start_date=today()+timedelta(days=5),
-                end_date=today()+timedelta(days=10),
-                requester=picker
+            OrderFactory(
+                start_date=self.future_date,
+                end_date=self.extra_future_date,
             ),
         ]
 
         # Test it
         result = Order.objects.upcoming()
         for order in upcoming_orders:
-            self.assertIn(order, list(result))
+            self.assertIn(order, result)
         for order in active_orders:
-            self.assertNotIn(order, list(result))
+            self.assertNotIn(order, result)
         for order in past_orders:
-            self.assertNotIn(order, list(result))
+            self.assertNotIn(order, result)
 
     def test_picked_today(self):
         """ Order.objects.picked_today() """
-        picker = get_user_model().objects.create_user(
-            email=uuid_email(), password=uuid_pass())
-        requester = get_user_model().objects.create_user(
-            email=uuid_email(), password=uuid_pass())
-        garden = Garden.objects.create(
-            title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
-        plot = Plot.objects.create(title='1', garden=garden)
-        order = Order.objects.create(
-            plot=plot,
-            start_date=localdate(2017, 1, 1),
-            end_date=localdate(2017, 1, 5),
-            requester=requester
-        )
-        Pick.objects.create(picker=picker, plot=plot)
+        order = OrderFactory()
+        PickFactory(plot=order.plot)
         self.assertIn(order, Order.objects.picked_today())
 
     def test_unpicked_today(self):
         """ Order.objects.unpicked_today() """
-        requester = get_user_model().objects.create_user(
-            email=uuid_email(), password=uuid_pass())
-        garden = Garden.objects.create(
-            title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
-        plot = Plot.objects.create(title='1', garden=garden)
-        order = Order.objects.create(
-            plot=plot,
-            start_date=localdate(2017, 1, 1),
-            end_date=localdate(2017, 1, 5),
-            requester=requester)
+        order = OrderFactory()
         self.assertIn(order, Order.objects.unpicked_today())
 
 
@@ -346,58 +274,42 @@ class OrderTestCase(TestCase):
     """
     Test Order model.
     """
+    def setUp(self):
+        self.past_date = fake.past_date()
+        self.extra_past_date = self.past_date - timedelta(days=5)
+        self.future_date = fake.future_date()
+        self.extra_future_date = self.future_date + timedelta(days=5)
+
     def test_create_order(self):
         """
         Ensure that an Order can be created and retrieved.
         """
-        # Create order
-        requester = get_user_model().objects.create_user(
-            email=uuid_email(), password=uuid_pass())
-        garden = Garden.objects.create(
-            title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
-        plot = Plot.objects.create(title='1', garden=garden)
-        order = Order.objects.create(
-            plot=plot,
-            start_date=localdate(2017, 1, 1),
-            end_date=localdate(2017, 1, 5),
-            requester=requester)
-        self.assertIn(order, list(Order.objects.all()))
+        order = OrderFactory()
+        self.assertIn(order, Order.objects.all())
 
     def test_progress(self):
         """
         order.progress()
         """
-        requester = get_user_model().objects.create_user(
-            email=uuid_email(), password=uuid_pass())
-        garden = Garden.objects.create(
-            title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
-        plot = Plot.objects.create(title='1', garden=garden)
-
         orders = [
             # Ended 5 days ago - 100%
-            Order.objects.create(
-                plot=plot,
+            OrderFactory(
                 start_date=today()-timedelta(days=10),
                 end_date=today()-timedelta(days=5),
-                requester=requester
             ),
             # Started 5 days ago, ends in 5 days - 50%
-            Order.objects.create(
-                plot=plot,
+            OrderFactory(
                 start_date=today()-timedelta(days=5),
                 end_date=today()+timedelta(days=5),
-                requester=requester
             ),
             # Not yet started - 0%
-            Order.objects.create(
-                plot=plot,
+            OrderFactory(
                 start_date=today()+timedelta(days=5),
                 end_date=today()+timedelta(days=10),
-                requester=requester
             ),
         ]
-
         self.assertEqual(orders[0].progress(), 100)
+        # FIXME: Test this using freezegun
         self.assertTrue(abs(orders[1].progress() - 50) < 10)
         self.assertEqual(orders[2].progress(), 0)
 
@@ -405,33 +317,21 @@ class OrderTestCase(TestCase):
         """
         order.is_closed()
         """
-        requester = get_user_model().objects.create_user(
-            email=uuid_email(), password=uuid_pass())
-        garden = Garden.objects.create(
-            title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
-        plot = Plot.objects.create(title='1', garden=garden)
-
         orders = [
             # Ended 5 days ago - 100%
-            Order.objects.create(
-                plot=plot,
+            OrderFactory(
                 start_date=today()-timedelta(days=10),
                 end_date=today()-timedelta(days=5),
-                requester=requester
             ),
             # Started 5 days ago, ends in 5 days - 50%
-            Order.objects.create(
-                plot=plot,
+            OrderFactory(
                 start_date=today()-timedelta(days=5),
                 end_date=today()+timedelta(days=5),
-                requester=requester
             ),
             # Not yet started - 0%
-            Order.objects.create(
-                plot=plot,
+            OrderFactory(
                 start_date=today()+timedelta(days=5),
                 end_date=today()+timedelta(days=10),
-                requester=requester
             ),
         ]
 
@@ -445,21 +345,10 @@ class OrderTestCase(TestCase):
         """
         order.was_picked_today()
         """
-        picker = get_user_model().objects.create_user(
-            email=uuid_email(), password=uuid_pass())
-        requester = get_user_model().objects.create_user(
-            email=uuid_email(), password=uuid_pass())
-        garden = Garden.objects.create(
-            title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
-        plot = Plot.objects.create(title='1', garden=garden)
-        order = Order.objects.create(
-            plot=plot,
-            start_date=localdate(2017, 1, 1),
-            end_date=localdate(2017, 1, 5),
-            requester=requester
-        )
-        Pick.objects.create(picker=picker, plot=plot)
+        order = OrderFactory()
+        PickFactory(plot=order.plot)
         self.assertTrue(order.was_picked_today())
+        self.assertFalse(OrderFactory().was_picked_today())
 
 
 class PickTestCase(TestCase):
@@ -470,12 +359,7 @@ class PickTestCase(TestCase):
         """
         Ensure that a Pick can be created and retrieved.
         """
-        picker = get_user_model().objects.create_user(
-            email=uuid_email(), password=uuid_pass())
-        garden = Garden.objects.create(
-            title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
-        plot = Plot.objects.create(title='1', garden=garden)
-        pick = Pick.objects.create(picker=picker, plot=plot)
+        pick = PickFactory()
         self.assertIn(pick, Pick.objects.all())
 
     def test_inquirers(self):
@@ -529,21 +413,14 @@ class UserManagerTestCase(TestCase):
         """ User.objects.test_get_or_invite_users() """
 
         # 4 email addresses
-        emails = [uuid_email(), uuid_email(), uuid_email(), uuid_email()]
+        emails = [fake.email() for _ in range(4)]
 
         # Turn the first 2 into real users to test the "get" functionality
-        get_user_model().objects.create_user(
-            email=emails[0], password=uuid_pass()),
-        get_user_model().objects.create_user(
-            email=emails[1], password=uuid_pass())
+        ActiveUserFactory(email=emails[0])
+        ActiveUserFactory(email=emails[1])
 
         # Create fake request
-        inviter = get_user_model().objects.create_user(
-            email=uuid_email(),
-            password=uuid_pass(),
-            first_name='Test',
-            last_name='Test'
-        )
+        inviter = ActiveUserFactory()
         request = RequestFactory().get('/')
         request.user = inviter
 
@@ -558,10 +435,10 @@ class UserManagerTestCase(TestCase):
         self.assertEqual(len(mail.outbox), 2)
 
         # Test the subject line of the first email
-        self.assertEqual(
-            mail.outbox[0].subject,
-            'Test Test invited you to join GardenHub'
-        )
+        self.assertTrue(
+            mail.outbox[0].subject.endswith(
+                ' invited you to join GardenHub'
+            ))
 
 
 class UserTestCase(TestCase):
@@ -591,16 +468,8 @@ class UserTestCase(TestCase):
 
     def test_create_user(self):
         """ Create a user """
-
-        # Save email address
-        email = uuid_email()
-
-        # Create new user with email
-        user = get_user_model().objects.create_user(
-            email=email, password=uuid_pass())
-
-        # Test that the user was saved by its email
-        self.assertEqual(user, get_user_model().objects.get(email=email))
+        user = ActiveUserFactory()
+        self.assertIn(user, get_user_model().objects.all())
 
     def test_inactivated_user_auth(self):
         """ Ensure that users can't authenticate by default """
@@ -643,31 +512,20 @@ class UserTestCase(TestCase):
 
     def test_get_full_name(self):
         """ user.get_full_name() """
-        user = get_user_model().objects.create_user(
-            first_name="Ada",
-            last_name="Lovelace",
-            email=uuid_email(), password=uuid_pass()
-        )
+        user = ActiveUserFactory(first_name="Ada", last_name="Lovelace")
         self.assertEqual(user.get_full_name(), "Ada Lovelace")
 
     def test_get_short_name(self):
         """ user.get_short_name() """
-        user = get_user_model().objects.create_user(
-            first_name="Ada",
-            last_name="Lovelace",
-            email=uuid_email(), password=uuid_pass()
-        )
+        user = ActiveUserFactory(first_name="Ada", last_name="Lovelace")
         self.assertEqual(user.get_short_name(), "Ada")
 
     def test_email_user(self):
         """ user.email_user() """
-
-        user = get_user_model().objects.create_user(
-            email=uuid_email(), password=uuid_pass())
+        user = ActiveUserFactory()
         user.email_user(
             "Hello, user!",
-            "This is a beautiful test. The best test."
-        )
+            "This is a beautiful test. The best test.")
 
         # Ensure that 1 email was sent
         self.assertEqual(len(mail.outbox), 1)
@@ -677,88 +535,44 @@ class UserTestCase(TestCase):
 
     def test_get_gardens(self):
         """ user.get_gardens() """
-
-        # Create new User object
-        user = get_user_model().objects.create_user(
-            email=uuid_email(), password=uuid_pass())
-
-        # Create test Garden objects
-        gardens = [
-            Garden.objects.create(
-                title='Good Garden',
-                address='1000 Garden Rd, Philadelphia PA, 1776'
-            ) for _ in range(4)
-        ]
-
-        # Create additional Gardens to make sure they *aren't* included
-        # in the results
-        [Garden.objects.create(
-            title='Bad Garden',
-            address='1100 Garden Rd, Philadelphia PA, 1776'
-        ) for _ in range(4)]
-
-        # Assign user to gardens
-        for garden in gardens:
-            garden.managers.add(user)
-
-        # Test that User.get_gardens() returns the correct result
+        user = ActiveUserFactory()
+        gardens = GardenFactory.create_batch(4, managers=[user])
         self.assertEqual(set(user.get_gardens()), set(gardens))
 
     def test_get_plots(self):
         """ user.get_plots() """
 
-        # Create new User object
-        user = get_user_model().objects.create_user(
-            email=uuid_email(), password=uuid_pass())
+        # Exclusively a gardener on a plot
+        gardener = ActiveUserFactory()
+        plot = PlotFactory(gardeners=[gardener])
+        self.assertEqual(set([plot]), set(gardener.get_plots()))
 
-        # Create test Gardens
-        gardens = [
-            Garden.objects.create(
-                title='Special Garden',
-                address='1000 Garden Rd, Philadelphia PA, 1776'
-            ) for _ in range(4)
-        ]
+        # Exclusively a manager on a garden
+        manager = ActiveUserFactory()
+        garden = GardenFactory(managers=[manager])
+        plots = PlotFactory.create_batch(5, garden=garden)
+        self.assertEqual(set(plots), set(manager.get_plots()))
 
-        # Create test Plots
-        plots = [
-            Plot.objects.create(title='1', garden=gardens[0]),
-            Plot.objects.create(title='2', garden=gardens[0]),
-            Plot.objects.create(title='3', garden=gardens[1]),
-            Plot.objects.create(title='4', garden=gardens[2])
-        ]
+        # Neither a gardener on a plot nor a manager on a garden
+        nobody = ActiveUserFactory()
+        self.assertEqual(nobody.get_plots().count(), 0)
 
-        # Assign user to certain gardens and plots
-        gardens[0].managers.add(user)
-        plots[2].gardeners.add(user)
-
-        # Test results
-        result = [plots[0], plots[1], plots[2]]
-        self.assertEqual(set(user.get_plots()), set(result))
+        # Both a gardener on a plot and a manager on a garden
+        godlike = ActiveUserFactory()
+        garden = GardenFactory(managers=[godlike])
+        plots = PlotFactory.create_batch(5, garden=garden)
+        plot = PlotFactory(gardeners=[godlike])
+        self.assertEqual(set(plots + [plot]), set(godlike.get_plots()))
 
     def test_get_orders(self):
         """ user.get_orders() """
-
-        # Create plot
-        garden = Garden.objects.create(
-            title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
-        plot = Plot.objects.create(title='1', garden=garden)
-
-        # Create orders
-        orders = [
-            Order.objects.create(
-                plot=plot,
-                start_date=localdate(2017, 1, 1),
-                end_date=localdate(2017, 1, 5),
-                requester=self.normal_user
-            ) for _ in range(5)
-        ]
-
-        # Create user and assign it to the plot
-        user = get_user_model().objects.create_user(
-            email=uuid_email(), password=uuid_pass())
-        plot.gardeners.add(user)
-
-        # Test orders
+        user = ActiveUserFactory()
+        orders = OrderFactory.create_batch(
+            5,
+            start_date=localdate(2017, 1, 1),
+            end_date=localdate(2017, 1, 5),
+            plot__gardeners=[user]
+        )
         self.assertEqual(set(user.get_orders()), set(orders))
 
     def test_get_peers(self):

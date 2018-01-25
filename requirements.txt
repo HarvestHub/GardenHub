@@ -6,6 +6,9 @@ sorl-thumbnail==12.4.1
 psycopg2==2.7.3.2
 dj-database-url==0.4.2
 
+# Tests
+factory_boy==2.9.2
+
 # Docs
 Sphinx
 sphinx-autobuild
