@@ -7,6 +7,7 @@
 [![Requirements Status](https://requires.io/github/HarvestHub/GardenHub/requirements.svg?branch=master)](https://requires.io/github/HarvestHub/GardenHub/requirements/?branch=master)
 [![Documentation Status](https://readthedocs.org/projects/gardenhub/badge/?version=latest)](http://gardenhub.readthedocs.io/en/latest/?badge=latest)
 [![License: GPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
+[![Matrix ID](https://img.shields.io/badge/matrix-%23gardenhub%3Amatrix.org-brightgreen.svg)](https://riot.im/app/#/room/#gardenhub:matrix.org)
 
 # GardenHub
 
