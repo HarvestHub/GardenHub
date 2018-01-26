@@ -68,7 +68,6 @@ class OrderCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     def test_func(self):
         return self.request.user.is_gardener() is True
 
-
     def get_form(self, *args, **kwargs):
         form = super().get_form(*args, **kwargs)
         # Constrain Plot choices
