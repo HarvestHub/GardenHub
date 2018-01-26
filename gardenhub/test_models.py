@@ -307,29 +307,30 @@ class OrderTestCase(TestCase):
         """
         order.is_closed()
         """
-        orders = [
-            # Ended 5 days ago - 100%
-            OrderFactory(
-                start_date=today()-timedelta(days=10),
-                end_date=today()-timedelta(days=5),
-            ),
-            # Started 5 days ago, ends in 5 days - 50%
-            OrderFactory(
-                start_date=today()-timedelta(days=5),
-                end_date=today()+timedelta(days=5),
-            ),
-            # Not yet started - 0%
-            OrderFactory(
-                start_date=today()+timedelta(days=5),
-                end_date=today()+timedelta(days=10),
-            ),
-        ]
+        # Ended 5 days ago - 100%
+        self.assertTrue(OrderFactory(
+            start_date=today()-timedelta(days=10),
+            end_date=today()-timedelta(days=5),
+        ).is_closed())
 
-        # FIXME: Test canceled orders
+        # Started 5 days ago, ends in 5 days - 50%
+        self.assertFalse(OrderFactory(
+            start_date=today()-timedelta(days=5),
+            end_date=today()+timedelta(days=5),
+        ).is_closed())
 
-        self.assertTrue(orders[0].is_closed())
-        self.assertFalse(orders[1].is_closed())
-        self.assertFalse(orders[2].is_closed())
+        # Not yet started - 0%
+        self.assertFalse(OrderFactory(
+            start_date=today()+timedelta(days=5),
+            end_date=today()+timedelta(days=10),
+        ).is_closed())
+
+        # Would be open, except it's canceled
+        self.assertTrue(OrderFactory(
+            start_date=today()-timedelta(days=5),
+            end_date=today()+timedelta(days=5),
+            canceled=True
+        ).is_closed())
 
     def test_was_picked_today(self):
         """
