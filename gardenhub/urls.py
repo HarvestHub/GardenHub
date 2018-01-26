@@ -39,6 +39,7 @@ urlpatterns = [
     path('pick/<int:plotId>/', views.PickCreateView.as_view(), name='pick-create'),  # noqa
     # Plots
     path('plots/', views.PlotListView.as_view(), name='plot-list'),
+    path('plots/new/', views.PlotCreateView.as_view(), name='plot-create'),
     path('plot/<int:pk>/edit/', views.PlotUpdateView.as_view(), name='plot-update'),  # noqa
     # Gardens
     path('gardens/', views.GardenListView.as_view(), name='garden-list'),

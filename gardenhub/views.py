@@ -238,6 +238,24 @@ class PlotListView(LoginRequiredMixin, ListView):
         return self.request.user.get_plots()
 
 
+class PlotCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+    model = Plot
+    form_class = PlotForm
+    success_url = reverse_lazy('plot-list')
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.add_message(
+            self.request, messages.SUCCESS,
+            "Plot {} has been successfully created!".format(self.object.title)
+        )
+        return response
+
+    def test_func(self):
+        # Only garden managers can create plots
+        return self.request.user.is_garden_manager()
+
+
 class PlotUpdateView(LoginRequiredMixin, UserCanEditPlotMixin, UpdateView):
     """
     Edit form for an individual plot.

@@ -1,12 +1,10 @@
 {% extends "gardenhub/_manage_base.html" %}
 
 {% block content %}
-  <div>
-    <a href="{% url "order-create" %}" class="right floated large purple ui button">
-      <i class="plus icon"></i>
-      New Order
-    </a>
-  </div>
+  <a href="{% url "order-create" %}" class="right floated large purple ui button">
+    <i class="plus icon"></i>
+    New Order
+  </a>
 
   <h2 class="ui header">
     Your Orders
