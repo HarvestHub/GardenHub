@@ -128,16 +128,30 @@ class OrderQuerySetTestCase(TestCase):
             end_date=self.past_date,
         )
 
-        # FIXME: Test canceled orders
+        # Canceled orders
+        canceled_orders = [
+            # Would be upcoming, but canceled
+            OrderFactory(
+                start_date=self.future_date,
+                end_date=self.extra_future_date,
+                canceled=True
+            ),
+            # Would be active, but canceled
+            OrderFactory(
+                start_date=self.past_date,
+                end_date=self.future_date,
+                canceled=True
+            ),
+        ]
 
-        # Incomplete orders
-        incomplete_orders = [
-            # Start date is greater than today
+        # Open orders
+        open_orders = [
+            # Upcoming
             OrderFactory(
                 start_date=self.future_date,
                 end_date=self.extra_future_date,
             ),
-            # End date is greater than today
+            # Active
             OrderFactory(
                 start_date=self.past_date,
                 end_date=self.future_date,
@@ -148,7 +162,9 @@ class OrderQuerySetTestCase(TestCase):
         result = Order.objects.closed()
         for order in completed_orders:
             self.assertIn(order, result)
-        for order in incomplete_orders:
+        for order in canceled_orders:
+            self.assertIn(order, result)
+        for order in open_orders:
             self.assertNotIn(order, result)
 
     def test_active(self):
