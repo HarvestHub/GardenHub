@@ -44,3 +44,11 @@ def picker_format(value, garden):
     Format Orders for the Picker view.
     """
     return value.filter(plot__garden__id=garden.id).active()
+
+
+@register.filter
+def user_can_edit_order(value, order):
+    """
+    Ensure that the user can edit the given order.
+    """
+    return value.can_edit_order(order)

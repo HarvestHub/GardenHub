@@ -3,7 +3,7 @@
 
 {% block content %}
 
-  {% if not order.canceled %}
+  {% if not order.canceled and request.user|user_can_edit_order:order %}
     <div class="clearfix">
       <div class="ui icon top left pointing right floated settings dropdown basic button">
         <i class="wrench icon"></i>
