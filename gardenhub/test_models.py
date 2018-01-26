@@ -171,12 +171,11 @@ class OrderQuerySetTestCase(TestCase):
         """ Order.objects.active() """
 
         # Active orders
-        active_orders = [
-            OrderFactory(
-                start_date=self.past_date,
-                end_date=self.future_date,
-            ) for _ in range(3)
-        ]
+        active_orders = OrderFactory.create_batch(
+            3,
+            start_date=self.past_date,
+            end_date=self.future_date,
+        )
 
         # Inactive orders
         inactive_orders = [
@@ -559,28 +558,18 @@ class UserTestCase(TestCase):
         """ user.get_peers() """
 
         # Create test Gardens
-        gardens = [
-            Garden.objects.create(
-                title='Special Garden',
-                address='1000 Garden Rd, Philadelphia PA, 1776'
-            ) for _ in range(4)
-        ]
+        gardens = GardenFactory.create_batch(4)
 
         # Create test Plots
         plots = [
-            Plot.objects.create(title='1', garden=gardens[0]),
-            Plot.objects.create(title='2', garden=gardens[2]),
-            Plot.objects.create(title='3', garden=gardens[3]),
-            Plot.objects.create(title='4', garden=gardens[3])
+            PlotFactory(garden=gardens[0]),
+            PlotFactory(garden=gardens[2]),
+            PlotFactory(garden=gardens[3]),
+            PlotFactory(garden=gardens[3])
         ]
 
         # Create test Users
-        users = [
-            get_user_model().objects.create_user(
-                email=fake.email(),
-                password=fake.password()
-            ) for _ in range(10)
-        ]
+        users = ActiveUserFactory.create_batch(10)
 
         # Garden with 2 managers and 1 plot with 1 gardener
         gardens[0].managers.add(users[0], users[1])
@@ -616,26 +605,17 @@ class UserTestCase(TestCase):
 
     def test_get_picker_orders(self):
         """ user.get_picker_orders() """
-
-        # Create garden, plot, and picker
-        garden = Garden.objects.create(
-            title='Garden A', address='1000 Garden Rd, Philadelphia PA, 1776')
-        plot = Plot.objects.create(title='1', garden=garden)
-        picker = get_user_model().objects.create_user(
-            email=fake.email(), password=fake.password())
-        garden.pickers.add(picker)
+        picker = PickerFactory()
+        plot = PlotFactory(garden=picker.get_picker_gardens().first())
 
         # Create orders
-        requester = get_user_model().objects.create_user(
-            email=fake.email(), password=fake.password())
-        orders = [
-            Order.objects.create(
-                plot=plot,
-                start_date=localdate(2017, 1, 1),
-                end_date=localdate(2017, 1, 5),
-                requester=requester
-            ) for _ in range(3)
-        ]
+        orders = OrderFactory.create_batch(
+            3,
+            plot=plot,
+            start_date=localdate(2017, 1, 1),
+            end_date=localdate(2017, 1, 5),
+            requester=ActiveUserFactory()
+        )
 
         self.assertEqual(set(picker.get_picker_orders()), set(orders))
         self.assertEqual(picker.get_picker_orders().count(), 3)
