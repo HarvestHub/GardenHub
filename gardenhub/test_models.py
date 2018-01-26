@@ -284,27 +284,24 @@ class OrderTestCase(TestCase):
         """
         order.progress()
         """
-        orders = [
-            # Ended 5 days ago - 100%
-            OrderFactory(
-                start_date=today()-timedelta(days=10),
-                end_date=today()-timedelta(days=5),
-            ),
-            # Started 5 days ago, ends in 5 days - 50%
-            OrderFactory(
-                start_date=today()-timedelta(days=5),
-                end_date=today()+timedelta(days=5),
-            ),
-            # Not yet started - 0%
-            OrderFactory(
-                start_date=today()+timedelta(days=5),
-                end_date=today()+timedelta(days=10),
-            ),
-        ]
-        self.assertEqual(orders[0].progress(), 100)
-        # FIXME: Test this using freezegun
-        self.assertTrue(abs(orders[1].progress() - 50) < 10)
-        self.assertEqual(orders[2].progress(), 0)
+        # Ended 5 days ago - 100%
+        self.assertEqual(OrderFactory(
+            start_date=today()-timedelta(days=10),
+            end_date=today()-timedelta(days=5),
+        ).progress(), 100)
+
+        # Started 5 days ago, ends in 5 days - 50%
+        # FIXME: Test this using freezegun instead of "close enough"
+        self.assertTrue(abs(OrderFactory(
+            start_date=today()-timedelta(days=5),
+            end_date=today()+timedelta(days=5),
+        ).progress() - 50) < 10)
+
+        # Not yet started - 0%
+        self.assertEqual(OrderFactory(
+            start_date=today()+timedelta(days=5),
+            end_date=today()+timedelta(days=10),
+        ).progress(), 0)
 
     def test_is_closed(self):
         """
