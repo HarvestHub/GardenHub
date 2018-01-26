@@ -65,9 +65,6 @@ class OrderCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Order
     form_class = OrderForm
 
-    def test_func(self):
-        return self.request.user.is_gardener() is True
-
     def get_form(self, *args, **kwargs):
         form = super().get_form(*args, **kwargs)
         # Constrain Plot choices
@@ -99,6 +96,10 @@ class OrderCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
                 )
             )
         return response
+
+    def test_func(self):
+        # Ensure the user has the ability to edit at least 1 plot
+        return self.request.user.is_gardener()
 
 
 class PickCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
