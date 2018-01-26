@@ -57,13 +57,17 @@ class OrderListView(LoginRequiredMixin, ListView):
         return self.request.user.get_orders()
 
 
-class OrderCreateView(LoginRequiredMixin, CreateView):
+class OrderCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     """
     This is a form used to submit a new order. It's used by gardeners, garden
     managers, or anyone who has the ability to edit a plot.
     """
     model = Order
     form_class = OrderForm
+
+    def test_func(self):
+        return self.request.user.is_gardener() is True
+
 
     def get_form(self, *args, **kwargs):
         form = super().get_form(*args, **kwargs)
