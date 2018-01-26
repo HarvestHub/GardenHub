@@ -2,10 +2,15 @@
 {% load gardenhub thumbnail %}
 
 {% block content %}
+  {% if request.user.is_garden_manager %}
+    <a href="{% url "plot-create" %}" class="right floated large purple ui button">
+      <i class="plus icon"></i>
+      New Plot
+    </a>
+  {% endif %}
+
   <h2 class="ui header">Manage Plots</h2>
-
   <!-- TODO:  If someone has more than multiple plots and multiple gardens, provide "filter by garden" option?-->
-
   <div class="ui three stackable cards">
     {% for plot in plots %}
       <div class="card">
