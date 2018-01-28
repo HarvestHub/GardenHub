@@ -64,7 +64,7 @@ class PlotForm(forms.ModelForm):
 
 
 class GardenForm(forms.ModelForm):
-    manager_emails = MultipleEmailField()
+    manager_emails = MultipleEmailField(required=False)
 
     class Meta:
         model = Garden

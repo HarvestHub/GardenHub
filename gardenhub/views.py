@@ -259,7 +259,7 @@ class GardenUpdateView(LoginRequiredMixin, UserCanEditGardenMixin, UpdateView):
         self.object.managers.set(managers)
         messages.add_message(
             self.request, messages.SUCCESS,
-            "Garden {} has been successfully updated!".format(
+            "{} has been successfully updated!".format(
                 self.object.title)
         )
         self.object.save()  # FIXME: Prevent saving the object twice
