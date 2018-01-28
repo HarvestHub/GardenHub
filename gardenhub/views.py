@@ -175,6 +175,11 @@ class PickCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
                     }
                 )
             )
+        # Friendly confirmation message
+        messages.add_message(
+            self.request, messages.SUCCESS,
+            "Pick for {} was submitted!".format(pick.plot)
+        )
         return response
 
 

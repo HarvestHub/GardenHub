@@ -2,6 +2,11 @@
 {% load static %}
 
 {% block content %}
+
+  {% if form.non_field_errors %}
+    <div class="ui visible error message">{{ form.non_field_errors }}</div>
+  {% endif %}
+
   <h1 class="ui header">
     Today I picked&hellip;
     <span class="sub header">Crops from <strong>plot {{ plot.title }}</strong> in {{ plot.garden.title }}</span>
@@ -42,11 +47,10 @@
 
   <form class="ui form" action="" method="post">
     {% csrf_token %}
-    {{ form.non_field_errors }}
-    <div class="field">
+    <div class="required field{% if form.crops.errors %} error{% endif %}">
       <label>Crops</label>
       <p class="description">Type the names of the crops you picked today from plot {{ plot.title }}.</p>
-      <select name="crops" class="ui crops fluid search dropdown" multiple="">
+      <select name="{{ form.crops.name }}" class="ui crops fluid search dropdown" multiple="">
         <option value="">Type crops&hellip;</option>
         {% for crop in form.crops.field.queryset %}
           <option value="{{ crop.id }}">{{ crop.title }}</option>
@@ -63,6 +67,12 @@
 
 {% block extra_scripts %}
   <script>
+    $('.ui.form').form({
+      fields: {
+        {{ form.crops.name }}: 'empty'
+      }
+    });
+
     $(".crop.item").click(function(e) {
       var cropId = $(this).data("crop-id");
       $(".crops.dropdown").dropdown('set selected', cropId);
