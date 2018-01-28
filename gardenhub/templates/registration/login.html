@@ -19,23 +19,21 @@
             <label>E-mail address</label>
             <div class="ui left icon input">
               <i class="user icon"></i>
-              <input type="text" name="username" placeholder="E-mail address" autofocus required>
+              <input type="text" name="{{ form.username.name }}" placeholder="E-mail address" autofocus required>
             </div>
+            {{ form.username.errors }}
           </div>
           <div class="field{% if form.password.errors %} error{% endif %}">
             <label>Password</label>
             <div class="ui left icon input">
               <i class="lock icon"></i>
-              <input type="password" name="password" placeholder="Password" required>
+              <input type="password" name="{{ form.password.name }}" placeholder="Password" required>
             </div>
+            {{ form.password.errors }}
           </div>
           <input class="ui fluid large purple submit button" type="submit" value="Login">
         </div>
-
-        {% if login_failed %}<div class="ui error message">Login failed! Invalid email address or password.</div>{% endif %}
-
       </form>
-
     </div>
   </div>
 {% endblock %}
