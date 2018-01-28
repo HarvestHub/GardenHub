@@ -4,7 +4,9 @@
 {% block content %}
   <form class="ui form" action="" method="post">
     {% csrf_token %}
-    {{ form.non_field_errors }}
+    {% if form.non_field_errors %}
+      <div class="ui visible error message">{{ form.non_field_errors }}</div>
+    {% endif %}
     <div class="required field{% if form.plot.errors %} error{% endif %}">
       <label>Plot</label>
       <p class="description">Select the plot you'd like picked.</p>

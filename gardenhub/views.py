@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.views import LogoutView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.core.exceptions import ValidationError
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView, DetailView, DeleteView
 from django.views.generic.edit import (
@@ -67,9 +68,36 @@ class OrderCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
 
     def get_form(self, *args, **kwargs):
         form = super().get_form(*args, **kwargs)
+
         # Constrain Plot choices
         # We have to do this here because we can access the Request
         form.fields['plot'].queryset = self.request.user.get_plots()
+
+        # Prevent overlapping order dates
+        # http://wiki.c2.com/?TestIfDateRangesOverlap
+        if form.is_valid():
+            data = form.cleaned_data
+
+            overlapping_orders = Order.objects.filter(
+                # On the same plot, and
+                Q(plot__id=data['plot'].id) &
+                (
+                    # Start date occurs before the end date, and
+                    Q(start_date__lte=data['end_date']) &
+                    # End date occurs after the start date
+                    Q(end_date__gte=data['start_date'])
+                )
+            ).active()  # Only active orders matter in this context
+
+            if overlapping_orders.count() > 0:
+                # Overlapping orders have been found!
+                form.add_error(None, ValidationError(
+                    "Dates overlap with another order on this plot. Please "
+                    "cancel the other order(s) or select a different date "
+                    "range.",
+                    code='overlap'
+                ))
+
         return form
 
     def get_form_kwargs(self):
