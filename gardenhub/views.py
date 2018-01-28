@@ -285,7 +285,7 @@ class PlotCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         response = super().form_valid(form)
         messages.add_message(
             self.request, messages.SUCCESS,
-            "Plot {} has been successfully created!".format(self.object.title)
+            "{} has been successfully created!".format(self.object)
         )
         return response
 
@@ -332,7 +332,7 @@ class PlotUpdateView(LoginRequiredMixin, UserCanEditPlotMixin, UpdateView):
         self.object.save()  # FIXME: Prevent saving the object twice
         messages.add_message(
             self.request, messages.SUCCESS,
-            "Plot {} has been successfully updated!".format(self.object.title)
+            "{} has been successfully updated!".format(self.object)
         )
         return response
 

@@ -56,7 +56,7 @@ class OrderForm(forms.ModelForm):
 
 
 class PlotForm(forms.ModelForm):
-    gardener_emails = MultipleEmailField()
+    gardener_emails = MultipleEmailField(required=False)
 
     class Meta:
         model = Plot
