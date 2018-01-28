@@ -65,53 +65,63 @@
     {# Welcome the user with a nice message #}
     <h1 class="left aligned">Welcome, {{ user.first_name }}!</h1>
 
-    <div class="ui center aligned container">
-      <div class="welcome-screen">
+    {# The user has the ability to create an order #}
+    {% if request.user.is_gardener %}
+      <div class="ui center aligned container">
+        <div class="welcome-screen">
 
-        {# Guide a new user to create an order #}
-        {% if not request.user.has_open_orders %}
-          <div class="ui container">
-            <h2 class="ui header">
-              No Orders Placed
-              <span class="sub header">Create an order to get started.</span>
-            </h2>
-            <a class="big purple ui button" href="/orders/new/"><i class="plus icon"></i> New Order</a>
-          </div>
+          {# Guide a new user to create an order #}
+          {% if not request.user.has_open_orders %}
+            <div class="ui container">
+              <h2 class="ui header">
+                No Orders Placed
+                <span class="sub header">Create an order to get started.</span>
+              </h2>
+              <a class="big purple ui button" href="/orders/new/"><i class="plus icon"></i> New Order</a>
+            </div>
 
-        {# If the user already has open orders, give them some other calls to action #}
-        {% else %}
-          <div class="ui items">
-            <div class="item">
-              <a class="huge fluid purple ui button" href="/orders/new/">
-                <i class="plus icon"></i>
-                New Order
-              </a>
+          {# If the user already has open orders, give them some other calls to action #}
+          {% else %}
+            <div class="ui items">
+              <div class="item">
+                <a class="huge fluid purple ui button" href="/orders/new/">
+                  <i class="plus icon"></i>
+                  New Order
+                </a>
+              </div>
+              <div class="item">
+                <a class="huge fluid purple ui button" href="/orders">
+                  <i class="edit icon"></i>
+                  {% if request.user.is_garden_manager %}
+                    Upcoming Orders
+                  {% else %}
+                    View My Orders
+                  {% endif %}
+                </a>
+              </div>
+              <div class="item">
+                <a class="huge fluid purple ui button" href="/plots">
+                  <i class="plot icon"></i>
+                  {% if request.user.is_garden_manager %}
+                    Manage Plots
+                  {% else %}
+                    View My Plots
+                  {% endif %}
+                </a>
+              </div>
             </div>
-            <div class="item">
-              <a class="huge fluid purple ui button" href="/orders">
-                <i class="edit icon"></i>
-                {% if request.user.is_garden_manager %}
-                  Upcoming Orders
-                {% else %}
-                  View My Orders
-                {% endif %}
-              </a>
-            </div>
-            <div class="item">
-              <a class="huge fluid purple ui button" href="/plots">
-                <i class="plot icon"></i>
-                {% if request.user.is_garden_manager %}
-                  Manage Plots
-                {% else %}
-                  View My Plots
-                {% endif %}
-              </a>
-            </div>
-          </div>
-        {% endif %}
+          {% endif %}
 
+        </div>
       </div>
-    </div>
+
+    {# The user cannot create an order #}
+    {% else %}
+      <div class="ui warning message">
+        <div class="header">You're not assigned to any plots :(</div>
+        <p>Normally you would have the ability to place an order, except you haven't been assigned to any plots yet. Try getting in touch with your garden manager and ask if they can add you to your plot.</p>
+      </div>
+    {% endif %}
   {% endif %}
 {% endblock %}
 
