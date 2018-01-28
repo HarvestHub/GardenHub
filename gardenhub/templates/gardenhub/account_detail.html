@@ -37,15 +37,6 @@
         </div>
       </div>
       <div class="item">
-        <i class="garden icon"></i>
-        <div class="content">
-          Member of:
-          {% for garden in gardens %}
-            <span class="member-of-list-item"><a href="/garden/{{ garden.id }}/edit/">{{ garden.title }}</a></span>
-          {% endfor %}
-        </div>
-      </div>
-      <div class="item">
         <i class="mail icon"></i>
         <div class="content">
           <a href="mailto:{{ request.user.email }}">{{ request.user.email }}</a>

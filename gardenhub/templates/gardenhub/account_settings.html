@@ -12,21 +12,21 @@
       <div class="ui visible error message">{{ form.non_field_errors }}</div>
     {% endif %}
     <h3 class="ui dividing header">Profile</h4>
-    <div class="field">
+    <div class="required field{% if form.first_name.errors %} error{% endif %}">
       <label>First Name</label>
       <div class="ui input">
-        <input type="text" name="{{ form.first_name.name }}" placeholder="Enter your first name" value="{{ request.user.first_name }}">
+        <input type="text" name="{{ form.first_name.name }}" placeholder="Enter your first name" value="{{ request.user.first_name }}" required>
       </div>
       {{ form.first_name.errors }}
     </div>
-    <div class="field">
+    <div class="required field{% if form.last_name.errors %} error{% endif %}">
       <label>Last Name</label>
       <div class="ui input">
-        <input type="text" name="{{ form.last_name.name }}" placeholder="Enter your last name" value="{{ request.user.last_name }}">
+        <input type="text" name="{{ form.last_name.name }}" placeholder="Enter your last name" value="{{ request.user.last_name }}" required>
       </div>
       {{ form.last_name.errors }}
     </div>
-    <div class="field">
+    <div class="field{% if form.photo.errors %} error{% endif %}">
       <label>Photo</label>
       <div class="ui input">
         {{ form.photo }}
@@ -36,21 +36,21 @@
 
     <h3 class="ui dividing header">Change Password</h3>
     <p>You don't need to fill out this section unless you want to change your password.</p>
-    <div class="field">
+    <div class="field{% if form.password.errors %} error{% endif %}">
       <label>Current Password</label>
       <div class="ui input">
         <input type="password" name="{{ form.password.name }}" placeholder="●●●●●●●●">
       </div>
       {{ form.password.errors }}
     </div>
-    <div class="field">
+    <div class="field{% if form.new_password1.errors %} error{% endif %}">
       <label>New Password</label>
       <div class="ui input">
         <input type="password" name="{{ form.new_password1.name }}" placeholder="Enter a new password">
       </div>
       {{ form.new_password1.errors }}
     </div>
-    <div class="field">
+    <div class="field{% if form.new_password2.errors %} error{% endif %}">
       <label>New Password (again)</label>
       <div class="ui input">
         <input type="password" name="{{ form.new_password2.name }}" placeholder="Re-enter the password">
@@ -63,4 +63,15 @@
       Save
     </button>
   </form>
+{% endblock %}
+
+{% block extra_scripts %}
+  <script>
+    $('.ui.form').form({
+      fields: {
+        {{ form.first_name.name }}: 'empty',
+        {{ form.last_name.name }}: 'empty'
+      }
+    });
+  </script>
 {% endblock %}
