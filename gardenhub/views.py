@@ -1,7 +1,7 @@
 from django.db.models import Q
 from django.http import HttpResponseRedirect, JsonResponse
 from django.contrib import messages
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, login
 from django.contrib.auth.views import LogoutView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.exceptions import ValidationError
@@ -364,10 +364,20 @@ def account_activate_view(request, token):
             user.is_active = True
             user.set_password(form.cleaned_data['password1'])
             user.save()
-            # TODO: Actually authenticate the user
+            login(request, user)
+            messages.add_message(
+                request, messages.SUCCESS,
+                "Welcome to GardenHub! You've successfully activated "
+                "your account."
+            )
             return HttpResponseRedirect(reverse_lazy('home'))
 
-    return render(request, 'gardenhub/account_activate.html')
+    else:
+        form = ActivateAccountForm()
+
+    return render(request, 'gardenhub/account_activate.html', {
+        'form': form
+    })
 
 
 class AccountView(LoginRequiredMixin, TemplateView):

@@ -10,33 +10,41 @@
     </h1>
     <form class="ui form" action="" method="post">
       {% csrf_token %}
+      {% if form.non_field_errors %}
+        <div class="ui visible error message">{{ form.non_field_errors }}</div>
+      {% endif %}
+
       <div class="two fields">
-        <div class="field">
+        <div class="field{% if form.first_name.errors %} error{% endif %}">
           <label>First Name</label>
           <div class="ui input">
-            <input type="text" name="first_name" placeholder="Enter your first name">
+            <input type="text" name="{{ form.first_name.name }}" placeholder="Enter your first name" required>
           </div>
+          {{ form.first_name.errors }}
         </div>
-        <div class="field">
+        <div class="field{% if form.last_name.errors %} error{% endif %}">
           <label>Last Name</label>
           <div class="ui input">
-            <input type="text" name="last_name" placeholder="Enter your last name">
+            <input type="text" name="{{ form.last_name.name }}" placeholder="Enter your last name" required>
           </div>
+          {{ form.last_name.errors }}
         </div>
       </div>
       <div class="ui section divider"></div>
       <div class="two fields">
-        <div class="field">
+        <div class="field{% if form.password1.errors %} error{% endif %}">
           <label>Password</label>
           <div class="ui input">
-            <input type="password" name="password1" placeholder="Enter a password">
+            <input type="password" name="{{ form.password1.name }}" placeholder="Enter a password" required>
           </div>
+          {{ form.password1.errors }}
         </div>
-        <div class="field">
+        <div class="field{% if form.password2.errors %} error{% endif %}">
           <label>Password (again)</label>
           <div class="ui input">
-            <input type="password" name="password2" placeholder="Re-enter the password">
+            <input type="password" name="{{ form.password2.name }}" placeholder="Re-enter the password" required>
           </div>
+          {{ form.password2.errors }}
         </div>
       </div>
       <button class="large purple ui right floated button" type="submit">
@@ -53,4 +61,17 @@
       margin: 60px 0;
     }
   </style>
+{% endblock %}
+
+{% block extra_scripts %}
+  <script>
+    $('.ui.form').form({
+      fields: {
+        {{ form.first_name.name }}: 'empty',
+        {{ form.last_name.name }}: 'empty',
+        {{ form.password1.name }}: 'empty',
+        {{ form.password2.name }}: 'empty'
+      }
+    });
+  </script>
 {% endblock %}
