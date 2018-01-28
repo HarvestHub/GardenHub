@@ -1,3 +1,4 @@
+from datetime import timedelta
 from django import forms
 from django.core import validators
 from django.core.exceptions import ValidationError
@@ -27,10 +28,16 @@ class OrderForm(forms.ModelForm):
                   'pick_all', 'crops', 'comment']
 
     def clean_start_date(self):
-        """ Prevent orders being placed for dates prior to today. """
         start_date = self.cleaned_data['start_date']
+
+        # Prevent orders with a start_date before today
         if localdate(start_date) < today():
             raise ValidationError("You cannot create a backdated order")
+
+        # Prevent orders with less than a day's notice
+        if localdate(start_date) < today() + timedelta(days=1):
+            raise ValidationError("Please allow 24 hours between now "
+                                  "and the start of your order")
         return start_date
 
     def clean(self):

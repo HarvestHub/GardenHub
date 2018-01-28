@@ -95,6 +95,11 @@ class OrderCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
                     }
                 )
             )
+        # Friendly confirmation message
+        messages.add_message(
+            self.request, messages.SUCCESS,
+            "Your order was successfully submitted!"
+        )
         return response
 
     def test_func(self):

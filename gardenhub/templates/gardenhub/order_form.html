@@ -5,7 +5,7 @@
   <form class="ui form" action="" method="post">
     {% csrf_token %}
     {{ form.non_field_errors }}
-    <div class="field">
+    <div class="required field{% if form.plot.errors %} error{% endif %}">
       <label>Plot</label>
       <p class="description">Select the plot you'd like picked.</p>
       <div class="ui fluid search selection dropdown">
@@ -24,7 +24,7 @@
       {{ form.plot.errors }}
     </div>
     <div class="two fields">
-      <div class="field">
+      <div class="required field{% if form.start_date.errors %} error{% endif %}">
         <label>Start Date</label>
         <p class="description">When we should start picking.</p>
         <div class="ui calendar" id="start_date">
@@ -35,7 +35,7 @@
         </div>
         {{ form.start_date.errors }}
       </div>
-      <div class="field">
+      <div class="required field{% if form.end_date.errors %} error{% endif %}">
         <label>End Date</label>
         <p class="description">When we should stop picking.</p>
         <div class="ui calendar" id="end_date">
@@ -47,7 +47,7 @@
         {{ form.end_date.errors }}
       </div>
     </div>
-    <div class="field">
+    <div class="field{% if form.crops.errors %} error{% endif %}">
       <label>Pick everything?</label>
       <div class="ui pick-all toggle checkbox">
         <input type="checkbox" name="{{ form.pick_all.name }}">
@@ -72,7 +72,7 @@
       </div>
       {{ form.crops.errors }}
     </div>
-    <div class="field">
+    <div class="field{% if form.comment.errors %} error{% endif %}">
       <label>Comment</label>
       <p class="description">Special instructions or comments about the order.</p>
       <textarea name="{{ form.comment.name }}" rows="2" placeholder="Is there anything you'd like to tell the picker about your order?"></textarea>
@@ -86,11 +86,20 @@
 
 {% block extra_scripts %}
   <script>
+    // Form validation
+    $('.ui.form').form({
+      fields: {
+        {{ form.plot.name }}: 'empty',
+        {{ form.start_date.name }}: 'empty',
+        {{ form.end_date.name }}: 'empty'
+      }
+    });
+
     // Calendar initialization
     $('.ui.calendar#start_date').calendar({
       type: 'date',
       endCalendar: $('.ui.calendar#end_date'),
-      // minDate: new Date
+      minDate: new Date(new Date().getTime() + (24 * 60 * 60 * 1000)) // tomorrow
     });
     $('.ui.calendar#end_date').calendar({
       type: 'date',
