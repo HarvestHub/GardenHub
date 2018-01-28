@@ -37,3 +37,14 @@
     </div>
   </div>
 {% endblock %}
+
+{% block extra_scripts %}
+  <script>
+    $('.ui.form').form({
+      fields: {
+        {{ form.username.name }}: 'empty',
+        {{ form.password.name }}: 'empty'
+      }
+    });
+  </script>
+{% endblock %}
