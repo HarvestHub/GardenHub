@@ -23,9 +23,12 @@ from django.contrib.auth.views import LoginView
 
 urlpatterns = [
     path('', views.HomePageView.as_view(), name='home'),
+    path('admin/', admin.site.urls),
+    # Auth
     path('login/', LoginView.as_view(), name='login'),
     path('logout/', views.LogoutView.as_view(), name='logout'),
-    path('admin/', admin.site.urls),
+    path('password-reset/', views.PasswordResetView.as_view(), name='password_reset'),  # noqa
+    path('password-reset/<uidb64>/<token>/', views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),  # noqa
     # Account
     path('account/', views.AccountView.as_view(), name='account'),
     path('account/settings/', views.AccountSettingsView.as_view(), name='account-settings'),  # noqa

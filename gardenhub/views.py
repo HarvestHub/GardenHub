@@ -2,7 +2,9 @@ from django.db.models import Q
 from django.http import HttpResponseRedirect, JsonResponse
 from django.contrib import messages
 from django.contrib.auth import get_user_model, login
-from django.contrib.auth.views import LogoutView
+from django.contrib.auth.views import (
+    LogoutView, PasswordResetView, PasswordResetConfirmView
+)
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.exceptions import ValidationError
 from django.shortcuts import render, get_object_or_404
@@ -39,6 +41,32 @@ class LogoutView(LogoutView):
             "You've been successfully logged out."
         )
         return super().get_next_page()
+
+
+class PasswordResetView(PasswordResetView):
+    success_url = reverse_lazy('login')
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        email = form.cleaned_data['email']
+        messages.add_message(
+            self.request, messages.SUCCESS,
+            "Please check your email {} to reset your password. It may take a "
+            "few minutes to arrive.".format(email)
+        )
+        return response
+
+
+class PasswordResetConfirmView(PasswordResetConfirmView):
+    success_url = reverse_lazy('home')
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.add_message(
+            self.request, messages.SUCCESS,
+            "Welcome back! You have successfully changed your password."
+        )
+        return response
 
 
 class HomePageView(LoginRequiredMixin, TemplateView):
