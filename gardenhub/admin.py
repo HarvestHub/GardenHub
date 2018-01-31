@@ -10,12 +10,12 @@ class PlotAdmin(admin.ModelAdmin):
 
     def get_plot(self, obj):
         return "Plot #{}".format(obj.title)
-    get_plot.admin_order_field  = 'title'
+    get_plot.admin_order_field = 'title'
     get_plot.short_description = 'Plot'
 
     def get_garden(self, obj):
         return obj.garden
-    get_garden.admin_order_field  = 'garden__title'
+    get_garden.admin_order_field = 'garden__title'
     get_garden.short_description = 'Garden'
 
 
@@ -32,17 +32,17 @@ class OrderAdmin(admin.ModelAdmin):
 
     def get_order(self, obj):
         return "Order #{}".format(obj.id)
-    get_order.admin_order_field  = 'id'
+    get_order.admin_order_field = 'id'
     get_order.short_description = 'Order'
 
     def get_plot(self, obj):
         return "Plot #{}".format(obj.plot.title)
-    get_plot.admin_order_field  = 'plot__title'
+    get_plot.admin_order_field = 'plot__title'
     get_plot.short_description = 'Plot'
 
     def get_garden(self, obj):
         return obj.plot.garden
-    get_garden.admin_order_field  = 'plot__garden__title'
+    get_garden.admin_order_field = 'plot__garden__title'
     get_garden.short_description = 'Garden'
 
 
@@ -52,12 +52,12 @@ class PickAdmin(admin.ModelAdmin):
 
     def get_plot(self, obj):
         return obj.plot.title
-    get_plot.admin_order_field  = 'plot__title'
+    get_plot.admin_order_field = 'plot__title'
     get_plot.short_description = 'Plot'
 
     def get_garden(self, obj):
         return obj.plot.garden
-    get_garden.admin_order_field  = 'plot__garden__title'
+    get_garden.admin_order_field = 'plot__garden__title'
     get_garden.short_description = 'Garden'
 
 
