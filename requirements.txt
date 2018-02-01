@@ -5,6 +5,7 @@ whitenoise==3.3.1
 sorl-thumbnail==12.4.1
 psycopg2==2.7.3.2
 dj-database-url==0.4.2
+django-phonenumber-field==2.0.0
 
 # Tests
 factory_boy==2.10.0

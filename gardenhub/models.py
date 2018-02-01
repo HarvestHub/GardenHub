@@ -22,7 +22,8 @@ class Crop(models.Model):
     title = models.CharField(
         max_length=255,
         help_text="All lowercase name of this crop.")
-    image = models.ImageField(help_text="Photo of this crop.")
+    image = models.ImageField(
+        help_text="Photo of this crop.", upload_to="crops")
 
     def __str__(self):
         return self.title
@@ -68,7 +69,7 @@ class Garden(models.Model):
     )
 
     photo = models.ImageField(
-        blank=True, help_text="A photo of this garden."
+        blank=True, help_text="A photo of this garden.", upload_to="gardens"
     )
 
     pickers = models.ManyToManyField(
@@ -285,7 +286,7 @@ class User(AbstractBaseUser, PermissionsMixin):
                   "user from another."
     )
     photo = models.ImageField(
-        _('photo'), blank=True,
+        _('photo'), blank=True, upload_to="users",
         help_text="A photo of the user or an avatar."
     )
     is_staff = models.BooleanField(

@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'compressor',
     'sorl.thumbnail',
+    'phonenumber_field',
 ]
 
 MIDDLEWARE = [
