@@ -59,6 +59,7 @@ class PasswordResetView(PasswordResetView):
 
 class PasswordResetConfirmView(PasswordResetConfirmView):
     success_url = reverse_lazy('home')
+    post_reset_login = True
 
     def form_valid(self, form):
         response = super().form_valid(form)

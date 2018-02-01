@@ -21,6 +21,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(os.path.join(__file__, '..')))
 # Application definition
 
 INSTALLED_APPS = [
+    'gardenhub',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -30,7 +31,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'compressor',
     'sorl.thumbnail',
-    'gardenhub',
 ]
 
 MIDDLEWARE = [

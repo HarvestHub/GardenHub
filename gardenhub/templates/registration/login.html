@@ -16,10 +16,10 @@
         {% csrf_token %}
         <div class="ui left aligned stacked segment">
           <div class="field{% if form.username.errors %} error{% endif %}">
-            <label>E-mail address</label>
+            <label>Email address</label>
             <div class="ui left icon input">
-              <i class="user icon"></i>
-              <input type="text" name="{{ form.username.name }}" placeholder="E-mail address" autofocus required>
+              <i class="envelope icon"></i>
+              <input type="text" name="{{ form.username.name }}" placeholder="Email address" autofocus required>
             </div>
             {{ form.username.errors }}
           </div>
