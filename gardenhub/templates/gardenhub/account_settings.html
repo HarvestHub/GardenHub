@@ -26,6 +26,13 @@
       </div>
       {{ form.last_name.errors }}
     </div>
+    <div class="field{% if form.phone_number.errors %} error{% endif %}">
+      <label>Phone Number</label>
+      <div class="ui input">
+        <input type="text" name="{{ form.phone_number.name }}" placeholder="123-456-7890" value="{{ request.user.phone_number }}">
+      </div>
+      {{ form.phone_number.errors }}
+    </div>
     <div class="field{% if form.photo.errors %} error{% endif %}">
       <label>Photo</label>
       <div class="ui input">

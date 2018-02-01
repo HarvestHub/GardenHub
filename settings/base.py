@@ -136,3 +136,10 @@ MEDIA_URL = '/media/'
 
 LOGIN_URL = reverse_lazy('login')
 LOGIN_REDIRECT_URL = reverse_lazy('home')
+
+
+# Phone number settings
+# https://github.com/stefanfoulis/django-phonenumber-field
+
+PHONENUMBER_DB_FORMAT = 'E164'
+PHONENUMBER_DEFAULT_REGION = 'US'

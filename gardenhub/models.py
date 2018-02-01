@@ -8,6 +8,7 @@ from django.contrib.auth.base_user import AbstractBaseUser
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.urls import reverse
+from phonenumber_field.modelfields import PhoneNumberField
 from gardenhub.utils import localdate
 
 from .managers import OrderQuerySet, UserManager
@@ -274,6 +275,11 @@ class User(AbstractBaseUser, PermissionsMixin):
         _('email address'), unique=True,
         help_text="The user's email address, which is used for notifications "
                   "and doubles as the username for logging in."
+    )
+    phone_number = PhoneNumberField(
+        blank=True,
+        help_text="The user's phone number, so site admins can directly "
+                  "contact them if needed."
     )
     first_name = models.CharField(
         _('first name'), max_length=30,

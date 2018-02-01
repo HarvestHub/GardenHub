@@ -2,7 +2,8 @@ from datetime import timedelta
 from django import forms
 from django.core import validators
 from django.core.exceptions import ValidationError
-from .models import Order, Garden, Plot, Crop
+from phonenumber_field.formfields import PhoneNumberField
+from gardenhub.models import Order, Garden, Plot, Crop
 from gardenhub.utils import today, localdate
 
 
@@ -74,6 +75,7 @@ class GardenForm(forms.ModelForm):
 class ActivateAccountForm(forms.Form):
     first_name = forms.CharField()
     last_name = forms.CharField()
+    phone_number = PhoneNumberField(required=False)
     password1 = forms.CharField()
     password2 = forms.CharField()
 
@@ -81,6 +83,7 @@ class ActivateAccountForm(forms.Form):
 class AccountSettingsForm(forms.Form):
     first_name = forms.CharField()
     last_name = forms.CharField()
+    phone_number = PhoneNumberField(required=False)
     photo = forms.ImageField(required=False)
     password = forms.CharField(required=False)
     new_password1 = forms.CharField(required=False)

@@ -15,14 +15,14 @@
       {% endif %}
 
       <div class="two fields">
-        <div class="field{% if form.first_name.errors %} error{% endif %}">
+        <div class="required field{% if form.first_name.errors %} error{% endif %}">
           <label>First Name</label>
           <div class="ui input">
             <input type="text" name="{{ form.first_name.name }}" placeholder="Enter your first name" required>
           </div>
           {{ form.first_name.errors }}
         </div>
-        <div class="field{% if form.last_name.errors %} error{% endif %}">
+        <div class="required field{% if form.last_name.errors %} error{% endif %}">
           <label>Last Name</label>
           <div class="ui input">
             <input type="text" name="{{ form.last_name.name }}" placeholder="Enter your last name" required>
@@ -30,16 +30,23 @@
           {{ form.last_name.errors }}
         </div>
       </div>
+      <div class="field{% if form.phone_number.errors %} error{% endif %}">
+        <label>Phone Number</label>
+        <div class="ui input">
+          <input type="text" name="{{ form.phone_number.name }}" placeholder="123-456-7890">
+        </div>
+        {{ form.phone_number.errors }}
+      </div>
       <div class="ui section divider"></div>
       <div class="two fields">
-        <div class="field{% if form.password1.errors %} error{% endif %}">
+        <div class="required field{% if form.password1.errors %} error{% endif %}">
           <label>Password</label>
           <div class="ui input">
             <input type="password" name="{{ form.password1.name }}" placeholder="Enter a password" required>
           </div>
           {{ form.password1.errors }}
         </div>
-        <div class="field{% if form.password2.errors %} error{% endif %}">
+        <div class="required field{% if form.password2.errors %} error{% endif %}">
           <label>Password (again)</label>
           <div class="ui input">
             <input type="password" name="{{ form.password2.name }}" placeholder="Re-enter the password" required>
