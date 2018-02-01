@@ -20,7 +20,7 @@ class Crop(models.Model):
     may be listed on Orders or Picks.
     """
     title = models.CharField(
-        max_length=255,
+        max_length=255, unique=True,
         help_text="All lowercase name of this crop.")
     image = models.ImageField(
         help_text="Photo of this crop.", upload_to="crops")
