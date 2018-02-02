@@ -41,8 +41,8 @@
           <i class="dropdown icon"></i>
           <div class="menu">
             <a class="item" href="{% url "account" %}"><i class="grey user icon"></i> Profile</a>
-            {% if request.user.is_superuser %}
-              <a class="item" href="{% url "admin:index" %}"><i class="grey lock icon"></i> Admin</a>
+            {% if request.user.is_staff %}
+              <a class="item" href="{% url "admin:index" %}" target="_blank"><i class="grey lock icon"></i> Admin</a>
             {% endif %}
             <a class="item" href="{% url "logout" %}"><i class="grey sign out icon"></i> Sign out</a>
           </div>
