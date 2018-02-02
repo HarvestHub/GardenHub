@@ -24,6 +24,28 @@
     {{ order.plot.garden }}, Plot #{{ order.plot.title }}
   </h4>
 
+  <h4 class="ui sub header">Requester</h4>
+  <div class="summary">
+    <div>
+      <i class="user icon"></i>
+      {{ order.requester.get_full_name }}
+    </div>
+    <div>
+      <i class="envelope icon"></i>
+      <a href="mailto:{{ order.requester.email }}">
+        {{ order.requester.email }}
+      </a>
+    </div>
+    {% if order.requester.phone_number %}
+      <div>
+        <i class="phone icon"></i>
+        <a href="tel:{{ order.requester.phone_number }}">
+          {{ order.requester.phone_number }}
+        </a>
+      </div>
+    {% endif %}
+  </div>
+
   <h4 class="ui sub header">Date Range</h4>
   <div class="summary">
     {{ order.start_date }}&ndash;{{ order.end_date }}

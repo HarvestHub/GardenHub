@@ -383,13 +383,10 @@ def account_activate_view(request, token):
     if request.method == 'POST':
         form = ActivateAccountForm(request.POST)
 
-        # TODO: Bake this into form.is_valid()?
-        passwords_match = form.cleaned_data['password1'] \
-            == form.cleaned_data['password2']
-
-        if form.is_valid() and passwords_match:
+        if form.is_valid() and form.cleaned_data['password1'] == form.cleaned_data['password2']:  # noqa
             user.first_name = form.cleaned_data['first_name']
             user.last_name = form.cleaned_data['last_name']
+            user.phone_number = form.cleaned_data['phone_number']
             user.is_active = True
             user.set_password(form.cleaned_data['password1'])
             user.save()
@@ -426,18 +423,24 @@ class AccountSettingsView(LoginRequiredMixin, FormView):
 
     def form_valid(self, form):
         user = self.request.user
+        data = form.cleaned_data
 
         # Set user's name
-        user.first_name = form.cleaned_data['first_name']
-        user.last_name = form.cleaned_data['last_name']
+        user.first_name = data['first_name']
+        user.last_name = data['last_name']
+
+        # Set phone number
+        if data['phone_number']:
+            user.phone_number = data['phone_number']
 
         # Set photo
-        user.photo = form.cleaned_data['photo']
+        if data['photo']:
+            user.photo = data['photo']
 
         # Set password if it's entered
-        pass1 = form.cleaned_data['new_password1']
-        pass2 = form.cleaned_data['new_password2']
-        oldpass = form.cleaned_data['password']
+        pass1 = data['new_password1']
+        pass2 = data['new_password2']
+        oldpass = data['password']
 
         has_passwords = oldpass and pass1 and pass2
 
