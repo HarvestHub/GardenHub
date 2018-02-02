@@ -98,7 +98,7 @@ class UserChangeForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ['email', 'password', 'first_name',
+        fields = ['email', 'phone_number', 'password', 'first_name',
                   'last_name', 'is_staff', 'is_active']
 
     def clean_password(self):
@@ -119,7 +119,7 @@ class UserAdmin(BaseUserAdmin):
     list_display = (
         'email', 'first_name', 'last_name', 'is_active', 'is_superuser')
     fieldsets = (
-        (None, {'fields': ('email', 'password')}),
+        (None, {'fields': ('email', 'phone_number', 'password')}),
         ('Personal', {'fields': ('first_name', 'last_name', 'photo')}),
         ('Status', {'fields': ('is_staff', 'is_active')})
     )
