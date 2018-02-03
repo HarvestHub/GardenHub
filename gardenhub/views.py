@@ -340,7 +340,7 @@ class PlotUpdateView(LoginRequiredMixin, UserCanEditPlotMixin, UpdateView):
         garden_queryset = Garden.objects.filter(
             Q(id=garden.id) |
             Q(managers__id=self.request.user.id)
-        )
+        ).distinct()
         # Constrain Garden choices
         # We have to do this here because we can access the Request
         garden_field.queryset = garden_queryset
