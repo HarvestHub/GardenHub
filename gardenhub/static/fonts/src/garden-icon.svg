@@ -5,11 +5,13 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
-   width="16"
-   height="16"
-   viewBox="0 0 16 16"
+   version="1.1"
    id="svg5542"
-   version="1.1">
+   viewBox="0 0 16 16"
+   height="16"
+   width="16">
+  <title
+     id="title4134">Fence</title>
   <defs
      id="defs5544" />
   <metadata
@@ -20,12 +22,33 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title>Fence</dc:title>
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/by/3.0/" />
+        <dc:source>https://thenounproject.com/icon/1179077/</dc:source>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Daniela Baptista</dc:title>
+          </cc:Agent>
+        </dc:creator>
       </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/by/3.0/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Notice" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Attribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+      </cc:License>
     </rdf:RDF>
   </metadata>
   <path
-     style="fill:#000000"
+     d="m 16,6.8615 0,-1.4933 -0.86787,0 0,-1.5282 -1.56166,-1.565 -1.56166,1.565 0,1.5282 -2.44715,0 0,-1.5282 L 8,2.2748 6.43833,3.8399 l 0,1.5281 -2.44695,0 0,-1.5281 -1.56166,-1.5651 -1.56167,1.5651 0,1.5281 -0.86805,0 0,1.4933 0.86786,0 0,4.077 -0.86786,0 0,1.4933 0.86786,0 0,1.2936 3.12333,0 0,-1.2936 2.44696,0 0,1.2936 3.12332,0 0,-1.2936 2.44696,0 0,1.2936 3.12333,0 0,-1.2936 0.86786,0 0,-1.4933 -0.86786,0 0,-4.0768 0.86824,0 z m -9.56167,4.077 -2.44695,0 0,-4.077 2.44695,0 0,4.077 z m 5.57029,0 -2.44696,0 0,-4.077 2.44696,0 0,4.077 z"
      id="path4"
-     d="m 16,6.8615 0,-1.4933 -0.86787,0 0,-1.5282 -1.56166,-1.565 -1.56166,1.565 0,1.5282 -2.44715,0 0,-1.5282 L 8,2.2748 6.43833,3.8399 l 0,1.5281 -2.44695,0 0,-1.5281 -1.56166,-1.5651 -1.56167,1.5651 0,1.5281 -0.86805,0 0,1.4933 0.86786,0 0,4.077 -0.86786,0 0,1.4933 0.86786,0 0,1.2936 3.12333,0 0,-1.2936 2.44696,0 0,1.2936 3.12332,0 0,-1.2936 2.44696,0 0,1.2936 3.12333,0 0,-1.2936 0.86786,0 0,-1.4933 -0.86786,0 0,-4.0768 0.86824,0 z m -9.56167,4.077 -2.44695,0 0,-4.077 2.44695,0 0,4.077 z m 5.57029,0 -2.44696,0 0,-4.077 2.44696,0 0,4.077 z" />
+     style="fill:#000000" />
 </svg>

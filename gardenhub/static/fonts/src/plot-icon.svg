@@ -5,11 +5,13 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
-   width="15.999999"
-   height="16"
-   viewBox="0 0 15.999999 15.999999"
+   version="1.1"
    id="svg6256"
-   version="1.1">
+   viewBox="0 0 15.999999 15.999999"
+   height="16"
+   width="15.999999">
+  <title
+     id="title4134">Community Garden Plot Icon</title>
   <defs
      id="defs6258" />
   <metadata
@@ -20,12 +22,30 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title>Community Garden Plot Icon</dc:title>
+        <cc:license
+           rdf:resource="http://creativecommons.org/publicdomain/zero/1.0/" />
+        <dc:source>https://openclipart.org/detail/296147/community-garden-plot-icon</dc:source>
+        <dc:date>2018-02-07</dc:date>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Alex Gleason</dc:title>
+          </cc:Agent>
+        </dc:creator>
       </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/publicdomain/zero/1.0/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+      </cc:License>
     </rdf:RDF>
   </metadata>
   <path
-     style="color:#000000;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:medium;line-height:normal;font-family:sans-serif;text-indent:0;text-align:start;text-decoration:none;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;letter-spacing:normal;word-spacing:normal;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;baseline-shift:baseline;text-anchor:start;white-space:normal;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:11.42477608;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+     id="rect4136"
      d="M 15.650975,0.08445273 C 9.5919479,-0.10107309 8.1956174,7.1882332 8.1956174,7.1882332 c 0,0 -1.9734043,-6.67843029 -8.19561783146,-3.7813904 C 0.52985853,4.8375188 1.355483,5.8801933 2.2598491,6.6530579 2.2085746,6.7588012 2.1736248,6.8644445 2.1465646,6.9655692 L 0.17188024,14.342797 c -0.12534945,0.4684 0.0927311,0.93306 0.3652479,1.185592 0.27251683,0.252532 0.60632636,0.390639 0.99222516,0.390639 l 13.0786127,0 c 0.385899,0 0.719707,-0.138107 0.992224,-0.390639 0.272518,-0.252532 0.488647,-0.717191 0.363296,-1.185592 L 13.990755,6.9655692 C 13.939651,6.7746062 13.852939,6.5694573 13.68801,6.3717964 14.881271,5.0884243 15.802789,3.1188459 15.650975,0.08445273 Z m -3.209106,7.34988297 0.136724,0 1.873117,7.0002623 -12.7661017,0 1.8418652,-6.885022 C 5.433654,8.6475861 7.2795672,8.7820427 7.2795672,8.7820427 l 0,3.4805993 1.8399132,0 0,-3.545055 c 0,0 1.6690836,-0.1736598 3.3223886,-1.2832513 z"
-     id="rect4136" />
+     style="color:#000000;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:medium;line-height:normal;font-family:sans-serif;text-indent:0;text-align:start;text-decoration:none;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;letter-spacing:normal;word-spacing:normal;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;baseline-shift:baseline;text-anchor:start;white-space:normal;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:11.42477608;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate" />
 </svg>
