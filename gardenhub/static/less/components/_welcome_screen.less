@@ -1,11 +1,23 @@
+body.home .content {
+  padding: 0;
+}
+
 .welcome-screen {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
+  padding: 50px 0 40px 0;
 
-  .contents {
-    width: 100%;
+  background-image: url("/static/images/sunrise.svg");
+  background-position: center 20px;
+  background-repeat: no-repeat;
+
+  > .ui.container {
+    display: flex;
+    justify-content: center;
   }
+
 }
 
 .ui.items > .item > .huge.icons.image:not(.ui) {

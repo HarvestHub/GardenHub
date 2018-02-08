@@ -1,6 +1,8 @@
 {% extends "gardenhub/_manage_base.html" %}
 {% load static gardenhub %}
 
+{% block body_class %}home{% endblock %}
+
 {% block content %}
   {# Display active orders to the picker #}
   {% if request.user.is_picker %}
@@ -61,19 +63,18 @@
     {% endfor %}
 
   {% else %}
+    <div class="welcome-screen">
+      {# Welcome the user with a nice message #}
+      <h1 class="ui center aligned header">
+        <div class="content">
+          Let's get started.
+          <div class="sub header">Choose one of the options below to get begin.</div>
+        </div>
+      </h1>
 
-    {# Welcome the user with a nice message #}
-    <h1 class="ui center aligned header">
-      <div class="content">
-        Let's get started.
-        <div class="sub header">Choose one of the options below to get begin.</div>
-      </div>
-    </h1>
-
-    {# The user has the ability to create an order #}
-    {% if request.user.is_gardener %}
-      <div class="ui container">
-        <div class="welcome-screen">
+      {# The user has the ability to create an order #}
+      {% if request.user.is_gardener %}
+        <div class="ui container">
           <div class="ui very relaxed unstackable items">
 
             <div class="item">
@@ -134,15 +135,15 @@
 
           </div>
         </div>
-      </div>
 
-    {# The user cannot create an order #}
-    {% else %}
-      <div class="ui warning message">
-        <div class="header">You're not assigned to any plots :(</div>
-        <p>Normally you would have the ability to place an order, except you haven't been assigned to any plots yet. Try getting in touch with your garden manager and ask if they can add you to your plot.</p>
-      </div>
-    {% endif %}
+      {# The user cannot create an order #}
+      {% else %}
+        <div class="ui warning message">
+          <div class="header">You're not assigned to any plots :(</div>
+          <p>Normally you would have the ability to place an order, except you haven't been assigned to any plots yet. Try getting in touch with your garden manager and ask if they can add you to your plot.</p>
+        </div>
+      {% endif %}
+    </div>
   {% endif %}
 {% endblock %}
 
