@@ -1,7 +1,7 @@
 Plot icon
-    "Orchard" by Symbolon, IT
-    CC-BY
-    https://thenounproject.com/icon/1127077/
+    "Community Garden Plot Icon" by Alex Gleason
+    CC0
+    https://openclipart.org/detail/296147/community-garden-plot-icon
 
 Garden icon
     "Fence" by Daniela Baptista, PT
