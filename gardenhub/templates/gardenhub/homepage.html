@@ -4,7 +4,7 @@
 {% block content %}
   {# Display active orders to the picker #}
   {% if request.user.is_picker %}
-    <h1 class="ui header center aligned">
+    <h1 class="ui header">
       <span class="ui sub header">{% now "l, N j" %}</span>
       {{ request.user.first_name}}'s Assignments
       <span class="sub header">Let's go to work on these orders!</span>
@@ -63,55 +63,76 @@
   {% else %}
 
     {# Welcome the user with a nice message #}
-    <h1 class="left aligned">Welcome, {{ user.first_name }}!</h1>
+    <h1 class="ui center aligned header">
+      <div class="content">
+        Let's get started.
+        <div class="sub header">Choose one of the options below to get begin.</div>
+      </div>
+    </h1>
 
     {# The user has the ability to create an order #}
     {% if request.user.is_gardener %}
-      <div class="ui center aligned container">
+      <div class="ui container">
         <div class="welcome-screen">
+          <div class="ui very relaxed unstackable items">
 
-          {# Guide a new user to create an order #}
-          {% if not request.user.has_open_orders %}
-            <div class="ui container">
-              <h2 class="ui header">
-                No Orders Placed
-                <span class="sub header">Create an order to get started.</span>
-              </h2>
-              <a class="big purple ui button" href="/orders/new/"><i class="plus icon"></i> New Order</a>
+            <div class="item">
+              <a class="full" href="{% url "order-create" %}"></a>
+              <i class="huge icons image">
+                <i class="order icon"></i>
+                <i class="green corner add icon"></i>
+              </i>
+              <div class="content">
+                <a class="header" href="{% url "order-create" %}">New Order</a>
+                <div class="description">Create a brand new order.</div>
+              </div>
             </div>
 
-          {# If the user already has open orders, give them some other calls to action #}
-          {% else %}
-            <div class="ui items">
+            {% if request.user.has_orders %}
               <div class="item">
-                <a class="huge fluid purple ui button" href="/orders/new/">
-                  <i class="plus icon"></i>
-                  New Order
-                </a>
+                <a class="full" href="{% url "order-list" %}"></a>
+                <i class="huge icons image">
+                  <i class="order icon"></i>
+                  <i class="orange corner clock icon"></i>
+                </i>
+                <div class="content">
+                  <a class="header" href="{% url "order-list" %}">
+                    {% if request.user.is_garden_manager %}
+                      Upcoming Orders
+                    {% else %}
+                      View My Orders
+                    {% endif %}
+                  </a>
+                  <div class="description">Review the orders you've already created.</div>
+                </div>
               </div>
-              <div class="item">
-                <a class="huge fluid purple ui button" href="/orders">
-                  <i class="edit icon"></i>
-                  {% if request.user.is_garden_manager %}
-                    Upcoming Orders
-                  {% else %}
-                    View My Orders
-                  {% endif %}
-                </a>
-              </div>
-              <div class="item">
-                <a class="huge fluid purple ui button" href="/plots">
-                  <i class="plot icon"></i>
+            {% endif %}
+
+            <div class="item">
+              <a class="full" href="{% url "plot-list" %}"></a>
+              <i class="huge icons image">
+                <i class="plot icon"></i>
+                <i class="blue corner write icon"></i>
+              </i>
+              <div class="content">
+                <a class="header" href="{% url "plot-list" %}">
                   {% if request.user.is_garden_manager %}
                     Manage Plots
                   {% else %}
                     View My Plots
                   {% endif %}
                 </a>
+                <div class="description">
+                  {% if request.user.is_garden_manager %}
+                    Create and edit plots in your garden.
+                  {% else %}
+                    Edit your crops.
+                  {% endif %}
+                </div>
               </div>
             </div>
-          {% endif %}
 
+          </div>
         </div>
       </div>
 

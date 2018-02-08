@@ -429,10 +429,9 @@ class User(AbstractBaseUser, PermissionsMixin):
         """
         return Garden.objects.filter(pickers__id=self.id).count() > 0
 
-    def has_open_orders(self):
+    def has_orders(self):
         """
-        Determine whether or not a user has any current open picks for home
-        display.
+        Determine whether the user has any orders at all.
         """
         return self.get_orders().count() > 0
 

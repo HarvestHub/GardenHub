@@ -663,8 +663,8 @@ class UserTestCase(TestCase):
         # Test that the user is a picker
         self.assertTrue(picker.is_picker())
 
-    def test_has_open_orders(self):
-        """ user.has_open_orders() """
+    def test_has_orders(self):
+        """ user.has_orders() """
 
         # Create plot
         garden = GardenFactory()
@@ -683,8 +683,8 @@ class UserTestCase(TestCase):
         plot.gardeners.add(user)
 
         # Test orders
-        self.assertTrue(user.has_open_orders())
-        self.assertFalse(ActiveUserFactory().has_open_orders())
+        self.assertTrue(user.has_orders())
+        self.assertFalse(ActiveUserFactory().has_orders())
 
     def test_can_edit_garden(self):
         """ user.can_edit_garden() """
