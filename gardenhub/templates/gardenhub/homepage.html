@@ -6,6 +6,7 @@
 {% block content %}
   {# Display active orders to the picker #}
   {% if request.user.is_picker %}
+    <span></span><!-- FIXME: unhack this -->
     <h1 class="ui header">
       <span class="ui sub header">{% now "l, N j" %}</span>
       {{ request.user.first_name}}'s Assignments
