@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'compressor',
     'sorl.thumbnail',
     'phonenumber_field',
+    'storages',
 ]
 
 MIDDLEWARE = [

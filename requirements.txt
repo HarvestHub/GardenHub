@@ -6,6 +6,8 @@ sorl-thumbnail==12.4.1
 psycopg2==2.7.4
 dj-database-url==0.4.2
 django-phonenumber-field==2.0.0
+django-storages==1.6.5
+boto3==1.5.31
 
 # Tests
 factory_boy==2.10.0
