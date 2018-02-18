@@ -19,13 +19,12 @@ if 'ALLOWED_HOSTS' in env:
 
 # Configure email
 # https://docs.djangoproject.com/en/2.0/topics/email/
-# FIXME: Temporarily use the console backend until real email is implemented
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-# EMAIL_USE_TLS = True
-# EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_PORT = 587
-# EMAIL_HOST_USER = 'me@gmail.com'
-# EMAIL_HOST_PASSWORD = 'password'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_TLS = True
+EMAIL_HOST = env['EMAIL_HOST']
+EMAIL_PORT = int(env.get('EMAIL_PORT', 587))
+EMAIL_HOST_USER = env['EMAIL_HOST_USER']
+EMAIL_HOST_PASSWORD = env['EMAIL_HOST_PASSWORD']
 
 LOGGING = {
     'version': 1,
