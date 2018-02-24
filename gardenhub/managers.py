@@ -105,14 +105,18 @@ class UserManager(BaseUserManager):
                 activate_url = request.build_absolute_uri(
                     '/activate/{}/'.format(user.activation_token)
                 )
+                email_data = {
+                    'inviter': inviter,
+                    'activate_url': activate_url
+                }
                 user.email_user(
                     subject="{} invited you to join GardenHub".format(
                         inviter.get_full_name()),
                     message=render_to_string(
-                        'gardenhub/email_invitation.txt', {
-                            'inviter': inviter,
-                            'activate_url': activate_url
-                        }
+                        'gardenhub/email_invitation.txt', email_data
+                    ),
+                    html_message=render_to_string(
+                        'gardenhub/email_invitation.html', email_data
                     )
                 )
 
