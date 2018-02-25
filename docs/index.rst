@@ -16,11 +16,8 @@ framework`_.
    :maxdepth: 2
    :caption: Contents:
 
-   models
-   orders
-   views
-   deployment
-
+   developers/index
+   users/index
 
 
 Indices and tables

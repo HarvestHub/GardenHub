@@ -54,7 +54,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'GardenHub'
-copyright = u'2018, HarvestHub'
+copyright = u'2018, HarvestHub. Licensed under the GNU FDL 1.3'
 author = u'HarvestHub'
 
 # The version info for the project you're documenting, acts as replacement for

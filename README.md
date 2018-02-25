@@ -110,4 +110,8 @@ Changing application code shouldn't require rebuilding the container. However, y
 
 ## License
 
-GardenHub is copyright © 2017 HarvestHub and licensed under the GNU AGPL version 3 or later. View the `LICENSE` file for a copy of the full license.
+GardenHub is copyright © 2017 HarvestHub. Except where otherwise noted, the code in this repo is licensed under the GNU AGPL version 3 or later. View the `LICENSE` file for a copy of the full license.
+
+The documentation (in the `docs` subdirectory) is licensed under the GNU FDL version 1.3 or greater. View `docs/LICENSE` for a copy of the full license.
+
+Finally, the file `gardenhub/templates/gardenhub/email_invitation.html` is copyright Lee Munroe and licensed under MIT. The copyright notice and full license text is inside of the source code of the file.

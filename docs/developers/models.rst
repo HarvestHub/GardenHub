@@ -1,7 +1,7 @@
 Models
 ======
 
-.. image:: _static/db-schema.png
+.. image:: /_static/db-schema.png
 
 Querying objects
 ----------------
