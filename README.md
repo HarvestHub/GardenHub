@@ -17,12 +17,6 @@ GardenHub is building technology to enable gardeners to collaborate and act upon
 
 [Read the full documentation on Read the Docs.](https://gardenhub.readthedocs.io/en/latest/)
 
-## WIP
-
-GardenHub is a work in progress web application being developed in the open. It's licensed under AGPL-3.0+ and written in Python using the Django framework. You can preview our work on the [demo site](http://gardenhub.candlewaster.co/), but keep in mind that it will change dramatically.
-
-Eventually, the inner-workings of this project will be documented in detail. We're making an effort to self-document the code, so take a look. You're welcome to chat with us by opening a GitHub issue. GardenHub is a project by HarvestHub, and it's being developed by Candlewaster.
-
 ## Local development
 
 GardenHub provides a script called `dev.sh` to make local development easy. As long as you have [Docker](https://www.docker.com/) installed, you do not need Python, Django, Postgres, or anything else running on your computer for local development with `dev.sh`. This is because `dev.sh` automatically configures a local development environment with Docker containers where all of that is already installed.
