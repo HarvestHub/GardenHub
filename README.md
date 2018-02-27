@@ -1,4 +1,4 @@
-![GardenHub Promo Banner](gardenhub-promo.png)
+![GardenHub Promo Banner](https://raw.githubusercontent.com/HarvestHub/GardenHub/master/gardenhub-promo.png)
 
 [![Build Status](https://travis-ci.org/HarvestHub/GardenHub.svg?branch=master)](https://travis-ci.org/HarvestHub/GardenHub)
 [![Coverage Status](https://coveralls.io/repos/github/HarvestHub/GardenHub/badge.svg?branch=master)](https://coveralls.io/github/HarvestHub/GardenHub?branch=master)
