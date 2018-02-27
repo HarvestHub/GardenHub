@@ -6,6 +6,7 @@
 [![Known Vulnerabilities](https://snyk.io/test/github/harvesthub/gardenhub/badge.svg)](https://snyk.io/test/github/harvesthub/gardenhub)
 [![Requirements Status](https://requires.io/github/HarvestHub/GardenHub/requirements.svg?branch=master)](https://requires.io/github/HarvestHub/GardenHub/requirements/?branch=master)
 [![Documentation Status](https://readthedocs.org/projects/gardenhub/badge/?version=latest)](http://gardenhub.readthedocs.io/en/latest/?badge=latest)
+[![Docker Automated build](https://img.shields.io/docker/automated/harvesthub/gardenhub.svg)](https://hub.docker.com/r/harvesthub/gardenhub/)
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 [![Matrix ID](https://img.shields.io/badge/matrix-%23gardenhub%3Amatrix.org-brightgreen.svg)](https://riot.im/app/#/room/#gardenhub:matrix.org)
 
