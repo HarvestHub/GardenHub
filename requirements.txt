@@ -1,19 +1,19 @@
-django==2.0.2
+django==2.0.3
 django-compressor==2.2
 Pillow==5.0.0
 whitenoise==3.3.1
 sorl-thumbnail==12.4.1
 psycopg2==2.7.4
-dj-database-url==0.4.2
+dj-database-url==0.5.0
 django-phonenumber-field==2.0.0
-django-storages==1.6.5
-boto3==1.6.0
+django-storages==1.6.6
+boto3==1.6.19
 
 # Tests
 factory_boy==2.10.0
 
 # Docs
-Sphinx==1.7.1
+Sphinx==1.7.2
 sphinx-autobuild==0.7.1
-sphinxcontrib-django==0.3
+sphinxcontrib-django==0.3.1
 sphinx_rtd_theme==0.2.5b2
