@@ -91,7 +91,9 @@ function pulldb() {
 # Pull media files from staging
 function pullmedia() {
   mkdir -p media
-  scp -r root@candlewaster.co:/var/lib/dokku/data/storage/${app}/media/* media
+  ssh gardenhub@candlewaster.co s3cmd get s3://gardenhub/gardenhub --recursive
+  rsync -av gardenhub@candlewaster.co:~/gardenhub/ ./media
+  ssh gardenhub@candlewaster.co rm -r gardenhub
 }
 
 # Serve docs
