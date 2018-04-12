@@ -2,6 +2,9 @@ FROM python:3.5-alpine
 
 MAINTAINER HarvestHub
 
+# Makes manage.py commands able to show output
+ENV PYTHONUNBUFFERED 1
+
 ADD requirements.txt /requirements.txt
 
 RUN set -ex \
