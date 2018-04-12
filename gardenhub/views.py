@@ -169,7 +169,7 @@ class PickCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     Form enabling a picker to submit a Pick for a given plot.
     """
     model = Pick
-    fields = ['crops']
+    fields = ['crops', 'comment']
     success_url = reverse_lazy('home')
 
     def test_func(self):

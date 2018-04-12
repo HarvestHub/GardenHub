@@ -250,6 +250,10 @@ class Pick(models.Model):
         Crop,
         help_text="Crops that were harvested by this pick."
     )
+    comment = models.TextField(
+        blank=True,
+        help_text="Additional comments about this pick."
+    )
 
     def __str__(self):
         return str(self.id)

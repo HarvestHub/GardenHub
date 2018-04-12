@@ -1,3 +1,7 @@
 Hi {{ inquirer.first_name }}! {{ pick.picker.first_name }} has picked your crops from plot {{ pick.plot.title }} in {{ pick.plot.garden.title }}.
+{% if pick.comment %}
+
+{{ pick.picker.first_name }} said: {{ pick.comment }}
+{% endif %}
 
 Crops picked: {{ pick.crops.all|join:", " }}
