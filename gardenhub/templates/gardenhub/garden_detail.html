@@ -55,6 +55,14 @@
           {{ garden.address }}
         </div>
       </div>
+      {% if garden.map_image %}
+        <div class="item">
+          <i class="map icon"></i>
+          <div class="content">
+            <a href="{{ garden.map_image.url }}">View map</a>
+          </div>
+        </div>
+      {% endif %}
     </div>
   </div>
 

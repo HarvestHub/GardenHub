@@ -2,7 +2,7 @@
 {% load gardenhub %}
 
 {% block content %}
-  <form class="ui form" action="" method="post">
+  <form class="ui form" action="" method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {% if form.non_field_errors %}
       <div class="ui visible error message">{{ form.non_field_errors }}</div>
@@ -25,6 +25,15 @@
         <input type="text" name="{{ form.address.name }}" placeholder="Enter an address" value="{{ form.address.value }}" required>
       </div>
       {{ form.address.errors }}
+    </div>
+
+    <div class="field{% if form.map_image.errors %} error{% endif %}">
+      <label>Map image</label>
+      <p class="description">Upload a map of the garden. (jpg/png)</p>
+      <div class="ui input upload">
+        {{ form.map_image }}
+      </div>
+      {{ form.map_image.errors }}
     </div>
 
     <div class="field{% if form.manager_emails.errors %} error{% endif %}">

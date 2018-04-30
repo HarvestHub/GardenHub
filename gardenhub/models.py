@@ -73,6 +73,10 @@ class Garden(models.Model):
         blank=True, help_text="A photo of this garden.", upload_to="gardens"
     )
 
+    map_image = models.ImageField(
+        blank=True, help_text="A map of this garden.", upload_to="maps"
+    )
+
     pickers = models.ManyToManyField(
         settings.AUTH_USER_MODEL, related_name='+', blank=True,
         help_text="People who are assigned to fulfill orders on this garden."
