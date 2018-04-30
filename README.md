@@ -27,6 +27,7 @@ GardenHub provides a script called `dev.sh` to make local development easy. As l
 You will need the following packages installed to develop on GardenHub:
 
 * docker-ce
+* docker-compose
 * git
 * bash
 
@@ -49,6 +50,12 @@ sudo usermod -aG docker $(whoami)
 ```
 
 Finally, log out and back into your computer, and then head to the next section.
+
+#### Installing Docker Compose
+
+You will also need [Docker Compose](https://docs.docker.com/compose/install/#install-compose) for local development. Check if you already have it by typing `docker-compose version`.
+
+If you need to install it, follow the link and select your platform for specific instructions.
 
 ### Starting the development server
 

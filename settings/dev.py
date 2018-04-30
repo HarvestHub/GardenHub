@@ -9,6 +9,7 @@ TEMPLATES[0]['OPTIONS']['debug'] = True  # noqa
 SECRET_KEY = 'CHANGEME!!!'
 
 INTERNAL_IPS = ('127.0.0.1', '10.0.2.2')
+ALLOWED_HOSTS = ['*']
 
 BASE_URL = 'http://localhost:8000'
 
