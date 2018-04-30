@@ -20,7 +20,7 @@ function pulldb() {
 # Pull media files from staging
 function pullmedia() {
   mkdir -p media
-  ssh gardenhub@candlewaster.co s3cmd get s3://gardenhub/gardenhub --recursive
+  ssh gardenhub@candlewaster.co s3cmd get s3://gardenhub/gardenhub --recursive --skip-existing
   rsync -av gardenhub@candlewaster.co:~/gardenhub/ ./media
   ssh gardenhub@candlewaster.co rm -r gardenhub
 }
@@ -44,7 +44,7 @@ case $1 in
   start) start ;;
   manage.py)
     shift
-    docker-compose --rm run web python manage.py $@
+    docker-compose run --rm web python manage.py $@
     ;;
   docs) servedocs ;;
   pulldb) pulldb ;;
