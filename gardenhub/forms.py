@@ -69,7 +69,7 @@ class GardenForm(forms.ModelForm):
 
     class Meta:
         model = Garden
-        fields = ['title', 'address']
+        fields = ['title', 'address', 'map_image']
 
 
 class ActivateAccountForm(forms.Form):
