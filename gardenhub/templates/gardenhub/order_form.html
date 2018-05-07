@@ -19,11 +19,11 @@
         </div>
         <div class="menu">
           {% if form.plot.field.queryset.count == 1 %}
-          <div class="item" data-value="{{ plot.id }}">{{ form.plot.field.queryset.0.title}}</div>
+            <div class="item" data-value="{{ plot.id }}">{{ form.plot.field.queryset.0.title}}</div>
           {% else %}
-          {% for plot in form.plot.field.queryset %}
-            <div class="item" data-value="{{ plot.id }}">{{ plot }}</div>
-          {% endfor%}
+            {% for plot in form.plot.field.queryset %}
+              <div class="item" data-value="{{ plot.id }}">{{ plot }}</div>
+            {% endfor%}
           {%endif%}
         </div>
       </div>
