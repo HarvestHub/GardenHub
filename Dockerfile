@@ -1,4 +1,4 @@
-FROM python:3.5-alpine
+FROM python:3.7-alpine
 
 MAINTAINER HarvestHub
 
@@ -42,7 +42,7 @@ RUN set -ex \
             | sort -u \
     )" \
     # Install Node and Less for compiling .less in development
-    && apk add --no-cache nodejs \
+    && apk add --no-cache npm \
     && npm install -g less \
     # Add the runtime dependencies we need to keep
     && apk add --virtual .python-rundeps $runDeps \

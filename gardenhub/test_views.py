@@ -23,7 +23,7 @@ class PlotCreateViewTestCase(TestCase):
         # Normal users can't access
         client.force_login(ActiveUserFactory())
         response = client.get(reverse('plot-create'))
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 403)
 
     def test_post(self):
         """ Test submit under ideal conditions """
