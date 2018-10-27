@@ -274,6 +274,28 @@ class Pick(models.Model):
         return list(set(list(gardeners) + requesters))
 
 
+class VolunteerRequest(models.Model):
+    """
+    An open-ended, optional request for labor to be performed at a particular
+    Garden by anyone who can view the Garden. Requests can be made by
+    Garden Managers for a Garden they manage.
+    """
+    requester = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.PROTECT,
+        help_text="Person who submitted this volunteer request."
+    )
+    difficulty = models.PositiveSmallIntegerField(
+        help_text="Difficulty of this task. Higher is more difficult."
+    )
+    frequency = models.CharField(  # FIXME: better field type?
+        max_length=255,
+        help_text="How often this needs to happen."
+    )
+    instructions = models.TextField(
+        help_text="Explanation of work to be done."
+    )
+
+
 class User(AbstractBaseUser, PermissionsMixin):
     """
     Custom user class for GardenHub users. This is necessary because we want to
