@@ -13,7 +13,7 @@ boto3==1.9.22
 factory_boy==2.11.1
 
 # Docs
-Sphinx==1.8.1
+Sphinx==3.0.4
 sphinx-autobuild==0.7.1
 sphinxcontrib-django==0.4
 sphinx_rtd_theme==0.4.2
