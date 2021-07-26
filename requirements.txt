@@ -17,3 +17,4 @@ Sphinx==1.8.1
 sphinx-autobuild==0.7.1
 sphinxcontrib-django==0.4
 sphinx_rtd_theme==0.4.2
+urllib3>=1.26.5 # not directly required, pinned by Snyk to avoid a vulnerability
